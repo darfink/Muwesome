@@ -1,10 +1,12 @@
 using System;
+using Muwesome.Network;
 using Muwesome.Protocol;
+using Muwesome.Protocol.Connect.V20050502;
 
 namespace Muwesome.ConnectServer {
   internal class ClientProtocolHandler : ConfigurablePacketHandler<Client> {
-    // TODO: SEND HELLO TO DIS FFKN CLIENT
-    public ClientProtocolHandler() {
+    public ClientProtocolHandler(IClientsController clientsController) {
+      clientsController.AfterClientAccepted += OnAfterClientAccepted;
     }
 
     /// <summary>Gets or sets whether client's are disconnected when sending unknown packets.</summary>
@@ -23,6 +25,13 @@ namespace Muwesome.ConnectServer {
       }
 
       return packetWasHandled;
+    }
+
+    private void OnAfterClientAccepted(object sender, AfterClientAcceptEventArgs ev) {
+      using(var writer = ev.AcceptedClient.Connection.SendPacket<ConnectResult>()) {
+        var result = ConnectResult.From(writer.Span);
+        result.Success = true;
+      }
     }
   }
 }

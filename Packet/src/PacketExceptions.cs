@@ -30,7 +30,7 @@ namespace Muwesome.Packet {
   public class InvalidPacketTypeException : InvalidPacketException {
     /// <summary>Constructs a new <see cref="InvalidPacketTypeException" />.</summary>
     public InvalidPacketTypeException(byte[] packet) :
-      base(packet, $"The packet type is {packet[0]}; must be one of {PacketView.ValidTypes.AsHexString()}") { }
+      base(packet, $"The packet type is {packet[0]}; must be one of {PacketType.ValidTypes.AsHexString()}") { }
   }
 
   public class InvalidPacketSizeException : InvalidPacketException {

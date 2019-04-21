@@ -3,15 +3,13 @@ using System.Diagnostics.Contracts;
 using System.Collections.Generic;
 
 namespace Muwesome.Packet {
+  /// <summary>A view of a packet buffer in memory.</summary>
   public ref struct PacketView {
     /// <summary>Minimum size required for extracting header information.</summary>
     public const int MinimumSize = 3;
 
-    /// <summary>A set of all valid packet types.</summary>
-    public static readonly HashSet<byte> ValidTypes = new HashSet<byte> { 0xC1, 0xC2, 0xC3, 0xC4 };
-
-    /// <summary>Constructs a packet view.</summary>
-    public PacketView(Span<byte> data) => Data = data;
+    /// <summary>Constructs a view of a packet.</summary>
+    public PacketView(ReadOnlySpan<byte> data) => Data = data;
 
     /// <summary>Validates the packet's header.</summary>
     public void ValidateHeader() {
@@ -19,7 +17,10 @@ namespace Muwesome.Packet {
         throw new ArgumentException("The provided data is insufficient");
       }
 
-      if (!ValidTypes.Contains(Type)) {
+      try {
+        // Ensure an implicit cast is possible
+        PacketType type = Type;
+      } catch (ArgumentOutOfRangeException) {
         throw new InvalidPacketTypeException(Data.ToArray());
       }
 
@@ -28,47 +29,41 @@ namespace Muwesome.Packet {
       }
     }
 
-    /// <summary>Gets or sets the packet's length.</summary>
-    public int Length {
-      get => SizeFieldLength > 1 ? Data.ReadUInt16BE(1) : Data.ReadByte(1);
+    /// <summary>Checks whether this packet has a specific identifier.</summary>
+    /// <remarks>
+    /// Since an identifier cannot be known in advance, this only checks as many
+    /// bytes as provided by the input. That is, an identifier of only C1 would
+    /// match a majority of packets.
+    /// </remarks>
+    public bool HasIdentifier(IEnumerable<byte> identifier) {
+      var enumerator = Identifier.GetEnumerator();
+      foreach (byte value in identifier) {
+        if (!enumerator.MoveNext() || enumerator.Current != value) {
+          return false;
+        }
+      }
+      return true;
     }
 
-    /// <summary>Gets the packet's header length.</summary>
-    /// <remarks>
-    /// The header consists of the packet type (C1-C4) and the size of the entire packet.
-    /// </remarks>
-    public int HeaderLength => SizeFieldLength + 1;
-
-    /// <summary>Gets the packet's size field length in bytes.</summary>
-    /// <remarks>
-    /// The size is specified using one byte when the packet type is C1 or C3,
-    /// and two bytes (Big-endian) when the packet type is C2 or C4.
-    /// </remarks>
-    public int SizeFieldLength => Type == 0xC1 || Type == 0xC3 ? 1 : 2;
+    /// <summary>Gets the packet's length.</summary>
+    public int Length => Type.SizeFieldLength > 1 ? Data.ReadUInt16BE(offset: 1) : Data.ReadByte(offset: 1);
 
     /// <summary>Gets whether this view is of a partial or complete packet.</summary>
     public bool IsPartial => Data.Length < Length;
-
-    /// <summary>Gets whether this packet is encrypted or not.</summary>
-    /// <remarks>
-    /// Only "SimpleModulus" encryption can be identified using the packet type.
-    /// Whether a packet is XOR encrypted or not must be known in advance.
-    /// </remarks>
-    public bool IsEncrypted => Type == 0xC3 || Type == 0xC4;
 
     /// <summary>Gets the packet's type.</summary>
     /// <remarks>
     /// There are four defined types; C1, C2, C3 or C4 where the latter two are encrypted.
     /// </remarks>
-    public byte Type => Data[0];
+    public PacketType Type => Data[0];
 
     /// <summary>Gets the packet's code.</summary>
     /// <remarks>
     /// Besides the packet type, all packets have a required code as well (which
     /// may be followed by one or more subcodes).
     /// </remarks>
-    public byte? Code => !IsEncrypted && Data.Length > HeaderLength
-      ? (byte?)Data[HeaderLength]
+    public byte? Code => !Type.IsEncrypted && Data.Length > Type.HeaderLength
+      ? (byte?)Data[Type.HeaderLength]
       : null;
 
     /// <summary>Gets the packet's identifier.</summary>
@@ -83,7 +78,7 @@ namespace Muwesome.Packet {
     public EnumerableIdentifier Identifier => new EnumerableIdentifier(this);
 
     /// <summary>Gets the packet's underlying data.</summary>
-    public Span<byte> Data { get; private set; }
+    public ReadOnlySpan<byte> Data { get; private set; }
 
     public ref struct EnumerableIdentifier {
       private PacketView _packet;
@@ -109,7 +104,7 @@ namespace Muwesome.Packet {
 
         /// <summary>Advances the enumerator to the next item.</summary>
         public bool MoveNext() {
-          _index += (_index == 0) ? _packet.SizeFieldLength : 1;
+          _index += (_index == 0) ? _packet.Type.SizeFieldLength : 1;
           return _index < _packet.Data.Length;
         }
       }

@@ -6,7 +6,7 @@ using System.IO.Pipelines;
 
 namespace Muwesome.Packet.IO {
   /// <summary>Callback for whenever a new packet is read.</summary>
-  public delegate void PacketReadCallback(PacketView packet);
+  public delegate void PacketReadCallback(Span<byte> packet);
 
   public class PacketEventReader : PacketPipeReaderBase {
     private readonly byte[] _packetBuffer;
@@ -56,7 +56,7 @@ namespace Muwesome.Packet.IO {
 
       packet.CopyTo(packetSpan);
       try {
-        _packetCallback.Invoke(new PacketView(packetSpan));
+        _packetCallback.Invoke(packetSpan);
       } finally {
         owner?.Dispose();
       }

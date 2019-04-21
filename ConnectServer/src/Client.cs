@@ -51,9 +51,9 @@ namespace Muwesome.ConnectServer {
       Connection.Disconnect();
     }
 
-    private void OnPacketReceived(object sender, PacketView packet) {
+    private void OnPacketReceived(object sender, Span<byte> packet) {
       _idleTimeoutTimer?.Change(_maxIdleTime, Timeout.InfiniteTimeSpan);
-      _packetHandler.HandlePacket(this, packet.Data);
+      _packetHandler.HandlePacket(this, packet);
     }
 
     private void OnReceiveComplete(Exception ex) {

@@ -17,7 +17,7 @@ namespace Muwesome.Protocol {
         return false;
       }
 
-      return handler.HandlePacket(sender, packet.Data);
+      return handler.HandlePacket(sender, packetData);
     }
 
     /// <summary>Registers a new handler for a packet.</summary>
@@ -43,6 +43,7 @@ namespace Muwesome.Protocol {
     }
 
     private void InsertHandlerForPacket<TPacket>(IPacketHandler<T> handler) where TPacket : IPacket {
+      // TODO: Throw improved exception (show conflicting packets)
       var identifier = PacketFor<TPacket>.Identifier.ToArray();
 
       var handlers = _packetHandlers;

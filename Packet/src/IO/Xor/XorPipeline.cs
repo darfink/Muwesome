@@ -12,14 +12,13 @@ namespace Muwesome.Packet.IO.Xor {
     /// <summary>Writes encrypted or decrypted packet data to a pipe.</summary>
     protected void ApplyCipherAndWrite(PipeWriter writer, ReadOnlySequence<byte> packet, bool encrypt) {
       int packetSize = (int)packet.Length;
-      var output = writer.GetSpan(packetSize).Slice(0, packetSize);
-      packet.CopyTo(output);
+      var packetData = writer.GetSpan(packetSize).Slice(0, packetSize);
+      packet.CopyTo(packetData);
 
-      var packetView = new PacketView(output);
       if (encrypt) {
-        XorCipher.Encrypt(packetView, _cipher);
+        XorCipher.Encrypt(packetData, _cipher);
       } else {
-        XorCipher.Decrypt(packetView, _cipher);
+        XorCipher.Decrypt(packetData, _cipher);
       }
 
       writer.Advance(packetSize);

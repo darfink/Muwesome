@@ -8,7 +8,7 @@ namespace Muwesome.Protocol {
     private ConflictingPacketHandlersException(string message) : base(message) { }
 
     /// <summary>Constructs a new <see cref="ConflictingPacketHandlersException" />.</summary>
-    public static ConflictingPacketHandlersException WithPacket<TPacket>() {
+    public static ConflictingPacketHandlersException WithPacket<TPacket>() where TPacket : IPacket {
       var message = new StringBuilder()
         .AppendLine("Conflicting packet handlers")
         .Append("Packet: ").AppendLine(PacketFor<TPacket>.Name)

@@ -6,23 +6,38 @@ using System.Text;
 
 namespace Muwesome.Packet {
   public static class ArrayExtensions {
+    /// <summary>Gets the packet type from a span.</summary>
+    public static PacketType GetPacketType(this Span<byte> bytes) => bytes[0];
+
+    /// <summary>Forwards <see cref="ReadByte(this ReadOnlySpan<byte>, int)"/>.</summary>
+    public static byte ReadByte(this Span<byte> bytes, int offset = 0) => ReadByte((ReadOnlySpan<byte>)bytes, offset);
+
+    /// <summary>Forwards <see cref="ReadUInt16LE(this ReadOnlySpan<byte>, int)"/>.</summary>
+    public static ushort ReadUInt16LE(this Span<byte> bytes, int offset = 0) => ReadUInt16LE((ReadOnlySpan<byte>)bytes, offset);
+
+    /// <summary>Forwards <see cref="ReadUInt16BE(this ReadOnlySpan<byte>, int)"/>.</summary>
+    public static ushort ReadUInt16BE(this Span<byte> bytes, int offset = 0) => ReadUInt16BE((ReadOnlySpan<byte>)bytes, offset);
+
+    /// <summary>Forwards <see cref="ReadString(this ReadOnlySpan<byte>, int, Encoding, int)"/>.</summary>
+    public static string ReadString(this Span<byte> bytes, int maxLength, Encoding encoding, int offset = 0) => ReadString((ReadOnlySpan<byte>)bytes, maxLength, encoding, offset);
+
     /// <summary>Reads a byte from the specified offset.</summary>
-    public static byte ReadByte(this Span<byte> bytes, int offset = 0) => bytes[offset];
+    public static byte ReadByte(this ReadOnlySpan<byte> bytes, int offset = 0) => bytes[offset];
 
     /// <summary>Reads a Little-endian UInt16 from the specified offset.</summary>
-    public static ushort ReadUInt16LE(this Span<byte> bytes, int offset = 0) {
+    public static ushort ReadUInt16LE(this ReadOnlySpan<byte> bytes, int offset = 0) {
       var value = MemoryMarshal.Read<ushort>(bytes.Slice(offset));
       return BitConverter.IsLittleEndian ? value : ReverseUInt16(value);
     }
 
     /// <summary>Reads a Big-endian UInt16 from the specified offset.</summary>
-    public static ushort ReadUInt16BE(this Span<byte> bytes, int offset = 0) {
+    public static ushort ReadUInt16BE(this ReadOnlySpan<byte> bytes, int offset = 0) {
       var value = MemoryMarshal.Read<ushort>(bytes.Slice(offset));
       return BitConverter.IsLittleEndian ? ReverseUInt16(value) : value;
     }
 
     /// <summary>Reads a string from the specified offset.</summary>
-    public static string ReadString(this Span<byte> bytes, int maxLength, Encoding encoding, int offset = 0) {
+    public static string ReadString(this ReadOnlySpan<byte> bytes, int maxLength, Encoding encoding, int offset = 0) {
       int bytesAvailable = Math.Min(maxLength, bytes.Length - offset);
       var data = bytes.Slice(offset, bytesAvailable).ToArray();
 

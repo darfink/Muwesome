@@ -38,14 +38,10 @@ namespace Muwesome.Network {
       }
     }
 
-    private ThreadSafeWriter WritePacketHeader<TPacket>() {
+    private ThreadSafeWriter WritePacketHeader<TPacket>() where TPacket : IPacket {
       var span = this.Span;
       span.Clear();
-
-      var packet = new PacketView(span);
-      packet.Code = PacketFor<TPacket>.Code;
-      packet.Length = _packetSize;
-      packet.Identifier = PacketFor<TPacket>.Identifier;
+      PacketFor<TPacket>.CopyTo(span, _packetSize);
       return this;
     }
   }

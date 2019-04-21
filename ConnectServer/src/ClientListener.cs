@@ -24,7 +24,7 @@ namespace Muwesome.ConnectServer {
     public ClientListener(Configuration config) {
       _config = config;
       _clients = new ConcurrentDictionary<Client, byte>();
-      _packetHandler = new ClientProtocolHandler() {
+      _packetHandler = new ClientProtocolHandler(this) {
         DisconnectOnUnknownPacket = _config.DisconnectOnUnknownPacket
       };
     }

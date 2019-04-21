@@ -12,31 +12,34 @@ namespace Muwesome.Packet {
     };
 
     /// <summary>Encrypts a packet with an XOR cipher.</summary>
-    public static void Encrypt(PacketView packet, byte[] cipher) =>
+    public static void Encrypt(Span<byte> packet, byte[] cipher) =>
       ApplyCipher(packet, cipher, encrypt: true);
 
     /// <summary>Decrypt a packet with an XOR cipher.</summary>
-    public static void Decrypt(PacketView packet, byte[] cipher) =>
+    public static void Decrypt(Span<byte> packet, byte[] cipher) =>
       ApplyCipher(packet, cipher, encrypt: false);
 
-    private static void ApplyCipher(PacketView packet, byte[] cipher, bool encrypt) {
+    private static void ApplyCipher(Span<byte> packetData, byte[] cipher, bool encrypt) {
+      // TODO: Use specialized exceptions
       if (cipher.Length != RequiredLength) {
         throw new ArgumentException($"The cipher size must be {RequiredLength}, but is {cipher.Length}", nameof(cipher));
       }
+
+      var packet = new PacketView(packetData);
 
       if (packet.IsPartial) {
         throw new ArgumentException("Refusing to apply XOR cipher to partial packet", nameof(packet));
       }
 
-      if (packet.IsEncrypted) {
+      if (packet.Type.IsEncrypted) {
         throw new ArgumentException("Refusing to apply XOR cipher to C3/C4 packet", nameof(packet));
       }
 
-      int start = encrypt ? packet.HeaderLength + 1 : packet.Length - 1;
-      int end = encrypt ? packet.Length : packet.HeaderLength;
+      int start = encrypt ? packet.Type.HeaderLength + 1 : packet.Length - 1;
+      int end = encrypt ? packet.Length : packet.Type.HeaderLength;
 
       for (int i = start; i != end; i += (encrypt ? 1 : -1)) {
-        packet.Data[i] ^= (byte)(packet.Data[i - 1] ^ cipher[i % cipher.Length]);
+        packetData[i] ^= (byte)(packet.Data[i - 1] ^ cipher[i % cipher.Length]);
       }
     }
   }

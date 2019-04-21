@@ -6,7 +6,7 @@ using Muwesome.Packet;
 
 namespace Muwesome.Network {
   /// <summary>A delegate which is executed whenever a packet is received.</summary>
-  public delegate void PacketReceivedHandler(object sender, PacketView packet);
+  public delegate void PacketReceivedHandler(object sender, Span<byte> packet);
 
   /// <summary>A delegate which is executed whenever the connection is disconnected.</summary>
   public delegate void DisconnectedHandler(object sender, EventArgs ev);

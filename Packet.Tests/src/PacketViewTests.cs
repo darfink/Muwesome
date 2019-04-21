@@ -8,10 +8,10 @@ namespace Muwesome.Packet.Tests {
     public void View_Complete_C1_Packet() {
       PacketView packet = new PacketView(Samples.UnencryptedC1Packet);
       Assert.AreEqual(packet.Length, Samples.UnencryptedC1Packet.Length);
-      Assert.AreEqual(packet.HeaderLength, 2);
+      Assert.AreEqual(packet.Type.HeaderLength, 2);
       Assert.AreEqual(packet.Type, 0xC1);
       Assert.AreEqual(packet.Code.Value, 0xA9);
-      Assert.IsFalse(packet.IsEncrypted);
+      Assert.IsFalse(packet.Type.IsEncrypted);
       Assert.IsFalse(packet.IsPartial);
       CollectionAssert.AreEqual(packet.Data.ToArray(), Samples.UnencryptedC1Packet);
     }
@@ -29,10 +29,10 @@ namespace Muwesome.Packet.Tests {
     public void View_Complete_C2_Packet() {
       PacketView packet = new PacketView(Samples.UnencryptedC2Packet);
       Assert.AreEqual(packet.Length, Samples.UnencryptedC2Packet.Length);
-      Assert.AreEqual(packet.HeaderLength, 3);
+      Assert.AreEqual(packet.Type.HeaderLength, 3);
       Assert.AreEqual(packet.Type, 0xC2);
       Assert.AreEqual(packet.Code.Value, 0xF3);
-      Assert.IsFalse(packet.IsEncrypted);
+      Assert.IsFalse(packet.Type.IsEncrypted);
       Assert.IsFalse(packet.IsPartial);
       CollectionAssert.AreEqual(packet.Data.ToArray(), Samples.UnencryptedC2Packet);
     }
