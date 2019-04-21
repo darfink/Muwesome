@@ -28,8 +28,10 @@ namespace Muwesome.Packet {
       }
     }
 
-    /// <summary>Gets the packet's length.</summary>
-    public int Length => Type == 0xC2 || Type == 0xC4 ? Data.ReadUInt16BE(1) : Data.ReadByte(1);
+    /// <summary>Gets or sets the packet's length.</summary>
+    public int Length {
+      get => SizeFieldLength > 1 ? Data.ReadUInt16BE(1) : Data.ReadByte(1);
+    }
 
     /// <summary>Gets the packet's header length.</summary>
     /// <remarks>

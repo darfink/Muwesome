@@ -1,11 +1,42 @@
 using System;
+using System.Text;
 using Muwesome.Packet;
 
 using System.Runtime.InteropServices;
 
 namespace Muwesome.Protocol.Connect.V20050502 {
+  [Packet(0xC1, 0xF4, 0x03, Size = 22)]
+  public sealed class GameServerInfo : IFixedSizedPacket {
+    public ref struct Packet {
+      private readonly Span<byte> _data;
+      private Encoding _encoding;
+
+      public string Host {
+        get => _data.ReadString(maxLength: 16, _encoding);
+        set => _data.WriteFixedString(value, length: 16, withNull: true, _encoding);
+      }
+
+      public ushort Port {
+        get => _data.ReadUInt16LE(16);
+        //set => _data.WriteUInt16LE(value, 16);
+      }
+    }
+  }
+
+  [Packet(0xC1, 0xF4, 0x05, Size = 6)]
+  public sealed class GameServerUnavailable : IFixedSizedPacket {
+    public ref struct Packet {
+      private readonly Span<byte> _data;
+
+      public ushort ServerCode {
+        get => _data.ReadUInt16LE();
+        //set => _data.WriteUInt16LE(value);
+      }
+    }
+  }
+
   [Packet(0xC2, 0xF4, 0x06)]
-  public class GameServerList : PacketDefinition {
+  public sealed class GameServerList : IVariableSizedPacket {
     public static Packet View(Span<byte> packet) => new Packet(packet);
 
     public ref struct Packet {
@@ -28,22 +59,10 @@ namespace Muwesome.Protocol.Connect.V20050502 {
       }
 
       public ref struct Entry {
+        public static int Size = 4;
+
         private Span<byte> _data;
         public Entry(Span<byte> data) => _data = data;
-      }
-    }
-  }
-
-  [Packet(0xC1, 0xF4, 0x05)]
-  public class GameServerUnavailable : PacketDefinition {
-    public static Packet Cast(Span<byte> packet) => new Packet(packet.Slice(4));
-
-    public ref struct Packet {
-      private readonly Span<byte> _data;
-
-      public ushort ServerCode {
-        get => _data.ReadUInt16LE();
-        set => _data.WriteUInt16LE(value);
       }
     }
   }

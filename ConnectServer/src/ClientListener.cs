@@ -15,7 +15,7 @@ using Pipelines.Sockets.Unofficial;
 
 namespace Muwesome.ConnectServer {
   internal class ClientListener : IClientsController, IDisposable {
-    private readonly ClientPacketHandler _packetHandler;
+    private readonly IPacketHandler<Client> _packetHandler;
     private readonly ConcurrentDictionary<Client, byte> _clients;
     private readonly Configuration _config;
     private TcpListener _listener;
@@ -24,8 +24,9 @@ namespace Muwesome.ConnectServer {
     public ClientListener(Configuration config) {
       _config = config;
       _clients = new ConcurrentDictionary<Client, byte>();
-      _packetHandler = new ClientPacketHandler();
-      _packetHandler.DisconnectOnUnknownPacket = _config.DisconnectOnUnknownPacket;
+      _packetHandler = new ClientProtocolHandler() {
+        DisconnectOnUnknownPacket = _config.DisconnectOnUnknownPacket
+      };
     }
 
     /// <inheritdoc />
@@ -112,10 +113,7 @@ namespace Muwesome.ConnectServer {
 
       // Sockets themselves are not compatible with pipes
       var socketConnection = SocketConnection.Create(socket);
-      var pipe = new PipelinedSocket(
-        socket: socketConnection,
-        encryptor: null,
-        decryptor: new XorPipelineDecryptor(socketConnection.Input));
+      var pipe = new PipelinedSocket(socketConnection, encryptor: null, decryptor: null);
 
       return new DuplexConnection(pipe, _config.MaxPacketSize);
     }

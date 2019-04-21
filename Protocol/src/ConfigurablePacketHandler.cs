@@ -20,7 +20,8 @@ namespace Muwesome.Protocol {
       return handler.HandlePacket(sender, packet.Data);
     }
 
-    protected void Register<TPacket>(IPacketHandler<T> handler) where TPacket: PacketDefinition, new() {
+    /// <summary>Registers a new handler for a packet.</summary>
+    protected void Register<TPacket>(IPacketHandler<T> handler) where TPacket : IPacket {
       InsertHandlerForPacket<TPacket>(handler);
     }
 
@@ -41,11 +42,8 @@ namespace Muwesome.Protocol {
       return null;
     }
 
-    private void InsertHandlerForPacket<TPacket>(IPacketHandler<T> handler) where TPacket: PacketDefinition, new() {
-      // TODO: DONT REQUIRE NEW() HERE FFFSFSSFFSSFFSSFFS
-      // TODO: AND IMPROVE EXCEPTION (SHOW CONFLICTING HANDLER!!!)
-      var packet = new TPacket();
-      var identifier = packet.Identifier.ToArray();
+    private void InsertHandlerForPacket<TPacket>(IPacketHandler<T> handler) where TPacket : IPacket {
+      var identifier = PacketFor<TPacket>.Identifier.ToArray();
 
       var handlers = _packetHandlers;
       for (int i = 0; i < identifier.Length; i++) {
@@ -54,7 +52,7 @@ namespace Muwesome.Protocol {
 
         if (isLastIdentifier) {
           if (identifierExists) {
-            throw new ConflictingPacketHandlersException(packet);
+            throw ConflictingPacketHandlersException.WithPacket<TPacket>();
           }
 
           var value = OneOf<PacketToHandlerDictionary, IPacketHandler<T>>.FromT1(handler);
@@ -62,7 +60,7 @@ namespace Muwesome.Protocol {
         } else if (identifierExists) {
           handlers = handlers[identifier[i]].Match(
             dictionary => dictionary,
-            _ => throw new ConflictingPacketHandlersException(packet)
+            _ => throw ConflictingPacketHandlersException.WithPacket<TPacket>()
           );
         } else {
           var nestedHandlers = new PacketToHandlerDictionary();

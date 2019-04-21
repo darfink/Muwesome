@@ -8,6 +8,7 @@ namespace Muwesome.Network {
   public delegate void SocketAcceptedHandler(Socket socket);
 
   public static class TcpListenerExtensions {
+    /// <summary>Processes a TPC listeners incoming connections until finish.</summary>
     public static async Task AcceptIncomingSocketsAsync(this TcpListener listener, SocketAcceptedHandler socketAcceptedHandler) {
       Socket socket;
       try {
