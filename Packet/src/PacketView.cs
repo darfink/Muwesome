@@ -104,7 +104,7 @@ namespace Muwesome.Packet {
 
         /// <summary>Advances the enumerator to the next item.</summary>
         public bool MoveNext() {
-          _index += (_index == 0) ? _packet.Type.SizeFieldLength : 1;
+          _index += (_index == 0) ? _packet.Type.SizeFieldLength + 1 : 1;
           return _index < _packet.Data.Length;
         }
       }

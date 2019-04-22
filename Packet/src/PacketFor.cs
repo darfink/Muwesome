@@ -19,12 +19,20 @@ namespace Muwesome.Packet {
         throw new ArgumentException(nameof(packetData));
       }
 
-      return packetData.Slice(packet.Type.HeaderLength + Subcode.Length + 1);
+      int payloadOffset = packet.Type.HeaderLength + Subcode.Length + 1;
+      return packetData.Slice(payloadOffset);
     }
 
     /// <summary>Copies the packet's header into a destination.</summary>
     public static void CopyTo(Span<byte> packet, int? size = null) {
       Type.WriteHeader(packet, Identifier.AsSpan().Slice(1), (size ?? Size).Value);
+    }
+
+    /// <summary>Allocates a configured buffer for the packet.</summary>
+    public static byte[] Create(int? size = null) {
+      var packet = new byte[(size ?? Size).Value];
+      CopyTo(packet, size);
+      return packet;
     }
 
     /// <summary>Gets the packet's name.</summary>
