@@ -1,38 +1,41 @@
 using System;
 using System.Net;
+using System.Net.Sockets;
 using System.Collections.Concurrent;
+using log4net;
 
 namespace Muwesome.ConnectServer.Plugins {
-  internal class CheckMaxConnectionsPerIpPlugin {
+  internal class CheckMaxConnectionsPerIpPlugin : IConnectPlugin {
+    private static readonly ILog Logger = LogManager.GetLogger(typeof(CheckMaxConnectionsPerIpPlugin));
     private readonly ConcurrentDictionary<IPAddress, uint> _ipAddressConnections;
     private readonly int _maxConnectionsPerIp;
 
-    public CheckMaxConnectionsPerIpPlugin(IClientsController clientsController, int maxConnectionsPerIp) {
+    public CheckMaxConnectionsPerIpPlugin(IClientController clientsController, int maxConnectionsPerIp) {
       _ipAddressConnections = new ConcurrentDictionary<IPAddress, uint>();
       _maxConnectionsPerIp = maxConnectionsPerIp;
-
-      clientsController.AfterClientAccepted += OnAfterClientAccepted;
-      clientsController.BeforeClientAccepted += OnBeforeClientAccepted;
-      clientsController.AfterClientDisconnected += OnAfterClientDisconnected;
+      clientsController.ClientSessionStarted += OnClientSessionStarted;
+      clientsController.ClientSessionEnded += OnClientSessionEnded;
     }
 
-    private void OnBeforeClientAccepted(object sender, BeforeClientAcceptEventArgs ev) {
-      var ipAddress = GetIpAddressFromEndPoint(ev.ClientSocket.RemoteEndPoint);
+    public bool OnAllowClientSocketAccept(Socket socket) {
+      var ipAddress = GetIpAddressFromEndPoint(socket.RemoteEndPoint);
       _ipAddressConnections.TryGetValue(ipAddress, out uint connectionsWithIp);
 
       if (connectionsWithIp >= _maxConnectionsPerIp) {
-        // TODO: LOG DAT SHIT
-        ev.RejectClient = true;
+        Logger.Warn($"Connection refused from {ipAddress}; maximum connections for IP ({_maxConnectionsPerIp}) reached");
+        return false;
       }
+
+      return true;
     }
 
-    private void OnAfterClientAccepted(object sender, AfterClientAcceptEventArgs ev) {
-      var ipAddress = GetIpAddressFromEndPoint(ev.AcceptedClient.Connection.RemoteEndPoint);
+    private void OnClientSessionStarted(object sender, ClientSessionEventArgs ev) {
+      var ipAddress = GetIpAddressFromEndPoint(ev.Client.Connection.RemoteEndPoint);
       _ipAddressConnections.AddOrUpdate(ipAddress, 1, (_, count) => count + 1);
     }
 
-    private void OnAfterClientDisconnected(object sender, AfterClientDisconnectEventArgs ev) {
-      var ipAddress = GetIpAddressFromEndPoint(ev.DisconnectedClient.Connection.RemoteEndPoint);
+    private void OnClientSessionEnded(object sender, ClientSessionEventArgs ev) {
+      var ipAddress = GetIpAddressFromEndPoint(ev.Client.Connection.RemoteEndPoint);
       _ipAddressConnections.AddOrUpdate(ipAddress, 0, (_, count) => count - 1);
     }
 

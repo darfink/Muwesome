@@ -1,22 +1,27 @@
 using System;
 using System.Net;
+using System.Net.Sockets;
+using log4net;
 
 namespace Muwesome.ConnectServer.Plugins {
-  internal class CheckMaxConnectionsPlugin {
-    private readonly IClientsController _clientsController;
+  internal class CheckMaxConnectionsPlugin : IConnectPlugin {
+    private static readonly ILog Logger = LogManager.GetLogger(typeof(CheckMaxConnectionsPlugin));
+    private readonly IClientController _clientController;
     private readonly int _maxConnections;
 
-    public CheckMaxConnectionsPlugin(IClientsController clientsController, int maxConnections) {
-      _clientsController = clientsController;
-      _clientsController.BeforeClientAccepted += OnBeforeClientAccepted;
+    public CheckMaxConnectionsPlugin(IClientController clientController, int maxConnections) {
+      _clientController = clientController;
       _maxConnections = maxConnections;
     }
 
-    private void OnBeforeClientAccepted(object sender, BeforeClientAcceptEventArgs ev) {
-      if (_clientsController.Clients.Count >= _maxConnections) {
-        // TODO: Log about dis shit mannisch
-        ev.RejectClient = true;
+    public bool OnAllowClientSocketAccept(Socket socket) {
+      if (_clientController.Clients.Count >= _maxConnections) {
+        var ipAddress = socket.RemoteEndPoint;
+        Logger.Warn($"Connection refused from {ipAddress}; maximum server connections ({_maxConnections}) reached");
+        return false;
       }
+
+      return true;
     }
   }
 }

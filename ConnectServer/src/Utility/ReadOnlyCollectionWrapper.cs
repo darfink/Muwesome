@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace Muwesome.ConnectServer {
+namespace Muwesome.ConnectServer.Utility {
   public class ReadOnlyCollectionWrapper<T> : IReadOnlyCollection<T> {
     private readonly ICollection<T> _collection;
 

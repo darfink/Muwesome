@@ -1,12 +1,18 @@
 using System;
+using log4net;
+using Muwesome.Packet;
 using Muwesome.Network;
 using Muwesome.Protocol;
 using Muwesome.Protocol.Connect.V20050502;
 
 namespace Muwesome.ConnectServer {
   internal class ClientProtocolHandler : ConfigurablePacketHandler<Client> {
-    public ClientProtocolHandler(IClientsController clientsController) {
-      clientsController.AfterClientAccepted += OnAfterClientAccepted;
+    private static readonly ILog Logger = LogManager.GetLogger(typeof(ClientProtocolHandler));
+
+    public ClientProtocolHandler(Configuration config, IClientController clientsController) {
+      // TODO: Register dem handlers
+      clientsController.ClientSessionStarted += OnClientSessionStarted;
+      DisconnectOnUnknownPacket = config.DisconnectOnUnknownPacket;
     }
 
     /// <summary>Gets or sets whether client's are disconnected when sending unknown packets.</summary>
@@ -17,9 +23,9 @@ namespace Muwesome.ConnectServer {
       bool packetWasHandled = base.HandlePacket(client, packet);
 
       if (!packetWasHandled) {
-        // TODO: LOOOG HERRREEEE!!!!!
+        Logger.Debug($"Received an unhandled packet: {packet.AsHexString()}");
         if (DisconnectOnUnknownPacket) {
-          // TODO: AND LOOGG GHEERERE
+          Logger.Info($"Disconnecting client {client}; received an unknown packet");
           client.Connection.Disconnect();
         }
       }
@@ -27,9 +33,9 @@ namespace Muwesome.ConnectServer {
       return packetWasHandled;
     }
 
-    private void OnAfterClientAccepted(object sender, AfterClientAcceptEventArgs ev) {
-      using(var writer = ev.AcceptedClient.Connection.SendPacket<ConnectResult>()) {
-        var result = ConnectResult.From(writer.Span);
+    private void OnClientSessionStarted(object sender, ClientSessionEventArgs ev) {
+      using(var writer = ev.Client.Connection.StartWrite(ConnectResult.Size)) {
+        var result = ConnectResult.Create(writer.Span);
         result.Success = true;
       }
     }

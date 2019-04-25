@@ -1,12 +1,14 @@
 using System;
 using System.Net;
 using System.Threading;
+using log4net;
 using Muwesome.Network;
 using Muwesome.Packet;
 using Muwesome.Protocol;
 
 namespace Muwesome.ConnectServer {
-  internal class Client : IDisposable {
+  public class Client : IDisposable {
+    private static readonly ILog Logger = LogManager.GetLogger(typeof(Client));
     private readonly IPacketHandler<Client> _packetHandler;
     private TimeSpan _maxIdleTime = Timeout.InfiniteTimeSpan;
     private Timer _idleTimeoutTimer;
@@ -24,7 +26,7 @@ namespace Muwesome.ConnectServer {
     public IConnection Connection { get; }
 
     /// <summary>Gets or sets the maximum idle time.</summary>
-    public TimeSpan MaxIdleTime {
+    internal TimeSpan MaxIdleTime {
       get => _maxIdleTime;
       set {
         _maxIdleTime = value;
@@ -47,7 +49,10 @@ namespace Muwesome.ConnectServer {
       Connection.Dispose();
     }
 
+    public override string ToString() => Connection.ToString();
+
     private void OnClientTimeout(object context) {
+      Logger.Info($"Disconnecting client {this}; max idle time ({_maxIdleTime}) exceeded");
       Connection.Disconnect();
     }
 
@@ -57,7 +62,8 @@ namespace Muwesome.ConnectServer {
     }
 
     private void OnReceiveComplete(Exception ex) {
-      // TODO: LOG DEM EXCEPTIONS!!!
+      if (ex == null) return;
+      Logger.Error("An unexpected client error occured", ex);
     }
   }
 }

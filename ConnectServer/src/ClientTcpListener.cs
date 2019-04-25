@@ -1,12 +1,9 @@
 using System;
-using System.Collections.Generic;
-using System.Collections.Concurrent;
-using System.Diagnostics;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Linq;
+using log4net;
 using Muwesome.Network;
 using Muwesome.Packet.IO;
 using Muwesome.Packet.IO.Xor;
@@ -14,20 +11,13 @@ using Muwesome.Protocol;
 using Pipelines.Sockets.Unofficial;
 
 namespace Muwesome.ConnectServer {
-  internal class ClientListener : IClientsController, IDisposable {
-    private readonly IPacketHandler<Client> _packetHandler;
-    private readonly ConcurrentDictionary<Client, byte> _clients;
+  internal class ClientTcpListener : IClientListener, IDisposable {
+    private static readonly ILog Logger = LogManager.GetLogger(typeof(ClientTcpListener));
     private readonly Configuration _config;
     private TcpListener _listener;
 
     /// <summary>Constructs a new client listener.</summary>
-    public ClientListener(Configuration config) {
-      _config = config;
-      _clients = new ConcurrentDictionary<Client, byte>();
-      _packetHandler = new ClientProtocolHandler(this) {
-        DisconnectOnUnknownPacket = _config.DisconnectOnUnknownPacket
-      };
-    }
+    public ClientTcpListener(Configuration config) => _config = config;
 
     /// <inheritdoc />
     public event EventHandler<BeforeClientAcceptEventArgs> BeforeClientAccepted;
@@ -36,13 +26,10 @@ namespace Muwesome.ConnectServer {
     public event EventHandler<AfterClientAcceptEventArgs> AfterClientAccepted;
 
     /// <inheritdoc />
-    public event EventHandler<AfterClientDisconnectEventArgs> AfterClientDisconnected;
+    public bool IsBound => _listener?.Server.IsBound ?? false;
 
     /// <inheritdoc />
-    public IReadOnlyCollection<Client> Clients => _clients.Keys.AsReadOnly();
-
-    /// <summary>Gets whether the listener is bound or not.</summary>
-    public bool IsBound => _listener?.Server.IsBound ?? false;
+    public Task Task { get; private set; } = Task.CompletedTask;
 
     /// <summary>Starts the client listener.</summary>
     public void Start() {
@@ -54,7 +41,8 @@ namespace Muwesome.ConnectServer {
       _listener = new TcpListener(endPoint);
       SocketConnection.SetRecommendedServerOptions(_listener.Server);
       _listener.Start();
-      Task
+      Logger.Info($"Client listener started; listening on {endPoint}");
+      Task = Task
         .Run(() => _listener.AcceptIncomingSocketsAsync(OnSocketAccepted))
         .ContinueWith(task => OnListenerComplete(task.Exception));
     }
@@ -63,30 +51,18 @@ namespace Muwesome.ConnectServer {
     public void Stop() => OnListenerComplete(null);
 
     /// <inheritdoc />
-    public void Dispose() {
-      Stop();
-      foreach (Client client in _clients.Keys.ToList()) {
-        client.Dispose();
-      }
-    }
+    public void Dispose() => Stop();
 
     private void OnSocketAccepted(Socket socket) {
       var beforeClientAccept = new BeforeClientAcceptEventArgs(socket);
       BeforeClientAccepted?.Invoke(this, beforeClientAccept);
 
       if (beforeClientAccept.RejectClient) {
+        Logger.Debug($"Rejecting client connection {socket.RemoteEndPoint}...");
         socket.Dispose();
-        return;
-      }
-
-      AddClient(socket);
-    }
-
-    private void OnClientDisconnected(Client client) {
-      // TODO: LOOGGG DISZZZ SHIT
-      Debug.Assert(_clients.TryRemove(client, out _));
-      using (client) {
-        AfterClientDisconnected?.Invoke(this, new AfterClientDisconnectEventArgs(client));
+      } else {
+        var connection = CreateConnectionForSocket(socket);
+        AfterClientAccepted?.Invoke(this, new AfterClientAcceptEventArgs(connection));
       }
     }
 
@@ -95,23 +71,19 @@ namespace Muwesome.ConnectServer {
       if (listener != null) {
         try { listener.Stop(); }
         catch (ObjectDisposedException) { }
-        // TODO: LOGGG HERRREEE!!!
+        Logger.Info("Client listener stopped");
       }
-    }
 
-    private void AddClient(Socket socket) {
-      var client = new Client(CreateConnectionForSocket(socket), _packetHandler);
-      client.MaxIdleTime = _config.MaxIdleTime;
-      Debug.Assert(_clients.TryAdd(client, 0));
-      client.Connection.Disconnected += (_, __) => OnClientDisconnected(client);
-      AfterClientAccepted?.Invoke(this, new AfterClientAcceptEventArgs(client));
+      if (ex != null) {
+        Logger.Error("An unexpected error occured whilst listening for incoming clients", ex);
+      }
     }
 
     private IConnection CreateConnectionForSocket(Socket socket) {
       // Ensure that 'TCP_NODELAY' is configured on Windows
       SocketConnection.SetRecommendedClientOptions(socket);
 
-      // Sockets themselves are not compatible with pipes
+      // Raw sockets themselves are not compatible with pipes
       var socketConnection = SocketConnection.Create(socket);
       var pipe = new PipelinedSocket(socketConnection, encryptor: null, decryptor: null);
 
