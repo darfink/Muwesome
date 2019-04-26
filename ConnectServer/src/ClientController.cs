@@ -12,6 +12,7 @@ namespace Muwesome.ConnectServer {
     private readonly ConcurrentDictionary<Client, byte> _clients;
     private readonly Configuration _config;
 
+    /// <summary>Creates a new <see cref="ClientController" />.</summary>
     public ClientController(Configuration config) {
       _clients = new ConcurrentDictionary<Client, byte>();
       _config = config;
@@ -35,18 +36,18 @@ namespace Muwesome.ConnectServer {
       Logger.Info($"Client connected {client}; current client count {_clients.Count}");
     }
 
+    /// <inheritdoc />
+    public void Dispose() {
+      foreach (Client client in _clients.Keys.ToList()) {
+        client.Dispose();
+      }
+    }
+
     private void OnClientDisconnected(Client client) {
       Logger.Info($"Client disconnected {client}");
       Debug.Assert(_clients.TryRemove(client, out _));
       using (client) {
         ClientSessionEnded?.Invoke(this, new ClientSessionEventArgs(client));
-      }
-    }
-
-    /// <inheritdoc />
-    public void Dispose() {
-      foreach (Client client in _clients.Keys.ToList()) {
-        client.Dispose();
       }
     }
   }

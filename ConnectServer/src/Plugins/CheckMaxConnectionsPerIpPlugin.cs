@@ -17,6 +17,7 @@ namespace Muwesome.ConnectServer.Plugins {
       clientsController.ClientSessionEnded += OnClientSessionEnded;
     }
 
+    /// <inheritdoc />
     public bool OnAllowClientSocketAccept(Socket socket) {
       var ipAddress = GetIpAddressFromEndPoint(socket.RemoteEndPoint);
       _ipAddressConnections.TryGetValue(ipAddress, out uint connectionsWithIp);

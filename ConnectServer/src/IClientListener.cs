@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Muwesome.Network;
 
 namespace Muwesome.ConnectServer {
-  public interface IClientListener {
+  public interface IClientListener : ILifecycle {
     /// <summary>An event that is raised before a client is accepted.</summary>
     event EventHandler<BeforeClientAcceptEventArgs> BeforeClientAccepted;
 
@@ -13,15 +13,6 @@ namespace Muwesome.ConnectServer {
 
     /// <summary>Gets whether the listener is bound or not.</summary>
     bool IsBound { get; }
-
-    /// <summary>Gets the listener's task.</summary>
-    Task Task { get; }
-
-    /// <summary>Starts the client listener.</summary>
-    void Start();
-
-    /// <summary>Stops the client listener.</summary>
-    void Stop();
   }
 
   public class BeforeClientAcceptEventArgs : EventArgs {

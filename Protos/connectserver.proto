@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package Muwesome.ConnectServer.Rpc;
+
+message GameServerParams {
+  message GameServerRegister {
+    // Server ID
+    uint32 id = 1;
+
+    // Server address & port
+    string host = 2;
+    uint32 port = 3;
+
+    // Server status
+    GameServerStatus status = 4;
+  }
+
+  message GameServerStatus {
+    // Client count & capacity
+    uint32 clients = 1;
+    uint32 capacity = 2;
+  }
+
+  oneof kind {
+    GameServerRegister register = 1;
+    GameServerStatus status = 2;
+  }
+}
+
+message GameServerRegisterResponse {
+}
+
+service GameServerRegister {
+  rpc RegisterGameServer (stream GameServerParams) returns (GameServerRegisterResponse);
+}

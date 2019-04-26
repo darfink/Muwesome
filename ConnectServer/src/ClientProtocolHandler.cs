@@ -10,9 +10,9 @@ namespace Muwesome.ConnectServer {
     private static readonly ILog Logger = LogManager.GetLogger(typeof(ClientProtocolHandler));
 
     public ClientProtocolHandler(Configuration config, IClientController clientsController) {
-      // TODO: Register dem handlers
       clientsController.ClientSessionStarted += OnClientSessionStarted;
       DisconnectOnUnknownPacket = config.DisconnectOnUnknownPacket;
+      RegisterPacketHandlers();
     }
 
     /// <summary>Gets or sets whether client's are disconnected when sending unknown packets.</summary>
@@ -31,6 +31,10 @@ namespace Muwesome.ConnectServer {
       }
 
       return packetWasHandled;
+    }
+
+    private void RegisterPacketHandlers() {
+      // TODO: Register dem handlers
     }
 
     private void OnClientSessionStarted(object sender, ClientSessionEventArgs ev) {

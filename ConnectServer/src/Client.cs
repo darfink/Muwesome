@@ -49,6 +49,7 @@ namespace Muwesome.ConnectServer {
       Connection.Dispose();
     }
 
+    /// <inheritdoc />
     public override string ToString() => Connection.ToString();
 
     private void OnClientTimeout(object context) {
@@ -62,8 +63,9 @@ namespace Muwesome.ConnectServer {
     }
 
     private void OnReceiveComplete(Exception ex) {
-      if (ex == null) return;
-      Logger.Error("An unexpected client error occured", ex);
+      if (ex != null) {
+        Logger.Error("An unexpected client error occured", ex);
+      }
     }
   }
 }

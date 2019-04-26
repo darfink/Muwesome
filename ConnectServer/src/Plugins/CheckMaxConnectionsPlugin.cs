@@ -14,6 +14,7 @@ namespace Muwesome.ConnectServer.Plugins {
       _maxConnections = maxConnections;
     }
 
+    /// <inheritdoc />
     public bool OnAllowClientSocketAccept(Socket socket) {
       if (_clientController.Clients.Count >= _maxConnections) {
         var ipAddress = socket.RemoteEndPoint;
