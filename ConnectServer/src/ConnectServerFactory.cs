@@ -9,7 +9,7 @@ namespace Muwesome.ConnectServer {
 
       var clientController = new ClientController(config);
       var clientListener = new ClientTcpListener(config);
-      var clientProtocol = new ClientProtocolHandler(config, clientController);
+      var clientProtocol = new ClientProtocolHandler(config, gameServerController, clientController);
 
       return new ConnectServer(
         config,

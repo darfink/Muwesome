@@ -39,7 +39,7 @@ namespace Muwesome.Network {
     /// <inheritdoc />
     public async Task BeginReceive() {
       if (_isDisposed == 1) {
-        throw new ObjectDisposedException(GetType().FullName);
+        throw new ObjectDisposedException(nameof(DuplexConnection));
       }
 
       try {

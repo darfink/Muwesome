@@ -34,6 +34,10 @@ namespace Muwesome.ConnectServer.Rpc {
     }
 
     /// <inheritdoc />
-    public void Dispose() => Stop();
+    public void Dispose() {
+      if (!Task.IsCompleted) {
+        Stop();
+      }
+    }
   }
 }

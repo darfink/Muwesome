@@ -8,11 +8,11 @@ using Muwesome.ConnectServer.Utility;
 namespace Muwesome.ConnectServer {
   internal class GameServerController : IGameServerController {
     private static readonly ILog Logger = LogManager.GetLogger(typeof(GameServerController));
-    private ConcurrentDictionary<byte, GameServer> _gameServers;
+    private ConcurrentDictionary<ushort, GameServer> _gameServers;
 
     /// <summary>Creates a new <see cref="GameServerController" />.</summary>
     public GameServerController() =>
-      _gameServers = new ConcurrentDictionary<byte, GameServer>();
+      _gameServers = new ConcurrentDictionary<ushort, GameServer>();
 
     /// <inheritdoc />
     public event EventHandler<GameServerEventArgs> GameServerRegistered;
@@ -28,8 +28,8 @@ namespace Muwesome.ConnectServer {
 
     /// <inheritdoc />
     public void RegisterServer(GameServer server) {
-      if (!_gameServers.TryAdd(server.Id, server)) {
-        throw new ArgumentException($"Conflicting game server ID {server.Id}", nameof(server));
+      if (!_gameServers.TryAdd(server.Code, server)) {
+        throw new ArgumentException($"Conflicting game server code {server.Code}", nameof(server));
       }
 
       server.PropertyChanged += OnGameServerChange;
@@ -39,8 +39,8 @@ namespace Muwesome.ConnectServer {
 
     /// <inheritdoc />
     public void DeregisterServer(GameServer server) {
-      if (!_gameServers.TryRemove(server.Id, out _)) {
-        throw new ArgumentException($"Non-existing game server ID {server.Id}", nameof(server));
+      if (!_gameServers.TryRemove(server.Code, out _)) {
+        throw new ArgumentException($"Non-existing game server code {server.Code}", nameof(server));
       }
 
       server.PropertyChanged -= OnGameServerChange;

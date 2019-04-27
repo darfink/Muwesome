@@ -17,6 +17,7 @@ namespace Muwesome.ConnectServer {
     private readonly IConnectPlugin[] _connectPlugins;
     private readonly ILifecycle[] _metaServices;
     private readonly Stopwatch _startTime;
+    private bool _isRunning;
 
     public ConnectServer(
         Configuration config,
@@ -27,19 +28,22 @@ namespace Muwesome.ConnectServer {
         params ILifecycle[] metaServices
     ) {
       Config = config;
-      _startTime = new Stopwatch();
-      _startTime.Start();
       _metaServices = metaServices;
       _gameServerController = gameServerController;
+      _clientController = clientController;
+
       _clientListener = clientListener;
       _clientListener.BeforeClientAccepted += OnBeforeClientAccepted;
       _clientListener.AfterClientAccepted += (_, ev) =>
         clientController.AddClient(new Client(ev.ClientConnection, clientProtocol));
-      _clientController = clientController;
+
       _connectPlugins = new IConnectPlugin[] {
         new CheckMaxConnectionsPlugin(_clientController, config.MaxConnections),
         new CheckMaxConnectionsPerIpPlugin(_clientController, config.MaxConnectionsPerIp),
       };
+
+      _startTime = new Stopwatch();
+      _startTime.Start();
     }
 
     public Configuration Config { get; }
@@ -60,6 +64,7 @@ namespace Muwesome.ConnectServer {
       foreach (var service in _metaServices) {
         service.Start();
       }
+      _isRunning = true;
       Logger.Info("Server successfully started");
     }
 
@@ -70,12 +75,16 @@ namespace Muwesome.ConnectServer {
       foreach (var service in _metaServices) {
         service.Stop();
       }
+      _isRunning = false;
       Logger.Info("Server stopped");
     }
 
     /// <inheritdoc />
     public void Dispose() {
-      Stop();
+      if (_isRunning) {
+        Stop();
+      }
+
       (_clientListener as IDisposable)?.Dispose();
       (_clientController as IDisposable)?.Dispose();
       foreach (var service in _metaServices.OfType<IDisposable>()) {

@@ -8,8 +8,8 @@ namespace Muwesome.ConnectServer {
     private uint _clientCount;
 
     /// <summary>Constructs a new <see cref="GameServer" />.</summary>
-    public GameServer(byte id, string host, ushort port, uint clientCount, uint clientCapacity) {
-      Id = id;
+    public GameServer(ushort code, string host, ushort port, uint clientCount, uint clientCapacity) {
+      Code = code;
       Host = host;
       Port = port;
       _clientCount = clientCount;
@@ -19,8 +19,8 @@ namespace Muwesome.ConnectServer {
     /// <inheritdoc />
     public event PropertyChangedEventHandler PropertyChanged;
 
-    /// <summary>Gets the server's ID.</summary>
-    public byte Id { get; }
+    /// <summary>Gets the server's code.</summary>
+    public ushort Code { get; }
 
     /// <summary>Gets the server's host string.</summary>
     public string Host { get; }
@@ -43,8 +43,11 @@ namespace Muwesome.ConnectServer {
     /// <summary>Gets whether the server is at full capacity or not.</summary>
     public bool IsFull => ClientCount == ClientCapacity;
 
+    /// <summary>Gets the server's current load.</summary>
+    public float Load => (float)ClientCount / ClientCapacity;
+
     /// <inheritdoc />
-    public override string ToString() => $"<{Id}>{Host}:{Port}";
+    public override string ToString() => $"<{Code}>{Host}:{Port}";
 
     private bool SetField<T>(ref T field, T value, [CallerMemberName] string propertyName = null) {
       if (EqualityComparer<T>.Default.Equals(field, value)) {

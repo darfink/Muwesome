@@ -1,5 +1,6 @@
 using System;
 using System.Text;
+using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Muwesome.Packet;
 using Muwesome.Protocol.Connect.V20050502;
@@ -10,53 +11,86 @@ namespace Muwesome.Protocol.Tests {
     static readonly byte[] ConnectResultPacketSuccess = new byte[] { 0xC1, 0x04, 0x00, 0x01 };
     static readonly byte[] GameServerUnavailablePacket = new byte[] { 0xC1, 0x06, 0xF4, 0x05, 0x39, 0x05 };
     static readonly byte[] GameServerInfoPacket = Convert.FromBase64String("wRb0AzE5Mi4xNjguMS4xMDAAAADUBw==");
+    static readonly byte[] GameServerListPacket = Convert.FromBase64String("wgAX9AYABAEAIAACAAAAAwAgAAQAgAA=");
+    static readonly (ushort, float, bool)[] GameServerListEntries = new (ushort, float, bool)[] { (1, 0.32f, false), (2, 0f, false), (3, 0.32f, false), (4, 0f, true) };
 
     [TestMethod]
     [ExpectedException(typeof(ArgumentException))]
     public void Packet_Identifier_Validation_Fails_When_Mismatch() {
-      ConnectResult.From(GameServerInfoPacket);
+      ProtocolHelper.ParsePacket<GameServerUnavailable>(GameServerInfoPacket);
     }
 
     [TestMethod]
     public void ConnectResult_Serialization() {
-      var packet = PacketFor<ConnectResult>.Create();
-      var result = ConnectResult.From(packet);
+      ref var result = ref ProtocolHelper.CreatePacket<ConnectResult>(out byte[] data);
       result.Success = true;
-      CollectionAssert.AreEqual(packet, ConnectResultPacketSuccess);
+      CollectionAssert.AreEqual(ConnectResultPacketSuccess, data);
 
-      result = ConnectResult.From(ConnectResultPacketSuccess);
+      result = ProtocolHelper.ParsePacket<ConnectResult>(ConnectResultPacketSuccess);
       Assert.IsTrue(result.Success);
     }
 
     [TestMethod]
     public void GameServerInfo_Serialization() {
-      var packet = PacketFor<GameServerInfo>.Create();
-      var server = GameServerInfo.From(packet, Encoding.ASCII);
-      server.Host = "192.168.1.100";
-      server.Port = 2004;
-      CollectionAssert.AreEqual(packet, GameServerInfoPacket);
+      ref var serverInfo = ref ProtocolHelper.CreatePacket<GameServerInfo>(out byte[] data);
+      serverInfo.Host = "192.168.1.100";
+      serverInfo.Port = 2004;
+      CollectionAssert.AreEqual(GameServerInfoPacket, data);
 
-      server = GameServerInfo.From(GameServerInfoPacket, Encoding.ASCII);
-      Assert.AreEqual(server.Host, "192.168.1.100");
-      Assert.AreEqual(server.Port, 2004);
+      serverInfo = ProtocolHelper.ParsePacket<GameServerInfo>(GameServerInfoPacket);
+      Assert.AreEqual("192.168.1.100", serverInfo.Host);
+      Assert.AreEqual(2004, serverInfo.Port);
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentOutOfRangeException))]
+    [ExpectedException(typeof(ArgumentException))]
     public void GameServerInfo_Serialize_Fails_When_MaxLength_Is_Exceeded() {
-      var server = GameServerInfo.From(PacketFor<GameServerInfo>.Create(), Encoding.ASCII);
-      server.Host = "192.168.255.255-";
+      ref var serverInfo = ref ProtocolHelper.CreatePacket<GameServerInfo>(out byte[] data);
+      serverInfo.Host = "192.168.255.255-";
     }
 
     [TestMethod]
     public void GameServerUnavailable_Serialization() {
-      var packet = PacketFor<GameServerUnavailable>.Create();
-      var server = GameServerUnavailable.From(packet);
-      server.Code = 1337;
-      CollectionAssert.AreEqual(packet, GameServerUnavailablePacket);
+      ref var unavailable = ref ProtocolHelper.CreatePacket<GameServerUnavailable>(out byte[] data);
+      unavailable.ServerCode = 1337;
+      CollectionAssert.AreEqual(GameServerUnavailablePacket, data);
 
-      server = GameServerUnavailable.From(GameServerUnavailablePacket);
-      Assert.AreEqual(server.Code, 1337);
+      unavailable = ProtocolHelper.ParsePacket<GameServerUnavailable>(GameServerUnavailablePacket);
+      Assert.AreEqual(1337, unavailable.ServerCode);
+    }
+
+    [TestMethod]
+    public void GameServerList_Serialize() {
+      ref var list = ref ProtocolHelper.CreatePacket<GameServerList, GameServerList.GameServer>(
+        GameServerListEntries.Length,
+        out byte[] data,
+        out Span<GameServerList.GameServer> servers);
+      Assert.AreEqual(GameServerListEntries.Length, list.Count);
+      Assert.AreEqual(GameServerListEntries.Length, servers.Length);
+
+      foreach (var (index, (code, load, preparing)) in GameServerListEntries.Select((e, i) => (i, e))) {
+        servers[index].Code = code;
+        servers[index].Load = load;
+        servers[index].IsPreparing = preparing;
+      }
+
+      CollectionAssert.AreEqual(GameServerListPacket, data);
+    }
+
+    [TestMethod]
+    public void GameServerList_Deserialize() {
+      ref var list = ref ProtocolHelper.ParsePacket<GameServerList, GameServerList.GameServer>(
+        GameServerListPacket,
+        out Span<GameServerList.GameServer> servers);
+
+      Assert.AreEqual(GameServerListEntries.Length, list.Count);
+      Assert.AreEqual(GameServerListEntries.Length, servers.Length);
+
+      foreach (var (index, (code, load, preparing)) in GameServerListEntries.Select((e, i) => (i, e))) {
+        Assert.AreEqual(preparing, servers[index].IsPreparing);
+        Assert.AreEqual(code, (ushort)servers[index].Code);
+        Assert.AreEqual(load, servers[index].Load);
+      }
     }
   }
 }

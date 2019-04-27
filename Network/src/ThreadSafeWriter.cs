@@ -6,43 +6,30 @@ using Muwesome.Packet;
 namespace Muwesome.Network {
   public struct ThreadSafeWriter : IDisposable {
     private IConnection _connection;
-    private Memory<byte> _memory;
-    private int _packetSize;
-
-    /// <summary>Creates a new thread safe writer transaction.</summary>
-    public static ThreadSafeWriter CreateWith<TPacket>(IConnection connection) where TPacket : IFixedSizedPacket =>
-      new ThreadSafeWriter(connection, PacketFor<TPacket>.Size.Value).WritePacketHeader<TPacket>();
-
-    /// <summary>Creates a new thread safe writer transaction.</summary>
-    public static ThreadSafeWriter CreateWith<TPacket>(IConnection connection, int packetSize) where TPacket : IVariableSizedPacket =>
-      new ThreadSafeWriter(connection, packetSize).WritePacketHeader<TPacket>();
+    private int _payloadSize;
 
     /// <summary>Creates a new <see cref="ThreadSafeWriter" />.</summary>
-    private ThreadSafeWriter(IConnection connection, int packetSize) {
+    public ThreadSafeWriter(IConnection connection, int payloadSize) {
       Monitor.Enter(connection);
       _connection = connection;
-      _packetSize = packetSize;
-      _memory = connection.Output.GetMemory(_packetSize).Slice(_packetSize);
+      _payloadSize = payloadSize;
+      Span.Clear();
     }
 
     /// <summary>Gets the span for the current transaction.</summary>
-    public Span<byte> Span => _memory.Span;
+    public Span<byte> Span => _connection.Output.GetSpan(_payloadSize).Slice(0, _payloadSize);
 
     /// <summary>Commits all changes to the underlying connection.</summary>
     public void Dispose() {
+      Console.WriteLine("Sent: " + Span.AsHexString());
       try {
-        _connection.Output.Advance(_packetSize);
+        // TODO: Improve/move this logic
+        new PacketView(Span).ValidateHeader();
+        _connection.Output.Advance(_payloadSize);
         _connection.Output.FlushAsync();
       } finally {
         Monitor.Exit(_connection);
       }
-    }
-
-    private ThreadSafeWriter WritePacketHeader<TPacket>() where TPacket : IPacket {
-      var span = this.Span;
-      span.Clear();
-      PacketFor<TPacket>.CopyTo(span, _packetSize);
-      return this;
     }
   }
 }

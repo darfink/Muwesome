@@ -38,7 +38,6 @@ namespace Muwesome.Network {
     public void Dispose() => _socket.Dispose();
 
     /// <inheritdoc/>
-    public override string ToString() =>
-      _socket.Socket.RemoteEndPoint?.ToString() ?? $"<unknown>";
+    public override string ToString() => RemoteEndPoint?.ToString() ?? $"<unknown>";
   }
 }

@@ -30,6 +30,7 @@ namespace Muwesome.ConnectServer.Rpc {
     }
 
     private async Task<GameServer> GameServerRegisterAsync(IAsyncStreamReader<GameServerParams> requestStream) {
+      // TODO: Use cancellation tokens
       if (!await requestStream.MoveNext(CancellationToken.None)) {
         throw new RpcException(Status.DefaultCancelled);
       }

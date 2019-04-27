@@ -22,6 +22,11 @@ namespace Muwesome.Packet {
     private PacketType(byte value) => Type = value;
 
     /// <summary>Converts a byte to its corresponding packet type.</summary>
+    /// <remarks>
+    /// This operator throws an exception if the value is out of range. Albeit
+    /// not idiomatic, this is to ensure a valid packet type is always used
+    /// whilst still being ergonomic.
+    /// </remarks>
     public static implicit operator PacketType(byte type) {
       switch (type) {
         case 0xC1: return C1;
@@ -61,6 +66,10 @@ namespace Muwesome.Packet {
     /// </remarks>
     public bool IsEncrypted => Type == 0xC3 || Type == 0xC4;
 
+    /// <summary>Reads the size from a packet buffer.</summary>
+    public int ReadSize(ReadOnlySpan<byte> data) =>
+      SizeFieldLength > 1 ? data.ReadUInt16BE(offset: 1) : data.ReadByte(offset: 1);
+
     /// <summary>Writes the size to a packet buffer.</summary>
     public void WriteSize(Span<byte> data, int size) {
       if (SizeFieldLength > 1) {
@@ -71,10 +80,15 @@ namespace Muwesome.Packet {
     }
 
     /// <summary>Writes the header to a packet buffer.</summary>
-    public void WriteHeader(Span<byte> data, ReadOnlySpan<byte> identifier, int? size = null) {
+    public void WriteHeader(Span<byte> data, ReadOnlySpan<byte> identifier, int size, bool validateBufferSize = true) {
       data.WriteByte(Type);
-      WriteSize(data, size ?? data.Length);
+      WriteSize(data, size);
       identifier.CopyTo(data.Slice(HeaderLength));
+
+      if (validateBufferSize && data.Length < size) {
+        // TODO: Improve with specialized exception
+        throw new ArgumentOutOfRangeException(nameof(data));
+      }
     }
   }
 }

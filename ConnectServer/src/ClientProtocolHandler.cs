@@ -1,18 +1,23 @@
 using System;
+using System.Threading.Tasks;
 using log4net;
-using Muwesome.Packet;
+using Muwesome.ConnectServer.PacketHandlers;
 using Muwesome.Network;
-using Muwesome.Protocol;
+using Muwesome.Packet;
 using Muwesome.Protocol.Connect.V20050502;
+using Muwesome.Protocol;
 
 namespace Muwesome.ConnectServer {
   internal class ClientProtocolHandler : ConfigurablePacketHandler<Client> {
     private static readonly ILog Logger = LogManager.GetLogger(typeof(ClientProtocolHandler));
 
-    public ClientProtocolHandler(Configuration config, IClientController clientsController) {
+    public ClientProtocolHandler(
+        Configuration config,
+        IGameServerController gameServerController,
+        IClientController clientsController) {
       clientsController.ClientSessionStarted += OnClientSessionStarted;
       DisconnectOnUnknownPacket = config.DisconnectOnUnknownPacket;
-      RegisterPacketHandlers();
+      RegisterPacketHandlers(gameServerController);
     }
 
     /// <summary>Gets or sets whether client's are disconnected when sending unknown packets.</summary>
@@ -20,6 +25,7 @@ namespace Muwesome.ConnectServer {
 
     /// <inheritdoc />
     public override bool HandlePacket(Client client, Span<byte> packet) {
+      Logger.Debug($"Received: {packet.AsHexString()}");
       bool packetWasHandled = base.HandlePacket(client, packet);
 
       if (!packetWasHandled) {
@@ -33,13 +39,17 @@ namespace Muwesome.ConnectServer {
       return packetWasHandled;
     }
 
-    private void RegisterPacketHandlers() {
-      // TODO: Register dem handlers
+    private void RegisterPacketHandlers(IGameServerController gameServerController) {
+      Register<GameServerInfoRequest>(new GameServerInfoRequestHandler());
+      Register<GameServerListRequest>(new GameServerListRequestHandler(gameServerController));
+      Register<ClientUpdateRequest>(new ClientUpdateRequestHandler());
     }
 
     private void OnClientSessionStarted(object sender, ClientSessionEventArgs ev) {
-      using(var writer = ev.Client.Connection.StartWrite(ConnectResult.Size)) {
-        var result = ConnectResult.Create(writer.Span);
+      var size = ProtocolHelper.GetPacketSize<ConnectResult>();
+
+      using (var writer = ev.Client.Connection.StartWrite(size)) {
+        ref var result = ref ProtocolHelper.CreatePacket<ConnectResult>(writer.Span);
         result.Success = true;
       }
     }

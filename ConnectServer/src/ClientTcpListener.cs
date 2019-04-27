@@ -31,7 +31,7 @@ namespace Muwesome.ConnectServer {
     /// <inheritdoc />
     public Task Task { get; private set; } = Task.CompletedTask;
 
-    /// <summary>Starts the client listener.</summary>
+    /// <inheritdoc />
     public void Start() {
       if (_listener != null) {
         throw new InvalidOperationException("The client listener is already running");
@@ -47,7 +47,7 @@ namespace Muwesome.ConnectServer {
         .ContinueWith(task => OnListenerComplete(task.Exception));
     }
 
-    /// <summary>Stops the client listener.</summary>
+    /// <inheritdoc />
     public void Stop() => OnListenerComplete(null);
 
     /// <inheritdoc />

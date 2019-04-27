@@ -75,7 +75,10 @@ namespace Muwesome.Packet {
     }
 
     /// <summary>Gets a byte array as a hex string.</summary>
-    public static string AsHexString(this IEnumerable<byte> bytes) => string.Join(" ", bytes.Select(v => v.ToString("X")));
+    public static string AsHexString(this IEnumerable<byte> bytes) => string.Join(" ", bytes.Select(v => v.ToString("X2")));
+
+    /// <summary>Gets a byte array as a hex string.</summary>
+    public static string AsHexString(this Span<byte> bytes) => AsHexString((IEnumerable<byte>)bytes.ToArray());
 
     /// <summary>Reverses the bytes of a UInt16.</summary>
     private static ushort ReverseUInt16(ushort input) => (ushort)((input >> 8) | (input << 8));

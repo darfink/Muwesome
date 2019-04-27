@@ -64,7 +64,7 @@ namespace Muwesome.ConnectServer {
 
     private void OnReceiveComplete(Exception ex) {
       if (ex != null) {
-        Logger.Error("An unexpected client error occured", ex);
+        Logger.Error("A client session error occured", ex);
       }
     }
   }

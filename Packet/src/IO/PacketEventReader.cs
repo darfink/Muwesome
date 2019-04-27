@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Buffers;
+using System.Runtime.ExceptionServices;
 using System.Threading.Tasks;
 using System.IO.Pipelines;
 
@@ -30,7 +31,7 @@ namespace Muwesome.Packet.IO {
       await ReadSource();
 
       if (_exception != null) {
-        throw _exception;
+        ExceptionDispatchInfo.Capture(_exception).Throw();
       }
     }
 
@@ -40,7 +41,7 @@ namespace Muwesome.Packet.IO {
 
     /// <inheritdoc/>
     protected override Task ReadPacket(ReadOnlySequence<byte> packet) {
-      if (_maxPacketSize != null && packet.Length >= _maxPacketSize.Value) {
+      if (_maxPacketSize != null && packet.Length > _maxPacketSize.Value) {
         var bytes = packet.Slice(0, packet.Length).ToArray();
         throw new MaxPacketSizeExceededException(bytes, (int)packet.Length, _maxPacketSize.Value);
       }

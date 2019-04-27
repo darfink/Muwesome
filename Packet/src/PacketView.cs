@@ -17,10 +17,7 @@ namespace Muwesome.Packet {
         throw new ArgumentException("The provided data is insufficient");
       }
 
-      try {
-        // Ensure an implicit cast is possible
-        PacketType type = Type;
-      } catch (ArgumentOutOfRangeException) {
+      if (!PacketType.ValidTypes.Contains(Data[0])) {
         throw new InvalidPacketTypeException(Data.ToArray());
       }
 
@@ -46,7 +43,7 @@ namespace Muwesome.Packet {
     }
 
     /// <summary>Gets the packet's length.</summary>
-    public int Length => Type.SizeFieldLength > 1 ? Data.ReadUInt16BE(offset: 1) : Data.ReadByte(offset: 1);
+    public int Length => Type.ReadSize(Data);
 
     /// <summary>Gets whether this view is of a partial or complete packet.</summary>
     public bool IsPartial => Data.Length < Length;
@@ -72,8 +69,8 @@ namespace Muwesome.Packet {
     /// An example would be: C1 F1 01 — which is the account login request.
     ///
     /// Since a packet's identifier cannot be known in advance, this property
-    /// only returns the packet's data, excluding the bytes used for specifying
-    /// the size.
+    /// returns the packet's data (excluding the bytes used for specifying the
+    /// size), which includes the payload as well.
     /// </remarks>
     public EnumerableIdentifier Identifier => new EnumerableIdentifier(this);
 
