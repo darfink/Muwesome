@@ -8,10 +8,12 @@ namespace Muwesome.Protocol.Utility {
       return Encoding.ASCII.GetString(data, stringLength);
     }
 
-    public static unsafe void SetString(byte* data, int maxLength, string value, Encoding encoding) {
+    public static unsafe void SetString(byte* data, int maxLength, string value, Encoding encoding, bool withNull = true) {
       fixed (char* input = value) {
-        int bytesWritten = Encoding.ASCII.GetBytes(input, value.Length, data, maxLength - 1);
-        data[bytesWritten] = 0;
+        int bytesWritten = Encoding.ASCII.GetBytes(input, value.Length, data, maxLength - (withNull ? 1 : 0));
+        if (withNull) {
+          data[bytesWritten] = 0;
+        }
       }
     }
   }

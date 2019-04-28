@@ -1,8 +1,7 @@
 using System;
 using System.Runtime.InteropServices;
-using Muwesome.Protocol.Utility;
-
 using Muwesome.Packet;
+using Muwesome.Protocol.Utility;
 
 namespace Muwesome.Protocol {
   public static class ProtocolHelper {

@@ -5,7 +5,7 @@ namespace Muwesome.Protocol.Utility {
   [AttributeUsage(AttributeTargets.Struct)]
   internal class PacketAttribute : Attribute {
     public PacketAttribute(byte type, byte code, params byte[] subcodes) {
-      // TODO: Packet name
+      // TODO: Packet name?
       Identifier = new PacketIdentifier("", type, code, subcodes);
     }
 
