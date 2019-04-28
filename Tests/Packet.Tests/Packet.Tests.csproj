@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Packet\Packet.csproj" />
+    <ProjectReference Include="..\..\Packet\Packet.csproj" />
   </ItemGroup>
 
 </Project>

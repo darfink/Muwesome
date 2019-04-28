@@ -13,8 +13,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Protocol\Protocol.csproj" />
-    <ProjectReference Include="..\Packet\Packet.csproj" />
+    <ProjectReference Include="..\..\Protocol\Protocol.csproj" />
+    <ProjectReference Include="..\..\Packet\Packet.csproj" />
   </ItemGroup>
 
 </Project>

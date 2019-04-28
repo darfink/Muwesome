@@ -1,4 +1,4 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26124.0
@@ -7,15 +7,15 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConnectServer", "ConnectSer
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Packet", "Packet\Packet.csproj", "{3936B9B0-6186-4C1C-963B-628545BAE9C6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Packet.Tests", "Packet.Tests\Packet.Tests.csproj", "{1B371231-3975-402C-BE84-EB95021C226E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Packet.Tests", "Tests\Packet.Tests\Packet.Tests.csproj", "{1B371231-3975-402C-BE84-EB95021C226E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Protocol", "Protocol\Protocol.csproj", "{5804A6CB-1197-4929-BD89-AF2BED9A1D55}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Network", "Network\Network.csproj", "{2689C6C5-DAD9-459E-9EB2-9503A5DE03A9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Network.Tests", "Network.Tests\Network.Tests.csproj", "{0B1AC948-9BD8-4E05-8D9D-EF3043E6C25E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Network.Tests", "Tests\Network.Tests\Network.Tests.csproj", "{0B1AC948-9BD8-4E05-8D9D-EF3043E6C25E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Protocol.Tests", "Protocol.Tests\Protocol.Tests.csproj", "{1098BDA8-CD2B-40E8-975E-ABF116F3816C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Protocol.Tests", "Tests\Protocol.Tests\Protocol.Tests.csproj", "{1098BDA8-CD2B-40E8-975E-ABF116F3816C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
