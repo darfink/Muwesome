@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Linq;
 using log4net;
@@ -7,13 +8,14 @@ using Grpc.Core;
 namespace Muwesome.ConnectServer.Rpc {
   public class RpcServiceController : ILifecycle, IDisposable {
     private static readonly ILog Logger = LogManager.GetLogger(typeof(RpcServiceController));
-    private readonly Server _grpcServer;
+    private readonly IGameServerController _gameServerController;
+    private readonly Configuration _config;
+    private CancellationTokenSource _cancellationSource;
+    private Server _grpcServer;
 
     public RpcServiceController(Configuration config, IGameServerController gameServerController) {
-      _grpcServer = new Server() {
-        Services = { GameServerRegister.BindService(new GameServerRegisterService(gameServerController)) },
-        Ports = { new ServerPort(config.GrpcListenerHost, config.GrpcListenerPort, ServerCredentials.Insecure) },
-      };
+      _gameServerController = gameServerController;
+      _config = config;
     }
 
     /// <inheritdoc />
@@ -21,6 +23,16 @@ namespace Muwesome.ConnectServer.Rpc {
 
     /// <inheritdoc />
     public void Start() {
+      if (_grpcServer != null) {
+        throw new InvalidOperationException("The RPC service controller is already running");
+      }
+
+      _cancellationSource = new CancellationTokenSource();
+      _grpcServer = new Server() {
+        Services = { GameServerRegister.BindService(new GameServerRegisterService(_gameServerController, _cancellationSource.Token)) },
+        Ports = { new ServerPort(_config.GrpcListenerHost, _config.GrpcListenerPort, ServerCredentials.Insecure) },
+      };
+
       _grpcServer.Start();
       var endPoints = _grpcServer.Ports
         .Select(server => $"{server.Host}:{server.BoundPort}");
@@ -29,7 +41,10 @@ namespace Muwesome.ConnectServer.Rpc {
 
     /// <inheritdoc />
     public void Stop() {
+      _cancellationSource.Cancel();
+      _cancellationSource.Dispose();
       _grpcServer.ShutdownAsync().Wait();
+      _grpcServer = null;
       Logger.Info("RPC service stopped");
     }
 
