@@ -15,7 +15,7 @@ namespace Muwesome.ConnectServer {
     private Timer _idleTimeoutTimer;
     private int _isDisposed = 0;
 
-    /// <summary>Constructs a new client instance.</summary>
+    /// <summary>Creates a new <see cref="Client" />.</summary>
     public Client(IConnection connection, IPacketHandler<Client> packetHandler) {
       _packetHandler = packetHandler;
       Connection = connection;

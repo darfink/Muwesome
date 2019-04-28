@@ -16,7 +16,7 @@ namespace Muwesome.ConnectServer {
       }
     }
 
-    public static Task InterruptSignal() {
+    private static Task InterruptSignal() {
       var cancellation = new TaskCompletionSource<bool>();
       Console.CancelKeyPress += (sender, eventArgs) => {
         eventArgs.Cancel = true;

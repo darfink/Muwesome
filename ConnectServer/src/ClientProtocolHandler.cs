@@ -11,6 +11,7 @@ namespace Muwesome.ConnectServer {
   internal class ClientProtocolHandler : ConfigurablePacketHandler<Client> {
     private static readonly ILog Logger = LogManager.GetLogger(typeof(ClientProtocolHandler));
 
+    /// <summary>Creates a new <see cref="ClientProtocolHandler" />.</summary>
     public ClientProtocolHandler(
         Configuration config,
         IGameServerController gameServerController,

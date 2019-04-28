@@ -7,6 +7,7 @@ namespace Muwesome.ConnectServer.PacketHandlers {
   internal class GameServerInfoRequestHandler : IPacketHandler<Client> {
     private readonly IGameServerController _gameServerController;
 
+    /// <summary>Creates a new <see cref="GameServerInfoRequestHandler" />.</summary>
     public GameServerInfoRequestHandler(IGameServerController gameServerController) =>
       _gameServerController = gameServerController;
 

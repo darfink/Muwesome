@@ -16,7 +16,7 @@ namespace Muwesome.ConnectServer {
     private readonly Configuration _config;
     private TcpListener _listener;
 
-    /// <summary>Constructs a new client listener.</summary>
+    /// <summary>Creates a new <see cref="ClientTcpListener" />.</summary>
     public ClientTcpListener(Configuration config) => _config = config;
 
     /// <inheritdoc />

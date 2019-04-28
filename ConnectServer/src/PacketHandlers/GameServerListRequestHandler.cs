@@ -5,15 +5,13 @@ using Muwesome.Network;
 using Muwesome.Protocol;
 using Muwesome.Protocol.Connect.V20050502;
 
-// TODO: Remove
-using Muwesome.Packet;
-
 namespace Muwesome.ConnectServer.PacketHandlers {
   internal class GameServerListRequestHandler : IPacketHandler<Client> {
     private readonly IGameServerController _gameServerController;
     private byte[] _gameServerListPacket = Array.Empty<byte>();
     private int _gameServerListPacketSize;
 
+    /// <summary>Creates a new <see cref="GameServerListRequestHandler" />.</summary>
     public GameServerListRequestHandler(IGameServerController gameServerController) {
       _gameServerController = gameServerController;
       _gameServerController.GameServerRegistered += (_, __) => OnGameServerChange();

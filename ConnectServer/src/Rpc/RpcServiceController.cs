@@ -13,6 +13,7 @@ namespace Muwesome.ConnectServer.Rpc {
     private CancellationTokenSource _cancellationSource;
     private Server _grpcServer;
 
+    /// <summary>Creates a new <see cref="RpcServiceController" />.</summary>
     public RpcServiceController(Configuration config, IGameServerController gameServerController) {
       _gameServerController = gameServerController;
       _config = config;

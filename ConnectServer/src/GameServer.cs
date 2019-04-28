@@ -7,7 +7,7 @@ namespace Muwesome.ConnectServer {
     private uint _clientCapacity;
     private uint _clientCount;
 
-    /// <summary>Constructs a new <see cref="GameServer" />.</summary>
+    /// <summary>Creates a new <see cref="GameServer" />.</summary>
     public GameServer(ushort code, string host, ushort port, uint clientCount, uint clientCapacity) {
       Code = code;
       Host = host;

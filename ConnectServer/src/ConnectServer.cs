@@ -13,28 +13,28 @@ namespace Muwesome.ConnectServer {
     private static readonly ILog Logger = LogManager.GetLogger(typeof(ConnectServer));
     private readonly IGameServerController _gameServerController;
     private readonly IClientController _clientController;
-    private readonly IClientListener _clientListener;
     private readonly IConnectPlugin[] _connectPlugins;
-    private readonly ILifecycle[] _metaServices;
+    private readonly ILifecycle[] _lifecycleServices;
     private readonly Stopwatch _startTime;
     private bool _isRunning;
 
+    /// <summary>Creates a new instance of <see cref="ConnectServer" />.</summary>
     public ConnectServer(
         Configuration config,
         IGameServerController gameServerController,
         IClientController clientController,
         IClientListener clientListener,
         IPacketHandler<Client> clientProtocol,
-        params ILifecycle[] metaServices
+        params ILifecycle[] lifecycleServices
     ) {
       Config = config;
-      _metaServices = metaServices;
       _gameServerController = gameServerController;
       _clientController = clientController;
+      _lifecycleServices = lifecycleServices;
+      _lifecycleServices.Append(clientListener);
 
-      _clientListener = clientListener;
-      _clientListener.BeforeClientAccepted += OnBeforeClientAccepted;
-      _clientListener.AfterClientAccepted += (_, ev) =>
+      clientListener.BeforeClientAccepted += OnBeforeClientAccepted;
+      clientListener.AfterClientAccepted += (_, ev) =>
         clientController.AddClient(new Client(ev.ClientConnection, clientProtocol));
 
       _connectPlugins = new IConnectPlugin[] {
@@ -46,22 +46,25 @@ namespace Muwesome.ConnectServer {
       _startTime.Start();
     }
 
+    /// <summary>Gets the server's configuration.</summary>
     public Configuration Config { get; }
 
+    /// <summary>Gets the server's uptime.</summary>
     public TimeSpan Uptime => _startTime.Elapsed;
 
+    /// <summary>Gets a list of the server's clients.</summary>
     public IReadOnlyCollection<Client> Clients => _clientController.Clients;
 
+    /// <summary>Gets a list of the server's registered game servers.</summary>
     public IReadOnlyCollection<GameServer> Servers => _gameServerController.Servers;
 
     /// <inheritdoc />
-    public Task Task => Task.WhenAll(_metaServices.Select(service => service.Task).Append(_clientListener.Task));
+    public Task Task => Task.WhenAll(_lifecycleServices.Select(service => service.Task));
 
     /// <inheritdoc />
     public void Start() {
       Logger.Info("Starting ConnectServer...");
-      _clientListener.Start();
-      foreach (var service in _metaServices) {
+      foreach (var service in _lifecycleServices) {
         service.Start();
       }
       _isRunning = true;
@@ -71,8 +74,7 @@ namespace Muwesome.ConnectServer {
     /// <inheritdoc />
     public void Stop() {
       Logger.Info("Stopping ConnectServer...");
-      _clientListener.Stop();
-      foreach (var service in _metaServices) {
+      foreach (var service in _lifecycleServices) {
         service.Stop();
       }
       _isRunning = false;
@@ -85,9 +87,8 @@ namespace Muwesome.ConnectServer {
         Stop();
       }
 
-      (_clientListener as IDisposable)?.Dispose();
       (_clientController as IDisposable)?.Dispose();
-      foreach (var service in _metaServices.OfType<IDisposable>()) {
+      foreach (var service in _lifecycleServices.OfType<IDisposable>()) {
         service.Dispose();
       }
     }

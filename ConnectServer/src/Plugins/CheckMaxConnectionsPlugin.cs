@@ -9,6 +9,7 @@ namespace Muwesome.ConnectServer.Plugins {
     private readonly IClientController _clientController;
     private readonly int _maxConnections;
 
+    /// <summary>Creates a new <see cref="CheckMaxConnectionsPlugin" />.</summary>
     public CheckMaxConnectionsPlugin(IClientController clientController, int maxConnections) {
       _clientController = clientController;
       _maxConnections = maxConnections;

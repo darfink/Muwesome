@@ -10,6 +10,7 @@ namespace Muwesome.ConnectServer.Plugins {
     private readonly ConcurrentDictionary<IPAddress, uint> _ipAddressConnections;
     private readonly int _maxConnectionsPerIp;
 
+    /// <summary>Creates a new <see cref="CheckMaxConnectionsPerIpPlugin" />.</summary>
     public CheckMaxConnectionsPerIpPlugin(IClientController clientsController, int maxConnectionsPerIp) {
       _ipAddressConnections = new ConcurrentDictionary<IPAddress, uint>();
       _maxConnectionsPerIp = maxConnectionsPerIp;
