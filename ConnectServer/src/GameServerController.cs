@@ -48,6 +48,15 @@ namespace Muwesome.ConnectServer {
       Logger.Info($"Game server deregistered {server}");
     }
 
+    /// <inheritdoc />
+    public GameServer GetServerByCode(ushort code) {
+      if (_gameServers.TryGetValue(code, out GameServer server)) {
+        return server;
+      }
+
+      return null;
+    }
+
     private void OnGameServerChange(object sender, PropertyChangedEventArgs ev) {
       var server = (GameServer)sender;
       Logger.Debug($"Game server updated {server}; {server.ClientCount}/{server.ClientCapacity}");

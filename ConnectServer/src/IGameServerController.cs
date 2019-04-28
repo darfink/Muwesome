@@ -20,6 +20,9 @@ namespace Muwesome.ConnectServer {
 
     /// <summary>Deregisters an existing game server</summary>
     void DeregisterServer(GameServer server);
+
+    /// <summary>Gets a registered game server by its code.</summary>
+    GameServer GetServerByCode(ushort code);
   }
 
   public class GameServerEventArgs : EventArgs {

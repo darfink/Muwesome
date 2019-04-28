@@ -25,7 +25,6 @@ namespace Muwesome.ConnectServer {
 
     /// <inheritdoc />
     public override bool HandlePacket(Client client, Span<byte> packet) {
-      Logger.Debug($"Received: {packet.AsHexString()}");
       bool packetWasHandled = base.HandlePacket(client, packet);
 
       if (!packetWasHandled) {
@@ -40,7 +39,7 @@ namespace Muwesome.ConnectServer {
     }
 
     private void RegisterPacketHandlers(IGameServerController gameServerController) {
-      Register<GameServerInfoRequest>(new GameServerInfoRequestHandler());
+      Register<GameServerInfoRequest>(new GameServerInfoRequestHandler(gameServerController));
       Register<GameServerListRequest>(new GameServerListRequestHandler(gameServerController));
       Register<ClientUpdateRequest>(new ClientUpdateRequestHandler());
     }
