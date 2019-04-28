@@ -19,7 +19,7 @@ namespace Muwesome.ConnectServer.Rpc {
     }
 
     /// <inheritdoc />
-    public Task Task => _grpcServer.ShutdownTask ?? Task.CompletedTask;
+    public Task Task => _grpcServer?.ShutdownTask ?? Task.CompletedTask;
 
     /// <inheritdoc />
     public void Start() {
