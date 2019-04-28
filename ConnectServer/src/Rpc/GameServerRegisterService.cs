@@ -7,33 +7,32 @@ using Grpc.Core;
 
 namespace Muwesome.ConnectServer.Rpc {
   public class GameServerRegisterService : GameServerRegister.GameServerRegisterBase {
-    private readonly IGameServerController _gameServerController;
-    private readonly CancellationToken _cancellationToken;
+    private readonly IGameServerController gameServerController;
+    private readonly CancellationToken cancellationToken;
 
-    /// <summary>Creates a new <see cref="GameServerRegisterService" />.</summary>
+    /// <summary>Initializes a new instance of the <see cref="GameServerRegisterService"/> class.</summary>
     public GameServerRegisterService(IGameServerController gameServerController, CancellationToken cancellationToken) {
-      _gameServerController = gameServerController;
-      _cancellationToken = cancellationToken;
+      this.gameServerController = gameServerController;
+      this.cancellationToken = cancellationToken;
     }
 
     /// <summary>Processes an incoming game server session.</summary>
     public override async Task<GameServerRegisterResponse> RegisterGameServer(
       IAsyncStreamReader<GameServerParams> requestStream,
-      ServerCallContext context
-    ) {
-      var server = await GameServerRegisterAsync(requestStream);
+      ServerCallContext context) {
+      var server = await this.GameServerRegisterAsync(requestStream);
 
       try {
-        await GameServerUpdatesAsync(requestStream, server);
+        await this.GameServerUpdatesAsync(requestStream, server);
       } finally {
-        _gameServerController.DeregisterServer(server);
+        this.gameServerController.DeregisterServer(server);
       }
 
       return new GameServerRegisterResponse();
     }
 
     private async Task<GameServer> GameServerRegisterAsync(IAsyncStreamReader<GameServerParams> requestStream) {
-      if (!await requestStream.MoveNext(_cancellationToken)) {
+      if (!await requestStream.MoveNext(this.cancellationToken)) {
         throw new RpcException(Status.DefaultCancelled);
       }
 
@@ -50,7 +49,7 @@ namespace Muwesome.ConnectServer.Rpc {
       }
 
       try {
-        _gameServerController.RegisterServer(server);
+        this.gameServerController.RegisterServer(server);
       } catch (ArgumentException) {
         throw new RpcException(new Status(StatusCode.InvalidArgument, "The server ID is already registered"));
       }
@@ -59,7 +58,7 @@ namespace Muwesome.ConnectServer.Rpc {
     }
 
     private async Task GameServerUpdatesAsync(IAsyncStreamReader<GameServerParams> requestStream, GameServer server) {
-      while (await requestStream.MoveNext(_cancellationToken)) {
+      while (await requestStream.MoveNext(this.cancellationToken)) {
         var status = requestStream.Current.Status;
         if (status is null) {
           throw new RpcException(new Status(StatusCode.InvalidArgument, "The server is already registered; expected a 'Status' message"));

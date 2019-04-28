@@ -4,16 +4,16 @@ using System.Runtime.CompilerServices;
 
 namespace Muwesome.ConnectServer {
   public class GameServer : INotifyPropertyChanged {
-    private uint _clientCapacity;
-    private uint _clientCount;
+    private uint clientCapacity;
+    private uint clientCount;
 
-    /// <summary>Creates a new <see cref="GameServer" />.</summary>
+    /// <summary>Initializes a new instance of the <see cref="GameServer"/> class.</summary>
     public GameServer(ushort code, string host, ushort port, uint clientCount, uint clientCapacity) {
-      Code = code;
-      Host = host;
-      Port = port;
-      _clientCount = clientCount;
-      _clientCapacity = clientCapacity;
+      this.Code = code;
+      this.Host = host;
+      this.Port = port;
+      this.clientCount = clientCount;
+      this.clientCapacity = clientCapacity;
     }
 
     /// <inheritdoc />
@@ -30,24 +30,24 @@ namespace Muwesome.ConnectServer {
 
     /// <summary>Gets or sets the server's client count.</summary>
     public uint ClientCount {
-      get => _clientCount;
-      set => SetField(ref _clientCount, value);
+      get => this.clientCount;
+      set => this.SetField(ref this.clientCount, value);
     }
 
     /// <summary>Gets or sets the server's client capacity.</summary>
     public uint ClientCapacity {
-      get => _clientCapacity;
-      set => SetField(ref _clientCapacity, value);
+      get => this.clientCapacity;
+      set => this.SetField(ref this.clientCapacity, value);
     }
 
-    /// <summary>Gets whether the server is at full capacity or not.</summary>
-    public bool IsFull => ClientCount == ClientCapacity;
+    /// <summary>Gets a value indicating whether the server is at full capacity or not.</summary>
+    public bool IsFull => this.ClientCount == this.ClientCapacity;
 
     /// <summary>Gets the server's current load.</summary>
-    public float Load => (float)ClientCount / ClientCapacity;
+    public float Load => (float)this.ClientCount / this.ClientCapacity;
 
     /// <inheritdoc />
-    public override string ToString() => $"{Host}:{Port}<{Code}>";
+    public override string ToString() => $"{this.Host}:{this.Port}<{this.Code}>";
 
     private bool SetField<T>(ref T field, T value, [CallerMemberName] string propertyName = null) {
       if (EqualityComparer<T>.Default.Equals(field, value)) {
@@ -55,7 +55,7 @@ namespace Muwesome.ConnectServer {
       }
 
       field = value;
-      PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+      this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
       return true;
     }
   }

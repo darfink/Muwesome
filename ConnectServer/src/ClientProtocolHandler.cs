@@ -5,24 +5,24 @@ using Muwesome.ConnectServer.PacketHandlers;
 using Muwesome.Network;
 using Muwesome.Packet;
 using Muwesome.Packet.Utility;
-using Muwesome.Protocol.Connect.V20050502;
 using Muwesome.Protocol;
+using Muwesome.Protocol.Connect.V20050502;
 
 namespace Muwesome.ConnectServer {
   internal class ClientProtocolHandler : ConfigurablePacketHandler<Client> {
     private static readonly ILog Logger = LogManager.GetLogger(typeof(ClientProtocolHandler));
 
-    /// <summary>Creates a new <see cref="ClientProtocolHandler" />.</summary>
+    /// <summary>Initializes a new instance of the <see cref="ClientProtocolHandler" /> class.</summary>
     public ClientProtocolHandler(
         Configuration config,
         IGameServerController gameServerController,
         IClientController clientsController) {
-      clientsController.ClientSessionStarted += OnClientSessionStarted;
-      DisconnectOnUnknownPacket = config.DisconnectOnUnknownPacket;
-      RegisterPacketHandlers(gameServerController);
+      clientsController.ClientSessionStarted += this.OnClientSessionStarted;
+      this.DisconnectOnUnknownPacket = config.DisconnectOnUnknownPacket;
+      this.RegisterPacketHandlers(gameServerController);
     }
 
-    /// <summary>Gets or sets whether client's are disconnected when sending unknown packets.</summary>
+    /// <summary>Gets or sets a value indicating whether client's are disconnected when sending unknown packets.</summary>
     public bool DisconnectOnUnknownPacket { get; set; }
 
     /// <inheritdoc />
@@ -31,7 +31,7 @@ namespace Muwesome.ConnectServer {
 
       if (!packetWasHandled) {
         Logger.Debug($"Received an unhandled packet: {packet.AsHexString()}");
-        if (DisconnectOnUnknownPacket) {
+        if (this.DisconnectOnUnknownPacket) {
           Logger.Info($"Disconnecting client {client}; received an unknown packet");
           client.Connection.Disconnect();
         }
@@ -41,9 +41,9 @@ namespace Muwesome.ConnectServer {
     }
 
     private void RegisterPacketHandlers(IGameServerController gameServerController) {
-      Register<GameServerInfoRequest>(new GameServerInfoRequestHandler(gameServerController));
-      Register<GameServerListRequest>(new GameServerListRequestHandler(gameServerController));
-      Register<ClientUpdateRequest>(new ClientUpdateRequestHandler());
+      this.Register<GameServerInfoRequest>(new GameServerInfoRequestHandler(gameServerController));
+      this.Register<GameServerListRequest>(new GameServerListRequestHandler(gameServerController));
+      this.Register<ClientUpdateRequest>(new ClientUpdateRequestHandler());
     }
 
     private void OnClientSessionStarted(object sender, ClientSessionEventArgs ev) {

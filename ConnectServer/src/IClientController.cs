@@ -17,8 +17,8 @@ namespace Muwesome.ConnectServer {
   }
 
   public class ClientSessionEventArgs : EventArgs {
-    /// <summary>Constructs a new instance of <see cref="ClientSessionEventArgs" />.</summary>
-    public ClientSessionEventArgs(Client client) => Client = client;
+    /// <summary>Initializes a new instance of the <see cref="ClientSessionEventArgs"/> class.</summary>
+    public ClientSessionEventArgs(Client client) => this.Client = client;
 
     /// <summary>Gets the client instance.</summary>
     public Client Client { get; }

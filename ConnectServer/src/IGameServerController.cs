@@ -26,8 +26,8 @@ namespace Muwesome.ConnectServer {
   }
 
   public class GameServerEventArgs : EventArgs {
-    /// <summary>Constructs a new instance of <see cref="GameServerEventArgs" />.</summary>
-    public GameServerEventArgs(GameServer server) => Server = server;
+    /// <summary>Initializes a new instance of the <see cref="GameServerEventArgs"/> class.</summary>
+    public GameServerEventArgs(GameServer server) => this.Server = server;
 
     /// <summary>Gets the game server.</summary>
     public GameServer Server { get; }

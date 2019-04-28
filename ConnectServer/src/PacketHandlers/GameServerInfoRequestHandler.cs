@@ -1,21 +1,21 @@
 using System;
+using Muwesome.Network;
 using Muwesome.Packet.Utility;
 using Muwesome.Protocol;
 using Muwesome.Protocol.Connect.V20050502;
-using Muwesome.Network;
 
 namespace Muwesome.ConnectServer.PacketHandlers {
   internal class GameServerInfoRequestHandler : IPacketHandler<Client> {
-    private readonly IGameServerController _gameServerController;
+    private readonly IGameServerController gameServerController;
 
-    /// <summary>Creates a new <see cref="GameServerInfoRequestHandler" />.</summary>
+    /// <summary>Initializes a new instance of the <see cref="GameServerInfoRequestHandler"/> class.</summary>
     public GameServerInfoRequestHandler(IGameServerController gameServerController) =>
-      _gameServerController = gameServerController;
+      this.gameServerController = gameServerController;
 
     /// <inheritdoc />
     public bool HandlePacket(Client client, Span<byte> packet) {
       ref var request = ref PacketHelper.ParsePacket<GameServerInfoRequest>(packet);
-      var selectedServer = _gameServerController.GetServerByCode(request.ServerCode);
+      var selectedServer = this.gameServerController.GetServerByCode(request.ServerCode);
 
       if (selectedServer is null || selectedServer.IsFull) {
         using (var writer = client.Connection.SendPacket<GameServerUnavailable>()) {

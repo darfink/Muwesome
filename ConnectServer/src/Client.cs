@@ -10,17 +10,17 @@ using Muwesome.Protocol;
 namespace Muwesome.ConnectServer {
   public class Client : IDisposable {
     private static readonly ILog Logger = LogManager.GetLogger(typeof(Client));
-    private readonly IPacketHandler<Client> _packetHandler;
-    private TimeSpan _maxIdleTime = Timeout.InfiniteTimeSpan;
-    private Timer _idleTimeoutTimer;
-    private int _isDisposed = 0;
+    private readonly IPacketHandler<Client> packetHandler;
+    private TimeSpan maxIdleTime = Timeout.InfiniteTimeSpan;
+    private Timer idleTimeoutTimer;
+    private int isDisposed = 0;
 
-    /// <summary>Creates a new <see cref="Client" />.</summary>
+    /// <summary>Initializes a new instance of the <see cref="Client"/> class.</summary>
     public Client(IConnection connection, IPacketHandler<Client> packetHandler) {
-      _packetHandler = packetHandler;
-      Connection = connection;
-      Connection.PacketReceived += OnPacketReceived;
-      Connection.BeginReceive().ContinueWith(task => OnReceiveComplete(task.Exception));
+      this.packetHandler = packetHandler;
+      this.Connection = connection;
+      this.Connection.PacketReceived += this.OnPacketReceived;
+      this.Connection.BeginReceive().ContinueWith(task => this.OnReceiveComplete(task.Exception));
     }
 
     /// <summary>Gets the client's connection.</summary>
@@ -28,39 +28,39 @@ namespace Muwesome.ConnectServer {
 
     /// <summary>Gets or sets the maximum idle time.</summary>
     internal TimeSpan MaxIdleTime {
-      get => _maxIdleTime;
+      get => this.maxIdleTime;
       set {
-        _maxIdleTime = value;
-        if (_idleTimeoutTimer == null) {
-          _idleTimeoutTimer = new Timer(OnClientTimeout, null, value, Timeout.InfiniteTimeSpan);
+        this.maxIdleTime = value;
+        if (this.idleTimeoutTimer == null) {
+          this.idleTimeoutTimer = new Timer(this.OnClientTimeout, null, value, Timeout.InfiniteTimeSpan);
         } else {
-          _idleTimeoutTimer.Change(value, Timeout.InfiniteTimeSpan);
+          this.idleTimeoutTimer.Change(value, Timeout.InfiniteTimeSpan);
         }
       }
     }
 
     /// <inheritdoc />
     public void Dispose() {
-      if (Interlocked.Exchange(ref _isDisposed, 1) == 1) {
+      if (Interlocked.Exchange(ref this.isDisposed, 1) == 1) {
         return;
       }
 
-      _idleTimeoutTimer?.Dispose();
-      Connection.PacketReceived -= OnPacketReceived;
-      Connection.Dispose();
+      this.idleTimeoutTimer?.Dispose();
+      this.Connection.PacketReceived -= this.OnPacketReceived;
+      this.Connection.Dispose();
     }
 
     /// <inheritdoc />
-    public override string ToString() => Connection.ToString();
+    public override string ToString() => this.Connection.ToString();
 
     private void OnClientTimeout(object context) {
-      Logger.Info($"Disconnecting client {this}; max idle time ({_maxIdleTime}) exceeded");
-      Connection.Disconnect();
+      Logger.Info($"Disconnecting client {this}; max idle time ({this.maxIdleTime}) exceeded");
+      this.Connection.Disconnect();
     }
 
     private void OnPacketReceived(object sender, Span<byte> packet) {
-      _idleTimeoutTimer?.Change(_maxIdleTime, Timeout.InfiniteTimeSpan);
-      _packetHandler.HandlePacket(this, packet);
+      this.idleTimeoutTimer?.Change(this.maxIdleTime, Timeout.InfiniteTimeSpan);
+      this.packetHandler.HandlePacket(this, packet);
     }
 
     private void OnReceiveComplete(Exception ex) {

@@ -1,30 +1,30 @@
 using System;
+using System.Collections.Concurrent;
 using System.Net;
 using System.Net.Sockets;
-using System.Collections.Concurrent;
 using log4net;
 
 namespace Muwesome.ConnectServer.Plugins {
   internal class CheckMaxConnectionsPerIpPlugin : IConnectPlugin {
     private static readonly ILog Logger = LogManager.GetLogger(typeof(CheckMaxConnectionsPerIpPlugin));
-    private readonly ConcurrentDictionary<IPAddress, uint> _ipAddressConnections;
-    private readonly int _maxConnectionsPerIp;
+    private readonly ConcurrentDictionary<IPAddress, uint> ipAddressConnections;
+    private readonly int maxConnectionsPerIp;
 
-    /// <summary>Creates a new <see cref="CheckMaxConnectionsPerIpPlugin" />.</summary>
+    /// <summary>Initializes a new instance of the <see cref="CheckMaxConnectionsPerIpPlugin"/> class.</summary>
     public CheckMaxConnectionsPerIpPlugin(IClientController clientsController, int maxConnectionsPerIp) {
-      _ipAddressConnections = new ConcurrentDictionary<IPAddress, uint>();
-      _maxConnectionsPerIp = maxConnectionsPerIp;
-      clientsController.ClientSessionStarted += OnClientSessionStarted;
-      clientsController.ClientSessionEnded += OnClientSessionEnded;
+      this.ipAddressConnections = new ConcurrentDictionary<IPAddress, uint>();
+      this.maxConnectionsPerIp = maxConnectionsPerIp;
+      clientsController.ClientSessionStarted += this.OnClientSessionStarted;
+      clientsController.ClientSessionEnded += this.OnClientSessionEnded;
     }
 
     /// <inheritdoc />
     public bool OnAllowClientSocketAccept(Socket socket) {
-      var ipAddress = GetIpAddressFromEndPoint(socket.RemoteEndPoint);
-      _ipAddressConnections.TryGetValue(ipAddress, out uint connectionsWithIp);
+      var ipAddress = this.GetIpAddressFromEndPoint(socket.RemoteEndPoint);
+      this.ipAddressConnections.TryGetValue(ipAddress, out uint connectionsWithIp);
 
-      if (connectionsWithIp >= _maxConnectionsPerIp) {
-        Logger.Warn($"Connection refused from {ipAddress}; maximum connections for IP ({_maxConnectionsPerIp}) reached");
+      if (connectionsWithIp >= this.maxConnectionsPerIp) {
+        Logger.Warn($"Connection refused from {ipAddress}; maximum connections for IP ({this.maxConnectionsPerIp}) reached");
         return false;
       }
 
@@ -32,13 +32,13 @@ namespace Muwesome.ConnectServer.Plugins {
     }
 
     private void OnClientSessionStarted(object sender, ClientSessionEventArgs ev) {
-      var ipAddress = GetIpAddressFromEndPoint(ev.Client.Connection.RemoteEndPoint);
-      _ipAddressConnections.AddOrUpdate(ipAddress, 1, (_, count) => count + 1);
+      var ipAddress = this.GetIpAddressFromEndPoint(ev.Client.Connection.RemoteEndPoint);
+      this.ipAddressConnections.AddOrUpdate(ipAddress, 1, (_, count) => count + 1);
     }
 
     private void OnClientSessionEnded(object sender, ClientSessionEventArgs ev) {
-      var ipAddress = GetIpAddressFromEndPoint(ev.Client.Connection.RemoteEndPoint);
-      _ipAddressConnections.AddOrUpdate(ipAddress, 0, (_, count) => count - 1);
+      var ipAddress = this.GetIpAddressFromEndPoint(ev.Client.Connection.RemoteEndPoint);
+      this.ipAddressConnections.AddOrUpdate(ipAddress, 0, (_, count) => count - 1);
     }
 
     private IPAddress GetIpAddressFromEndPoint(EndPoint endPoint) => ((IPEndPoint)endPoint).Address;

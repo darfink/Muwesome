@@ -3,24 +3,18 @@ using System.Collections.Generic;
 
 namespace Muwesome.ConnectServer.Utility {
   public class ReadOnlyCollectionWrapper<T> : IReadOnlyCollection<T> {
-    private readonly ICollection<T> _collection;
+    private readonly ICollection<T> collection;
 
-    /// <summary>Constructs a new read only collection adapter.</summary>
-    public ReadOnlyCollectionWrapper(ICollection<T> collection) => _collection = collection;
-
-    /// <inheritdoc />
-    public IEnumerator<T> GetEnumerator() => _collection.GetEnumerator();
+    /// <summary>Initializes a new instance of the <see cref="ReadOnlyCollectionWrapper{T}"/> class.</summary>
+    public ReadOnlyCollectionWrapper(ICollection<T> collection) => this.collection = collection;
 
     /// <inheritdoc />
-    IEnumerator IEnumerable.GetEnumerator() => _collection.GetEnumerator();
+    public int Count => this.collection.Count;
 
     /// <inheritdoc />
-    public int Count => _collection.Count;
-  }
+    public IEnumerator<T> GetEnumerator() => this.collection.GetEnumerator();
 
-  public static class CollectionExtensions {
-    /// <summary>Returns a read-only wrapper for the collection.</summary>
-    public static ReadOnlyCollectionWrapper<T> AsReadOnly<T>(this ICollection<T> collection) =>
-      new ReadOnlyCollectionWrapper<T>(collection);
+    /// <inheritdoc />
+    IEnumerator IEnumerable.GetEnumerator() => this.collection.GetEnumerator();
   }
 }

@@ -13,11 +13,11 @@ using Pipelines.Sockets.Unofficial;
 namespace Muwesome.ConnectServer {
   internal class ClientTcpListener : IClientListener, IDisposable {
     private static readonly ILog Logger = LogManager.GetLogger(typeof(ClientTcpListener));
-    private readonly Configuration _config;
-    private TcpListener _listener;
+    private readonly Configuration config;
+    private TcpListener listener;
 
-    /// <summary>Creates a new <see cref="ClientTcpListener" />.</summary>
-    public ClientTcpListener(Configuration config) => _config = config;
+    /// <summary>Initializes a new instance of the <see cref="ClientTcpListener"/> class.</summary>
+    public ClientTcpListener(Configuration config) => this.config = config;
 
     /// <inheritdoc />
     public event EventHandler<BeforeClientAcceptEventArgs> BeforeClientAccepted;
@@ -26,51 +26,54 @@ namespace Muwesome.ConnectServer {
     public event EventHandler<AfterClientAcceptEventArgs> AfterClientAccepted;
 
     /// <inheritdoc />
-    public bool IsBound => _listener?.Server.IsBound ?? false;
+    public bool IsBound => this.listener?.Server.IsBound ?? false;
 
     /// <inheritdoc />
     public Task Task { get; private set; } = Task.CompletedTask;
 
     /// <inheritdoc />
     public void Start() {
-      if (_listener != null) {
+      if (this.listener != null) {
         throw new InvalidOperationException("The client listener is already running");
       }
 
-      var endPoint = new IPEndPoint(_config.ClientListenerHost, _config.ClientListenerPort);
-      _listener = new TcpListener(endPoint);
-      SocketConnection.SetRecommendedServerOptions(_listener.Server);
-      _listener.Start();
+      var endPoint = new IPEndPoint(this.config.ClientListenerHost, this.config.ClientListenerPort);
+      this.listener = new TcpListener(endPoint);
+      SocketConnection.SetRecommendedServerOptions(this.listener.Server);
+      this.listener.Start();
       Logger.Info($"Client listener started; listening on {endPoint}");
-      Task = Task
-        .Run(() => _listener.AcceptIncomingSocketsAsync(OnSocketAccepted))
-        .ContinueWith(task => OnListenerComplete(task.Exception));
+      this.Task = Task
+        .Run(() => this.listener.AcceptIncomingSocketsAsync(this.OnSocketAccepted))
+        .ContinueWith(task => this.OnListenerComplete(task.Exception));
     }
 
     /// <inheritdoc />
-    public void Stop() => OnListenerComplete(null);
+    public void Stop() => this.OnListenerComplete(null);
 
     /// <inheritdoc />
-    public void Dispose() => Stop();
+    public void Dispose() => this.Stop();
 
     private void OnSocketAccepted(Socket socket) {
       var beforeClientAccept = new BeforeClientAcceptEventArgs(socket);
-      BeforeClientAccepted?.Invoke(this, beforeClientAccept);
+      this.BeforeClientAccepted?.Invoke(this, beforeClientAccept);
 
       if (beforeClientAccept.RejectClient) {
         Logger.Debug($"Rejecting client connection {socket.RemoteEndPoint}...");
         socket.Dispose();
       } else {
-        var connection = CreateConnectionForSocket(socket);
-        AfterClientAccepted?.Invoke(this, new AfterClientAcceptEventArgs(connection));
+        var connection = this.CreateConnectionForSocket(socket);
+        this.AfterClientAccepted?.Invoke(this, new AfterClientAcceptEventArgs(connection));
       }
     }
 
     private void OnListenerComplete(Exception ex) {
-      var listener = Interlocked.Exchange(ref _listener, null);
+      var listener = Interlocked.Exchange(ref this.listener, null);
       if (listener != null) {
-        try { listener.Stop(); }
-        catch (ObjectDisposedException) { }
+        try {
+          listener.Stop();
+        } catch (ObjectDisposedException) {
+        }
+
         Logger.Info("Client listener stopped");
       }
 
@@ -80,14 +83,14 @@ namespace Muwesome.ConnectServer {
     }
 
     private IConnection CreateConnectionForSocket(Socket socket) {
-      // Ensure that 'TCP_NODELAY' is configured on Windows
+      // Ensure that 'TCPthis.NODELAY' is configured on Windows
       SocketConnection.SetRecommendedClientOptions(socket);
 
       // Raw sockets themselves are not compatible with pipes
       var socketConnection = SocketConnection.Create(socket);
       var pipe = new PipelinedSocket(socketConnection, encryptor: null, decryptor: null);
 
-      return new DuplexConnection(pipe, _config.MaxPacketSize);
+      return new DuplexConnection(pipe, this.config.MaxPacketSize);
     }
   }
 }

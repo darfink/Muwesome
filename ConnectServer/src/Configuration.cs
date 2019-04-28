@@ -21,7 +21,7 @@ namespace Muwesome.ConnectServer {
     /// <summary>Gets or sets the maximum connections per IP address.</summary>
     public int MaxConnectionsPerIp { get; set; } = 50;
 
-    /// <summary>Gets or sets whether clients are disconnected when sending unknown packets.</summary>
+    /// <summary>Gets or sets a value indicating whether clients are disconnected when sending unknown packets.</summary>
     public bool DisconnectOnUnknownPacket { get; set; } = true;
 
     /// <summary>Gets or sets the gRPC host.</summary>
@@ -30,6 +30,6 @@ namespace Muwesome.ConnectServer {
     /// <summary>Gets or sets the gRPC port.</summary>
     public ushort GrpcListenerPort { get; set; } = 22336;
 
-    //encryption/decryption settings
+    // TODO: encryption/decryption settings
   }
 }
