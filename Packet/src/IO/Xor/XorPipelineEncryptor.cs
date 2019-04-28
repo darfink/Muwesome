@@ -28,7 +28,6 @@ namespace Muwesome.Packet.IO.Xor {
 
     /// <inheritdoc/>
     protected override async Task ReadPacket(ReadOnlySequence<byte> packet) {
-      // TODO: IGNORE 0xF4 packet's
       ApplyCipherAndWrite(_target, packet, encrypt: true);
       await _target.FlushAsync();
     }

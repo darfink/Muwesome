@@ -29,8 +29,8 @@ namespace Muwesome.Packet {
     /// <summary>Checks whether this packet has a specific identifier.</summary>
     /// <remarks>
     /// Since an identifier cannot be known in advance, this only checks as many
-    /// bytes as provided by the input. That is, an identifier of only C1 would
-    /// match a majority of packets.
+    /// bytes as provided by the input. That is, an identifier of only C1/C2
+    /// would match more or less all packets.
     /// </remarks>
     public bool HasIdentifier(IEnumerable<byte> identifier) {
       var enumerator = Identifier.GetEnumerator();
