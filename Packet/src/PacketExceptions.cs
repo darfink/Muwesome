@@ -1,5 +1,6 @@
 using System;
 using System.Text;
+using Muwesome.Packet.Utility;
 
 namespace Muwesome.Packet {
   public class InvalidPacketException : Exception {

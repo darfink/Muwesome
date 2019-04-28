@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Muwesome.Network;
+using Muwesome.Packet.Utility;
 using Muwesome.Protocol;
 using Muwesome.Protocol.Connect.V20050502;
 
@@ -33,13 +34,13 @@ namespace Muwesome.ConnectServer.PacketHandlers {
     }
 
     private void CreateServerListPacket(IReadOnlyCollection<GameServer> servers) {
-      _gameServerListPacketSize = ProtocolHelper.GetPacketSize<GameServerList, GameServerList.GameServer>(servers.Count);
+      _gameServerListPacketSize = PacketHelper.GetPacketSize<GameServerList, GameServerList.GameServer>(servers.Count);
 
       if (_gameServerListPacket.Length < _gameServerListPacketSize) {
         _gameServerListPacket = new byte[_gameServerListPacketSize];
       }
 
-      ProtocolHelper.CreatePacket<GameServerList, GameServerList.GameServer>(
+      PacketHelper.CreatePacket<GameServerList, GameServerList.GameServer>(
         servers.Count,
         _gameServerListPacket.AsSpan(),
         out Span<GameServerList.GameServer> serverEntries);

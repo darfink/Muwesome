@@ -1,10 +1,9 @@
 using System;
 using System.Runtime.InteropServices;
 using Muwesome.Packet;
-using Muwesome.Protocol.Utility;
 
-namespace Muwesome.Protocol {
-  public static class ProtocolHelper {
+namespace Muwesome.Packet.Utility {
+  public static class PacketHelper {
     public static ref TPacket ParsePacket<TPacket>(Span<byte> data) where TPacket : struct, IPacket {
       // TODO: Return ref vs span, most ergonomic?
       var packet = PacketIdentifierFor<TPacket>.Identifier;

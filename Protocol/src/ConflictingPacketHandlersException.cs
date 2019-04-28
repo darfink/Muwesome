@@ -1,6 +1,7 @@
 using System;
 using System.Text;
 using Muwesome.Packet;
+using Muwesome.Packet.Utility;
 
 namespace Muwesome.Protocol {
   public class ConflictingPacketHandlersException : Exception {

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Muwesome.Packet;
+using Muwesome.Packet.Utility;
 using Muwesome.Protocol.Utility;
 using OneOf;
 
@@ -77,6 +78,7 @@ namespace Muwesome.Protocol {
       }
     }
 
+    // TODO: Use sorted set instead?
     private class PacketToHandlerDictionary : Dictionary<byte, OneOf<PacketToHandlerDictionary, IPacketHandler<T>>> { }
   }
 }

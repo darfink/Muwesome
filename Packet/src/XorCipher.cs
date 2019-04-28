@@ -20,7 +20,6 @@ namespace Muwesome.Packet {
       ApplyCipher(packet, cipher, encrypt: false);
 
     private static void ApplyCipher(Span<byte> packetData, byte[] cipher, bool encrypt) {
-      // TODO: Use specialized exceptions
       if (cipher.Length != RequiredLength) {
         throw new ArgumentException($"The cipher size must be {RequiredLength}, but is {cipher.Length}", nameof(cipher));
       }

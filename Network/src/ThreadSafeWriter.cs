@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using Muwesome.Packet;
+using Muwesome.Packet.Utility;
 
 namespace Muwesome.Network {
   public struct ThreadSafeWriter : IDisposable {
@@ -9,7 +10,7 @@ namespace Muwesome.Network {
     private int _payloadSize;
 
     /// <summary>Creates a new <see cref="ThreadSafeWriter" />.</summary>
-    public ThreadSafeWriter(IConnection connection, int payloadSize) {
+    internal ThreadSafeWriter(IConnection connection, int payloadSize) {
       Monitor.Enter(connection);
       _connection = connection;
       _payloadSize = payloadSize;
@@ -21,7 +22,7 @@ namespace Muwesome.Network {
 
     /// <summary>Commits all changes to the underlying connection.</summary>
     public void Dispose() {
-      Console.WriteLine("Sent: " + Span.AsHexString());
+      System.Console.WriteLine("PACKET: " + Span.AsHexString());
       try {
         // TODO: Improve/move this logic
         new PacketView(Span).ValidateHeader();

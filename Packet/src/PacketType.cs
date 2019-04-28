@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Muwesome.Packet.Utility;
 
 namespace Muwesome.Packet {
   public struct PacketType {
@@ -86,7 +87,7 @@ namespace Muwesome.Packet {
       identifier.CopyTo(data.Slice(HeaderLength));
 
       if (validateBufferSize && data.Length < size) {
-        // TODO: Improve with specialized exception
+        // TODO: Specialized exception
         throw new ArgumentOutOfRangeException(nameof(data));
       }
     }

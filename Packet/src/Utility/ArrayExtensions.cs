@@ -4,7 +4,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace Muwesome.Packet {
+namespace Muwesome.Packet.Utility {
   public static class ArrayExtensions {
     /// <summary>Reads a byte from the specified offset.</summary>
     public static byte ReadByte(this ReadOnlySpan<byte> bytes, int offset = 0) => bytes[offset];

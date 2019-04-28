@@ -3,6 +3,7 @@ using System.Text;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Muwesome.Packet;
+using Muwesome.Packet.Utility;
 using Muwesome.Protocol.Connect.V20050502;
 
 namespace Muwesome.Protocol.Tests {
@@ -17,27 +18,27 @@ namespace Muwesome.Protocol.Tests {
     [TestMethod]
     [ExpectedException(typeof(ArgumentException))]
     public void Packet_Identifier_Validation_Fails_When_Mismatch() {
-      ProtocolHelper.ParsePacket<GameServerUnavailable>(GameServerInfoPacket);
+      PacketHelper.ParsePacket<GameServerUnavailable>(GameServerInfoPacket);
     }
 
     [TestMethod]
     public void ConnectResult_Serialization() {
-      ref var result = ref ProtocolHelper.CreatePacket<ConnectResult>(out byte[] data);
+      ref var result = ref PacketHelper.CreatePacket<ConnectResult>(out byte[] data);
       result.Success = true;
       CollectionAssert.AreEqual(ConnectResultPacketSuccess, data);
 
-      result = ProtocolHelper.ParsePacket<ConnectResult>(ConnectResultPacketSuccess);
+      result = PacketHelper.ParsePacket<ConnectResult>(ConnectResultPacketSuccess);
       Assert.IsTrue(result.Success);
     }
 
     [TestMethod]
     public void GameServerInfo_Serialization() {
-      ref var serverInfo = ref ProtocolHelper.CreatePacket<GameServerInfo>(out byte[] data);
+      ref var serverInfo = ref PacketHelper.CreatePacket<GameServerInfo>(out byte[] data);
       serverInfo.Host = "192.168.1.100";
       serverInfo.Port = 2004;
       CollectionAssert.AreEqual(GameServerInfoPacket, data);
 
-      serverInfo = ProtocolHelper.ParsePacket<GameServerInfo>(GameServerInfoPacket);
+      serverInfo = PacketHelper.ParsePacket<GameServerInfo>(GameServerInfoPacket);
       Assert.AreEqual("192.168.1.100", serverInfo.Host);
       Assert.AreEqual(2004, serverInfo.Port);
     }
@@ -45,23 +46,23 @@ namespace Muwesome.Protocol.Tests {
     [TestMethod]
     [ExpectedException(typeof(ArgumentException))]
     public void GameServerInfo_Serialize_Fails_When_MaxLength_Is_Exceeded() {
-      ref var serverInfo = ref ProtocolHelper.CreatePacket<GameServerInfo>(out byte[] data);
+      ref var serverInfo = ref PacketHelper.CreatePacket<GameServerInfo>(out byte[] data);
       serverInfo.Host = "192.168.255.255-";
     }
 
     [TestMethod]
     public void GameServerUnavailable_Serialization() {
-      ref var unavailable = ref ProtocolHelper.CreatePacket<GameServerUnavailable>(out byte[] data);
+      ref var unavailable = ref PacketHelper.CreatePacket<GameServerUnavailable>(out byte[] data);
       unavailable.ServerCode = 1337;
       CollectionAssert.AreEqual(GameServerUnavailablePacket, data);
 
-      unavailable = ProtocolHelper.ParsePacket<GameServerUnavailable>(GameServerUnavailablePacket);
+      unavailable = PacketHelper.ParsePacket<GameServerUnavailable>(GameServerUnavailablePacket);
       Assert.AreEqual(1337, unavailable.ServerCode);
     }
 
     [TestMethod]
     public void GameServerList_Serialize() {
-      ref var list = ref ProtocolHelper.CreatePacket<GameServerList, GameServerList.GameServer>(
+      ref var list = ref PacketHelper.CreatePacket<GameServerList, GameServerList.GameServer>(
         GameServerListEntries.Length,
         out byte[] data,
         out Span<GameServerList.GameServer> servers);
@@ -79,7 +80,7 @@ namespace Muwesome.Protocol.Tests {
 
     [TestMethod]
     public void GameServerList_Deserialize() {
-      ref var list = ref ProtocolHelper.ParsePacket<GameServerList, GameServerList.GameServer>(
+      ref var list = ref PacketHelper.ParsePacket<GameServerList, GameServerList.GameServer>(
         GameServerListPacket,
         out Span<GameServerList.GameServer> servers);
 

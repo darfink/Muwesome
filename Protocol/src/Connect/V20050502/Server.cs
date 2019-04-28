@@ -1,6 +1,8 @@
 using System;
 using System.Text;
 using System.Runtime.InteropServices;
+using Muwesome.Packet;
+using Muwesome.Packet.Utility;
 using Muwesome.Protocol.Utility;
 
 namespace Muwesome.Protocol.Connect.V20050502 {

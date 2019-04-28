@@ -1,7 +1,7 @@
 using System;
 using Muwesome.Packet;
 
-namespace Muwesome.Protocol.Utility {
+namespace Muwesome.Packet.Utility {
   public static class PacketIdentifierFor<T> where T : IPacket {
     private static readonly PacketAttribute _attribute;
 

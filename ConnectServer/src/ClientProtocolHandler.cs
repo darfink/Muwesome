@@ -4,6 +4,7 @@ using log4net;
 using Muwesome.ConnectServer.PacketHandlers;
 using Muwesome.Network;
 using Muwesome.Packet;
+using Muwesome.Packet.Utility;
 using Muwesome.Protocol.Connect.V20050502;
 using Muwesome.Protocol;
 
@@ -46,11 +47,8 @@ namespace Muwesome.ConnectServer {
     }
 
     private void OnClientSessionStarted(object sender, ClientSessionEventArgs ev) {
-      var size = ProtocolHelper.GetPacketSize<ConnectResult>();
-
-      using (var writer = ev.Client.Connection.StartWrite(size)) {
-        ref var result = ref ProtocolHelper.CreatePacket<ConnectResult>(writer.Span);
-        result.Success = true;
+      using (var writer = ev.Client.Connection.SendPacket<ConnectResult>()) {
+        writer.Packet.Success = true;
       }
     }
   }
