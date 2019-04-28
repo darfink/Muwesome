@@ -30,8 +30,7 @@ namespace Muwesome.ConnectServer {
       Config = config;
       _gameServerController = gameServerController;
       _clientController = clientController;
-      _lifecycleServices = lifecycleServices;
-      _lifecycleServices.Append(clientListener);
+      _lifecycleServices = lifecycleServices.Prepend(clientListener).ToArray();
 
       clientListener.BeforeClientAccepted += OnBeforeClientAccepted;
       clientListener.AfterClientAccepted += (_, ev) =>
