@@ -2,6 +2,7 @@ using System;
 using System.Net;
 using System.Threading;
 using log4net;
+using Muwesome.ConnectServer.Utility;
 using Muwesome.Network;
 using Muwesome.Packet;
 using Muwesome.Protocol;
@@ -63,9 +64,16 @@ namespace Muwesome.ConnectServer {
     }
 
     private void OnReceiveComplete(Exception ex) {
-      if (ex != null) {
-        Logger.Error("A client session error occured", ex);
+      if (ex == null) {
+        return;
       }
+
+      var socketException = ex.GetExceptionByType<System.Net.Sockets.SocketException>();
+      if (socketException?.SocketErrorCode == System.Net.Sockets.SocketError.ConnectionReset) {
+        return;
+      }
+
+      Logger.Error("A client session error occured", ex);
     }
   }
 }
