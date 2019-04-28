@@ -7,37 +7,37 @@ using Pipelines.Sockets.Unofficial;
 
 namespace Muwesome.Network {
   public class PipelinedSocket : IRemoteDuplexPipe, IDisposable {
-    private readonly IPipelineEncryptor _encryptor;
-    private readonly IPipelineDecryptor _decryptor;
-    private readonly SocketConnection _socket;
-    private bool _pipesActive = true;
+    private readonly IPipelineEncryptor encryptor;
+    private readonly IPipelineDecryptor decryptor;
+    private readonly SocketConnection socket;
+    private bool pipesActive = true;
 
-    /// <summary>Constructs a pipelined socket.</summary>
+    /// <summary>Initializes a new instance of the <see cref="PipelinedSocket"/> class.</summary>
     public PipelinedSocket(SocketConnection socket, IPipelineEncryptor encryptor, IPipelineDecryptor decryptor) {
-      _encryptor = encryptor;
-      _decryptor = decryptor;
-      _socket = socket;
-      _socket.Input.OnWriterCompleted((_, __) => _pipesActive = false, null);
-      _socket.Output.OnReaderCompleted((_, __) => _pipesActive = false, null);
-      RemoteEndPoint = _socket.Socket.RemoteEndPoint;
+      this.encryptor = encryptor;
+      this.decryptor = decryptor;
+      this.socket = socket;
+      this.socket.Input.OnWriterCompleted((_, ev) => this.pipesActive = false, null);
+      this.socket.Output.OnReaderCompleted((_, ev) => this.pipesActive = false, null);
+      this.RemoteEndPoint = this.socket.Socket.RemoteEndPoint;
     }
 
     /// <inheritdoc />
-    public bool IsBound => _pipesActive && _socket.Socket.Connected;
+    public bool IsBound => this.pipesActive && this.socket.Socket.Connected;
 
     /// <inheritdoc />
     public EndPoint RemoteEndPoint { get; }
 
     /// <inheritdoc />
-    public PipeReader Input => _decryptor?.Reader ?? _socket.Input;
+    public PipeReader Input => this.decryptor?.Reader ?? this.socket.Input;
 
     /// <inheritdoc />
-    public PipeWriter Output => _encryptor?.Writer ?? _socket.Output;
+    public PipeWriter Output => this.encryptor?.Writer ?? this.socket.Output;
 
     /// <inheritdoc />
-    public void Dispose() => _socket.Dispose();
+    public void Dispose() => this.socket.Dispose();
 
     /// <inheritdoc/>
-    public override string ToString() => RemoteEndPoint?.ToString() ?? $"<unknown>";
+    public override string ToString() => this.RemoteEndPoint?.ToString() ?? $"<unknown>";
   }
 }

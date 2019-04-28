@@ -5,34 +5,34 @@ using System.Threading.Tasks;
 
 namespace Muwesome.Packet.IO {
   public class UniformPipelineWriter : PacketPipeReaderBase, IPipelineEncryptor {
-    private readonly Pipe _pipe = new Pipe();
-    private readonly PipeWriter _target;
+    private readonly Pipe pipe = new Pipe();
+    private readonly PipeWriter target;
 
-    /// <summary>Contructs a new uniform pipeline writer.</summary>
+    /// <summary>Initializes a new instance of the <see cref="UniformPipelineWriter"/> class.</summary>
     public UniformPipelineWriter(PipeWriter target) {
-      Source = _pipe.Reader;
-      _target = target;
-      _ = ReadSource();
+      this.Source = this.pipe.Reader;
+      this.target = target;
+      _ = this.ReadSource();
     }
 
     /// <inheritdoc/>
-    public virtual PipeWriter Writer => _pipe.Writer;
+    public virtual PipeWriter Writer => this.pipe.Writer;
 
     /// <inheritdoc/>
     protected override void OnComplete(Exception exception) =>
-      _target.Complete(exception);
+      this.target.Complete(exception);
 
     /// <inheritdoc/>
     protected override async Task ReadPacket(ReadOnlySequence<byte> packet) {
-      CopyAndWrite(packet);
-      await _target.FlushAsync();
+      this.CopyAndWrite(packet);
+      await this.target.FlushAsync();
     }
 
     private void CopyAndWrite(ReadOnlySequence<byte> packet) {
       int packetSize = (int)packet.Length;
-      var output = _target.GetSpan(packetSize).Slice(0, packetSize);
+      var output = this.target.GetSpan(packetSize).Slice(0, packetSize);
       packet.CopyTo(output);
-      _target.Advance(packetSize);
+      this.target.Advance(packetSize);
     }
   }
 }

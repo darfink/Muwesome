@@ -6,30 +6,29 @@ using Muwesome.Packet.Utility;
 
 namespace Muwesome.Network {
   public struct ThreadSafeWriter : IDisposable {
-    private IConnection _connection;
-    private int _payloadSize;
+    private readonly IConnection connection;
+    private readonly int payloadSize;
 
-    /// <summary>Creates a new <see cref="ThreadSafeWriter" />.</summary>
+    /// <summary>Initializes a new instance of the <see cref="ThreadSafeWriter"/> struct.</summary>
     internal ThreadSafeWriter(IConnection connection, int payloadSize) {
       Monitor.Enter(connection);
-      _connection = connection;
-      _payloadSize = payloadSize;
-      Span.Clear();
+      this.connection = connection;
+      this.payloadSize = payloadSize;
+      this.Span.Clear();
     }
 
     /// <summary>Gets the span for the current transaction.</summary>
-    public Span<byte> Span => _connection.Output.GetSpan(_payloadSize).Slice(0, _payloadSize);
+    public Span<byte> Span => this.connection.Output.GetSpan(this.payloadSize).Slice(0, this.payloadSize);
 
     /// <summary>Commits all changes to the underlying connection.</summary>
     public void Dispose() {
-      System.Console.WriteLine("PACKET: " + Span.AsHexString());
       try {
         // TODO: Improve/move this logic
-        new PacketView(Span).ValidateHeader();
-        _connection.Output.Advance(_payloadSize);
-        _connection.Output.FlushAsync();
+        new PacketView(this.Span).ValidateHeader();
+        this.connection.Output.Advance(this.payloadSize);
+        this.connection.Output.FlushAsync();
       } finally {
-        Monitor.Exit(_connection);
+        Monitor.Exit(this.connection);
       }
     }
   }

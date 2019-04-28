@@ -8,12 +8,12 @@ using OneOf;
 
 namespace Muwesome.Protocol {
   public abstract class ConfigurablePacketHandler<T> : IPacketHandler<T> {
-    private readonly PacketToHandlerDictionary _packetHandlers = new PacketToHandlerDictionary();
+    private readonly PacketToHandlerDictionary packetHandlers = new PacketToHandlerDictionary();
 
     /// <inheritdoc />
     public virtual bool HandlePacket(T sender, Span<byte> packetData) {
       var packet = new PacketView(packetData);
-      var handler = GetHandlerForPacket(packet);
+      var handler = this.GetHandlerForPacket(packet);
 
       if (handler == null) {
         return false;
@@ -23,17 +23,18 @@ namespace Muwesome.Protocol {
     }
 
     /// <summary>Registers a new handler for a packet type.</summary>
-    protected void Register<TPacket>(IPacketHandler<T> handler) where TPacket : IPacket {
-      InsertHandlerForPacket(PacketIdentifierFor<TPacket>.Identifier, handler);
+    protected void Register<TPacket>(IPacketHandler<T> handler)
+        where TPacket : IPacket {
+      this.InsertHandlerForPacket(PacketIdentifierFor<TPacket>.Identifier, handler);
     }
 
     /// <summary>Registers a new handler for a packet.</summary>
     protected void Register(PacketIdentifier packet, IPacketHandler<T> handler) {
-      InsertHandlerForPacket(packet, handler);
+      this.InsertHandlerForPacket(packet, handler);
     }
 
     private IPacketHandler<T> GetHandlerForPacket(PacketView packet) {
-      var handlers = _packetHandlers;
+      var handlers = this.packetHandlers;
       foreach (byte key in packet.Identifier) {
         if (!handlers.TryGetValue(key, out OneOf<PacketToHandlerDictionary, IPacketHandler<T>> value)) {
           break;
@@ -53,7 +54,7 @@ namespace Muwesome.Protocol {
       // TODO: Throw improved exception (show conflicting packets)
       var identifier = packet.Identifier;
 
-      var handlers = _packetHandlers;
+      var handlers = this.packetHandlers;
       for (int i = 0; i < identifier.Count; i++) {
         bool isLastIdentifier = i == identifier.Count - 1;
         bool identifierExists = handlers.ContainsKey(identifier[i]);
@@ -68,8 +69,7 @@ namespace Muwesome.Protocol {
         } else if (identifierExists) {
           handlers = handlers[identifier[i]].Match(
             dictionary => dictionary,
-            _ => throw new ConflictingPacketHandlersException(packet)
-          );
+            _ => throw new ConflictingPacketHandlersException(packet));
         } else {
           var nestedHandlers = new PacketToHandlerDictionary();
           handlers.Add(identifier[i], nestedHandlers);
@@ -79,6 +79,7 @@ namespace Muwesome.Protocol {
     }
 
     // TODO: Use sorted set instead?
-    private class PacketToHandlerDictionary : Dictionary<byte, OneOf<PacketToHandlerDictionary, IPacketHandler<T>>> { }
+    private class PacketToHandlerDictionary : Dictionary<byte, OneOf<PacketToHandlerDictionary, IPacketHandler<T>>> {
+    }
   }
 }

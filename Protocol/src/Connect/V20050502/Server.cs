@@ -1,6 +1,6 @@
 using System;
-using System.Text;
 using System.Runtime.InteropServices;
+using System.Text;
 using Muwesome.Packet;
 using Muwesome.Packet.Utility;
 using Muwesome.Protocol.Utility;
@@ -37,8 +37,8 @@ namespace Muwesome.Protocol.Connect.V20050502 {
     private BigEndian<ushort> serverCount;
 
     public int Count {
-      get => serverCount;
-      set => serverCount = checked((ushort)value);
+      get => this.serverCount;
+      set => this.serverCount = checked((ushort)value);
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]

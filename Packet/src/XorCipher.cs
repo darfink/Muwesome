@@ -37,7 +37,7 @@ namespace Muwesome.Packet {
       int start = encrypt ? packet.Type.HeaderLength + 1 : packet.Length - 1;
       int end = encrypt ? packet.Length : packet.Type.HeaderLength;
 
-      for (int i = start; i != end; i += (encrypt ? 1 : -1)) {
+      for (int i = start; i != end; i += encrypt ? 1 : -1) {
         packetData[i] ^= (byte)(packet.Data[i - 1] ^ cipher[i % cipher.Length]);
       }
     }

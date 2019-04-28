@@ -1,7 +1,8 @@
 using System;
 
 namespace Muwesome.Protocol.Utility {
-  public struct BigEndian<T> where T : struct {
+  public struct BigEndian<T>
+      where T : struct {
     private T value;
 
     public static implicit operator BigEndian<T>(T rhs) =>

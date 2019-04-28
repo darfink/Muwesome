@@ -5,31 +5,33 @@ using System.Threading.Tasks;
 
 namespace Muwesome.Packet.IO.Xor {
   public class XorPipelineEncryptor : XorPipeline, IPipelineEncryptor {
-    private readonly Pipe _pipe = new Pipe();
-    private readonly PipeWriter _target;
+    private readonly Pipe pipe = new Pipe();
+    private readonly PipeWriter target;
 
-    /// <summary>Contructs a new XOR pipeline encryptor.</summary>
-    public XorPipelineEncryptor(PipeWriter target) :
-      this(target, XorCipher.DefaultKeys) { }
+    /// <summary>Initializes a new instance of the <see cref="XorPipelineEncryptor"/> class.</summary>
+    public XorPipelineEncryptor(PipeWriter target)
+        : this(target, XorCipher.DefaultKeys) {
+    }
 
-    /// <summary>Contructs a new XOR pipeline encryptor.</summary>
-    public XorPipelineEncryptor(PipeWriter target, byte[] xorCipher) : base(xorCipher) {
-      Source = _pipe.Reader;
-      _target = target;
-      _ = ReadSource();
+    /// <summary>Initializes a new instance of the <see cref="XorPipelineEncryptor"/> class.</summary>
+    public XorPipelineEncryptor(PipeWriter target, byte[] xorCipher)
+        : base(xorCipher) {
+      this.Source = this.pipe.Reader;
+      this.target = target;
+      _ = this.ReadSource();
     }
 
     /// <inheritdoc/>
-    public virtual PipeWriter Writer => _pipe.Writer;
+    public virtual PipeWriter Writer => this.pipe.Writer;
 
     /// <inheritdoc/>
     protected override void OnComplete(Exception exception) =>
-      _target.Complete(exception);
+      this.target.Complete(exception);
 
     /// <inheritdoc/>
     protected override async Task ReadPacket(ReadOnlySequence<byte> packet) {
-      ApplyCipherAndWrite(_target, packet, encrypt: true);
-      await _target.FlushAsync();
+      this.ApplyCipherAndWrite(this.target, packet, encrypt: true);
+      await this.target.FlushAsync();
     }
   }
 }

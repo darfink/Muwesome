@@ -4,7 +4,8 @@ using Muwesome.Packet;
 
 namespace Muwesome.Packet.Utility {
   public static class PacketHelper {
-    public static ref TPacket ParsePacket<TPacket>(Span<byte> data) where TPacket : struct, IPacket {
+    public static ref TPacket ParsePacket<TPacket>(Span<byte> data)
+        where TPacket : struct, IPacket {
       // TODO: Return ref vs span, most ergonomic?
       var packet = PacketIdentifierFor<TPacket>.Identifier;
       packet.EnsureMatchingHeader(data, Marshal.SizeOf<TPacket>());
@@ -27,12 +28,14 @@ namespace Muwesome.Packet.Utility {
       return ref payload;
     }
 
-    public static ref TPacket CreatePacket<TPacket>(out byte[] buffer) where TPacket : struct, IPacket {
+    public static ref TPacket CreatePacket<TPacket>(out byte[] buffer)
+        where TPacket : struct, IPacket {
       buffer = new byte[GetPacketMinimumSize<TPacket>()];
       return ref CreatePacket<TPacket>(buffer.AsSpan());
     }
 
-    public static ref TPacket CreatePacket<TPacket>(Span<byte> data) where TPacket : struct, IPacket {
+    public static ref TPacket CreatePacket<TPacket>(Span<byte> data)
+        where TPacket : struct, IPacket {
       if (data.Length < GetPacketMinimumSize<TPacket>()) {
         throw new ArgumentOutOfRangeException(nameof(data));
       }
@@ -69,15 +72,17 @@ namespace Muwesome.Packet.Utility {
       return ref payload;
     }
 
-    public static int GetPacketMinimumSize<TPacket>() where TPacket : struct, IPacket =>
+    public static int GetPacketMinimumSize<TPacket>()
+        where TPacket : struct, IPacket =>
       PacketIdentifierFor<TPacket>.Identifier.PayloadOffset + Marshal.SizeOf<TPacket>();
 
-    public static int GetPacketSize<TPacket>() where TPacket : struct, IFixedPacket =>
+    public static int GetPacketSize<TPacket>()
+        where TPacket : struct, IFixedPacket =>
       GetPacketMinimumSize<TPacket>();
 
     public static int GetPacketSize<TPacket, TInner>(int count)
-      where TPacket : struct, IDynamicPacket<TInner>
-      where TInner : struct =>
-      GetPacketMinimumSize<TPacket>() + Marshal.SizeOf<TInner>() * count;
+        where TPacket : struct, IDynamicPacket<TInner>
+        where TInner : struct =>
+      GetPacketMinimumSize<TPacket>() + (Marshal.SizeOf<TInner>() * count);
   }
 }

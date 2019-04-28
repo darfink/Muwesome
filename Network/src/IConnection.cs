@@ -18,13 +18,13 @@ namespace Muwesome.Network {
     /// <summary>An event that is raised whenever the connection is disconnected.</summary>
     event DisconnectedHandler Disconnected;
 
-    /// <summary>A writer for outgoing packets.</summary>
+    /// <summary>Gets a writer for outgoing packets.</summary>
     PipeWriter Output { get; }
 
     /// <summary>Gets the connection's end point.</summary>
     EndPoint RemoteEndPoint { get; }
 
-    /// <summary>Gets whether the connection is still active.</summary>
+    /// <summary>Gets a value indicating whether the connection is still active.</summary>
     bool IsConnected { get; }
 
     /// <summary>Begins reading incoming packets.</summary>

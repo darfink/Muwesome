@@ -30,22 +30,22 @@ namespace Muwesome.Packet.IO {
     }
 
     private async Task<bool> ReadBuffer() {
-      ReadResult result = await Source.ReadAsync();
+      ReadResult result = await this.Source.ReadAsync();
       ReadOnlySequence<byte> buffer = result.Buffer;
 
       while (buffer.Length >= PacketView.MinimumSize) {
-        ValidatePacket(buffer, out int packetSize);
+        this.ValidatePacket(buffer, out int packetSize);
 
         if (buffer.Length < packetSize) {
           // Wait for more data...
           break;
         }
 
-        await ReadPacket(buffer.Slice(0, packetSize));
+        await this.ReadPacket(buffer.Slice(0, packetSize));
         buffer = buffer.Slice(packetSize);
       }
 
-      Source.AdvanceTo(buffer.Start);
+      this.Source.AdvanceTo(buffer.Start);
       return result.IsCanceled || result.IsCompleted;
     }
 

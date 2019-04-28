@@ -1,25 +1,25 @@
 using System;
-using System.Linq;
 using System.Buffers;
+using System.IO.Pipelines;
+using System.Linq;
 using System.Runtime.ExceptionServices;
 using System.Threading.Tasks;
-using System.IO.Pipelines;
 
 namespace Muwesome.Packet.IO {
   /// <summary>Callback for whenever a new packet is read.</summary>
   public delegate void PacketReadCallback(Span<byte> packet);
 
   public class PacketEventReader : PacketPipeReaderBase {
-    private readonly byte[] _packetBuffer;
-    private readonly int? _maxPacketSize;
-    private PacketReadCallback _packetCallback;
-    private Exception _exception;
+    private readonly byte[] packetBuffer;
+    private readonly int? maxPacketSize;
+    private PacketReadCallback packetCallback;
+    private Exception exception;
 
-    /// <summary>Contructs a new packet reader.</summary>
+    /// <summary>Initializes a new instance of the <see cref="PacketEventReader"/> class.</summary>
     public PacketEventReader(PipeReader source, int? maxPacketSize = null) {
-      _packetBuffer = new byte[maxPacketSize ?? 0xFF];
-      _maxPacketSize = maxPacketSize;
-      Source = source;
+      this.packetBuffer = new byte[maxPacketSize ?? 0xFF];
+      this.maxPacketSize = maxPacketSize;
+      this.Source = source;
     }
 
     /// <summary>Begins decrypting packets from the source.</summary>
@@ -27,29 +27,29 @@ namespace Muwesome.Packet.IO {
     /// A callback is used due to <see cref="Span"/>'s inability to work with async.
     /// </remarks>
     public async Task BeginRead(PacketReadCallback callback) {
-      _packetCallback = callback;
-      await ReadSource();
+      this.packetCallback = callback;
+      await this.ReadSource();
 
-      if (_exception != null) {
-        ExceptionDispatchInfo.Capture(_exception).Throw();
+      if (this.exception != null) {
+        ExceptionDispatchInfo.Capture(this.exception).Throw();
       }
     }
 
     /// <inheritdoc/>
     protected override void OnComplete(Exception exception) =>
-      _exception = exception;
+      this.exception = exception;
 
     /// <inheritdoc/>
     protected override Task ReadPacket(ReadOnlySequence<byte> packet) {
-      if (_maxPacketSize != null && packet.Length > _maxPacketSize.Value) {
+      if (this.maxPacketSize != null && packet.Length > this.maxPacketSize.Value) {
         var bytes = packet.Slice(0, packet.Length).ToArray();
-        throw new MaxPacketSizeExceededException(bytes, (int)packet.Length, _maxPacketSize.Value);
+        throw new MaxPacketSizeExceededException(bytes, (int)packet.Length, this.maxPacketSize.Value);
       }
 
       Span<byte> packetSpan;
       IMemoryOwner<byte> owner = null;
-      if (packet.Length <= _packetBuffer.Length) {
-        packetSpan = _packetBuffer;
+      if (packet.Length <= this.packetBuffer.Length) {
+        packetSpan = this.packetBuffer;
       } else {
         owner = MemoryPool<byte>.Shared.Rent((int)packet.Length);
         packetSpan = owner.Memory.Span.Slice(0, (int)packet.Length);
@@ -57,7 +57,7 @@ namespace Muwesome.Packet.IO {
 
       packet.CopyTo(packetSpan);
       try {
-        _packetCallback.Invoke(packetSpan);
+        this.packetCallback.Invoke(packetSpan);
       } finally {
         owner?.Dispose();
       }

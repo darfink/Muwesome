@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RuleSet Name="Custom Rulset" Description="Custom Rulset" ToolsVersion="14.0">
     <Rules AnalyzerId="StyleCop.Analyzers" RuleNamespace="StyleCop.Analyzers">
-      <Rule Id="SA1008" Action="None" />
       <Rule Id="SA1200" Action="None" />
       <Rule Id="SA1500" Action="None" />
+
+      <!-- Remove this when StyleCop C# 7.X support arrives -->
+      <Rule Id="SA1008" Action="None" />
+      <Rule Id="SA1206" Action="None" />
 
       <!-- Documentation requirements -->
       <Rule Id="SA1611" Action="None" />

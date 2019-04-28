@@ -5,8 +5,10 @@ using Muwesome.Packet.Utility;
 
 namespace Muwesome.Protocol {
   public class ConflictingPacketHandlersException : Exception {
-    /// <summary>Constructs a new <see cref="ConflictingPacketHandlersException" />.</summary>
-    public ConflictingPacketHandlersException(PacketIdentifier packet) : base(BuildMessage(packet)) { }
+    /// <summary>Initializes a new instance of the <see cref="ConflictingPacketHandlersException"/> class.</summary>
+    public ConflictingPacketHandlersException(PacketIdentifier packet)
+        : base(BuildMessage(packet)) {
+    }
 
     private static string BuildMessage(PacketIdentifier packet) =>
       new StringBuilder()

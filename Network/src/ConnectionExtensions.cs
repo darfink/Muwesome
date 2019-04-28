@@ -8,7 +8,8 @@ namespace Muwesome.Network {
       new ThreadSafeWriter(connection, payloadSize);
 
     /// <summary>Initiates a packet write.</summary>
-    public static PacketWriter<T> SendPacket<T>(this IConnection connection) where T : struct, IFixedPacket =>
+    public static PacketWriter<T> SendPacket<T>(this IConnection connection)
+        where T : struct, IFixedPacket =>
       new PacketWriter<T>(new ThreadSafeWriter(connection, PacketHelper.GetPacketSize<T>()));
   }
 }

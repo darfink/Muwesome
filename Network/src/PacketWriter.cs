@@ -3,16 +3,17 @@ using Muwesome.Packet;
 using Muwesome.Packet.Utility;
 
 namespace Muwesome.Network {
-  public struct PacketWriter<T> : IDisposable where T : struct, IFixedPacket {
-    private ThreadSafeWriter _writer;
+  public struct PacketWriter<T> : IDisposable
+      where T : struct, IFixedPacket {
+    private ThreadSafeWriter writer;
 
-    /// <summary>Creates a new <see cref="PacketWriter" />.</summary>
-    internal PacketWriter(ThreadSafeWriter writer) => _writer = writer;
+    /// <summary>Initializes a new instance of the <see cref="PacketWriter{T}"/> struct.</summary>
+    internal PacketWriter(ThreadSafeWriter writer) => this.writer = writer;
 
     /// <summary>Gets the packet's payload.</summary>
-    public ref T Packet => ref PacketHelper.CreatePacket<T>(_writer.Span);
+    public ref T Packet => ref PacketHelper.CreatePacket<T>(this.writer.Span);
 
     /// <inheritdoc />
-    public void Dispose() => _writer.Dispose();
+    public void Dispose() => this.writer.Dispose();
   }
 }

@@ -8,14 +8,14 @@ using Muwesome.Packet.IO;
 
 namespace Muwesome.Network {
   public class DuplexConnection : IConnection {
-    private readonly IDuplexPipe _duplexPipe;
-    private readonly PacketEventReader _packetReader;
-    private int _isDisposed = 0;
+    private readonly IDuplexPipe duplexPipe;
+    private readonly PacketEventReader packetReader;
+    private int isDisposed = 0;
 
-    /// <summary>Constructs a new connection instance.</summary>
+    /// <summary>Initializes a new instance of the <see cref="DuplexConnection"/> class.</summary>
     public DuplexConnection(IDuplexPipe pipe, int? maxPacketSize = null) {
-      _duplexPipe = pipe;
-      _packetReader = new PacketEventReader(pipe.Input, maxPacketSize);
+      this.duplexPipe = pipe;
+      this.packetReader = new PacketEventReader(pipe.Input, maxPacketSize);
     }
 
     /// <inheritdoc />
@@ -25,44 +25,44 @@ namespace Muwesome.Network {
     public event DisconnectedHandler Disconnected;
 
     /// <inheritdoc />
-    public PipeWriter Output => _duplexPipe.Output;
+    public PipeWriter Output => this.duplexPipe.Output;
 
     /// <inheritdoc />
-    public EndPoint RemoteEndPoint => RemotePipe?.RemoteEndPoint;
+    public EndPoint RemoteEndPoint => this.RemotePipe?.RemoteEndPoint;
 
     /// <inheritdoc />
-    public bool IsConnected => _isDisposed == 0 && (RemotePipe?.IsBound ?? true);
+    public bool IsConnected => this.isDisposed == 0 && (this.RemotePipe?.IsBound ?? true);
 
     /// <summary>Gets the pipe as a <see cref="IRemoteDuplexPipe" /> if possible.</summary>
-    private IRemoteDuplexPipe RemotePipe => _duplexPipe as IRemoteDuplexPipe;
+    private IRemoteDuplexPipe RemotePipe => this.duplexPipe as IRemoteDuplexPipe;
 
     /// <inheritdoc />
     public async Task BeginReceive() {
-      if (_isDisposed == 1) {
+      if (this.isDisposed == 1) {
         throw new ObjectDisposedException(nameof(DuplexConnection));
       }
 
       try {
-        await _packetReader.BeginRead(packet => PacketReceived?.Invoke(this, packet));
+        await this.packetReader.BeginRead(packet => this.PacketReceived?.Invoke(this, packet));
       } finally {
-        Disconnect();
+        this.Disconnect();
       }
     }
 
     /// <inheritdoc />
-    public void Disconnect() => Dispose();
+    public void Disconnect() => this.Dispose();
 
     /// <inheritdoc />
     public void Dispose() {
-      if (Interlocked.Exchange(ref _isDisposed, 1) == 1) {
+      if (Interlocked.Exchange(ref this.isDisposed, 1) == 1) {
         return;
       }
 
-      (_duplexPipe as IDisposable)?.Dispose();
-      Disconnected?.Invoke(this, EventArgs.Empty);
+      (this.duplexPipe as IDisposable)?.Dispose();
+      this.Disconnected?.Invoke(this, EventArgs.Empty);
     }
 
     /// <inheritdoc/>
-    public override string ToString() => _duplexPipe.ToString();
+    public override string ToString() => this.duplexPipe.ToString();
   }
 }

@@ -7,7 +7,7 @@ namespace Muwesome.Network {
     /// <summary>Gets the remote's end point.</summary>
     EndPoint RemoteEndPoint { get; }
 
-    /// <summary>Gets whether the pipe is still bound.</summary>
+    /// <summary>Gets a value indicating whether the pipe is still bound.</summary>
     bool IsBound { get; }
   }
 }
