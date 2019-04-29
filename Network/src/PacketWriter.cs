@@ -5,7 +5,7 @@ using Muwesome.Packet.Utility;
 namespace Muwesome.Network {
   public struct PacketWriter<T> : IDisposable
       where T : struct, IFixedPacket {
-    private ThreadSafeWriter writer;
+    private readonly ThreadSafeWriter writer;
 
     /// <summary>Initializes a new instance of the <see cref="PacketWriter{T}"/> struct.</summary>
     internal PacketWriter(ThreadSafeWriter writer) => this.writer = writer;

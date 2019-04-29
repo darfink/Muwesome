@@ -14,21 +14,17 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="log4net" Version="2.0.8" />
-    <PackageReference Include="Pipelines.Sockets.Unofficial" Version="2.0.22" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.0.2">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <Protobuf Include="../Protos/connectserver.proto" GrpcServices="Server" Generator="MSBuild:Compile" />
+    <Protobuf Include="../Protos/loginserver.proto" GrpcServices="Server" Generator="MSBuild:Compile" />
     <Content Include="@(Protobuf)" />
     <None Remove="@(Protobuf)" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Network\Network.csproj" />
-    <ProjectReference Include="..\Packet\Packet.csproj" />
-    <ProjectReference Include="..\Protocol\Protocol.csproj" />
     <ProjectReference Include="..\ServerCommon\ServerCommon.csproj" />
   </ItemGroup>
 </Project>

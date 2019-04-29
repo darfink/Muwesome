@@ -37,8 +37,8 @@ namespace Muwesome.Protocol.Connect.V20050502 {
     private BigEndian<ushort> serverCount;
 
     public int Count {
-      get => this.serverCount;
-      set => this.serverCount = checked((ushort)value);
+      get => serverCount;
+      set => serverCount = checked((ushort)value);
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]

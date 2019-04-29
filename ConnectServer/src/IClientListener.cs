@@ -1,4 +1,5 @@
 using System;
+using Muwesome.ServerCommon;
 
 namespace Muwesome.ConnectServer {
   public interface IClientListener : ILifecycle {

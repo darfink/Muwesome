@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
 
-namespace Muwesome.ConnectServer {
+namespace Muwesome.ServerCommon {
   public interface ILifecycle {
     /// <summary>Gets the lifecycle's task.</summary>
     Task Task { get; }

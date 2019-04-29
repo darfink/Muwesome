@@ -4,8 +4,9 @@ using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using Grpc.Core;
+using Muwesome.ConnectServer.Rpc;
 
-namespace Muwesome.ConnectServer.Rpc {
+namespace Muwesome.ConnectServer.Services {
   public class GameServerRegisterService : GameServerRegister.GameServerRegisterBase {
     private readonly IGameServerController gameServerController;
     private readonly CancellationToken cancellationToken;
@@ -43,7 +44,7 @@ namespace Muwesome.ConnectServer.Rpc {
 
       GameServer server = null;
       try {
-        server = checked(new GameServer((byte)register.Id, register.Host, (ushort)register.Port, register.Status.Clients, register.Status.Capacity));
+        server = checked(new GameServer((byte)register.Id, register.Host, (ushort)register.Port, register.Status.ClientCount, register.Status.ClientCapacity));
       } catch (OverflowException) {
         throw new RpcException(new Status(StatusCode.InvalidArgument, "The server fields are out of range"));
       }
@@ -64,8 +65,8 @@ namespace Muwesome.ConnectServer.Rpc {
           throw new RpcException(new Status(StatusCode.InvalidArgument, "The server is already registered; expected a 'Status' message"));
         }
 
-        server.ClientCount = status.Clients;
-        server.ClientCapacity = status.Capacity;
+        server.ClientCount = status.ClientCount;
+        server.ClientCapacity = status.ClientCapacity;
       }
     }
   }
