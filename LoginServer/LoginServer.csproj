@@ -26,5 +26,6 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ServerCommon\ServerCommon.csproj" />
+    <ProjectReference Include="..\DomainModel\DomainModel.csproj" />
   </ItemGroup>
 </Project>

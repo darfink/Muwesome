@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using log4net;
 
@@ -8,7 +9,7 @@ namespace Muwesome.ServerCommon {
   public abstract class LifecycleServerBase : ILifecycle, IDisposable {
     private readonly ILifecycle[] lifecycleInstances;
     private readonly Stopwatch startTime;
-    private bool isRunning;
+    private int isRunning;
 
     /// <summary>Initializes a new instance of the <see cref="LifecycleServerBase"/> class.</summary>
     public LifecycleServerBase(params ILifecycle[] lifecycleInstances) {
@@ -33,27 +34,27 @@ namespace Muwesome.ServerCommon {
         instance.Start();
       }
 
-      this.isRunning = true;
+      this.isRunning = 1;
       this.Logger.Info("Server successfully started");
     }
 
     /// <inheritdoc />
     public virtual void Stop() {
+      if (Interlocked.Exchange(ref this.isRunning, 0) == 0) {
+        return;
+      }
+
       this.Logger.Info($"Stopping {this.GetType().Name}...");
       foreach (var instance in this.lifecycleInstances) {
         instance.Stop();
       }
 
-      this.isRunning = false;
       this.Logger.Info("Server stopped");
     }
 
     /// <inheritdoc />
     public virtual void Dispose() {
-      if (this.isRunning) {
-        this.Stop();
-      }
-
+      this.Stop();
       foreach (var instance in this.lifecycleInstances.OfType<IDisposable>()) {
         instance.Dispose();
       }

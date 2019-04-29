@@ -8,7 +8,7 @@ using Muwesome.LoginServer.Services;
 using Muwesome.ServerCommon;
 
 namespace Muwesome.LoginServer {
-  public class RpcServiceController : RpcServiceControllerBase {
+  internal class RpcServiceController : RpcServiceControllerBase {
     /// <summary>Initializes a new instance of the <see cref="RpcServiceController"/> class.</summary>
     public RpcServiceController(Configuration config)
         : base(new ServerPort(config.GrpcListenerHost, config.GrpcListenerPort, ServerCredentials.Insecure)) {

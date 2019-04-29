@@ -21,6 +21,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LoginServer", "LoginServer\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerCommon", "ServerCommon\ServerCommon.csproj", "{40C283F4-4309-44B1-A6FF-672CA82E60B5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DomainModel", "DomainModel\DomainModel.csproj", "{52FE454E-DE43-40EA-B73C-8D57AAA64654}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -142,5 +144,17 @@ Global
 		{40C283F4-4309-44B1-A6FF-672CA82E60B5}.Release|x64.Build.0 = Release|Any CPU
 		{40C283F4-4309-44B1-A6FF-672CA82E60B5}.Release|x86.ActiveCfg = Release|Any CPU
 		{40C283F4-4309-44B1-A6FF-672CA82E60B5}.Release|x86.Build.0 = Release|Any CPU
+		{52FE454E-DE43-40EA-B73C-8D57AAA64654}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{52FE454E-DE43-40EA-B73C-8D57AAA64654}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{52FE454E-DE43-40EA-B73C-8D57AAA64654}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{52FE454E-DE43-40EA-B73C-8D57AAA64654}.Debug|x64.Build.0 = Debug|Any CPU
+		{52FE454E-DE43-40EA-B73C-8D57AAA64654}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{52FE454E-DE43-40EA-B73C-8D57AAA64654}.Debug|x86.Build.0 = Debug|Any CPU
+		{52FE454E-DE43-40EA-B73C-8D57AAA64654}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{52FE454E-DE43-40EA-B73C-8D57AAA64654}.Release|Any CPU.Build.0 = Release|Any CPU
+		{52FE454E-DE43-40EA-B73C-8D57AAA64654}.Release|x64.ActiveCfg = Release|Any CPU
+		{52FE454E-DE43-40EA-B73C-8D57AAA64654}.Release|x64.Build.0 = Release|Any CPU
+		{52FE454E-DE43-40EA-B73C-8D57AAA64654}.Release|x86.ActiveCfg = Release|Any CPU
+		{52FE454E-DE43-40EA-B73C-8D57AAA64654}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 
 namespace Muwesome.ServerCommon {
+  /// <summary>Represents an object that has a lifetime.</summary>
   public interface ILifecycle {
     /// <summary>Gets the lifecycle's task.</summary>
     Task Task { get; }
