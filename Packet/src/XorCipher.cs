@@ -31,7 +31,7 @@ namespace Muwesome.Packet {
       }
 
       if (packet.Type.IsEncrypted) {
-        throw new ArgumentException("Refusing to apply XOR cipher to C3/C4 packet", nameof(packet));
+        throw new ArgumentException("Refusing to apply XOR cipher to encrypted packet", nameof(packet));
       }
 
       int start = encrypt ? packet.Type.HeaderLength + 1 : packet.Length - 1;
