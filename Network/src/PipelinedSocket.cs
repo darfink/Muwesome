@@ -6,7 +6,7 @@ using Muwesome.Packet.IO;
 using Pipelines.Sockets.Unofficial;
 
 namespace Muwesome.Network {
-  public class PipelinedSocket : IRemoteDuplexPipe, IDisposable {
+  internal class PipelinedSocket : IRemoteDuplexPipe, IDisposable {
     private readonly IPipelineEncryptor encryptor;
     private readonly IPipelineDecryptor decryptor;
     private readonly SocketConnection socket;

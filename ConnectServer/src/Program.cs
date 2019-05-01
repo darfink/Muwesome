@@ -11,7 +11,7 @@ namespace Muwesome.ConnectServer {
 
       using (var server = ConnectServerFactory.Create(new Configuration())) {
         server.Start();
-        Task.WaitAny(server.Task, InterruptSignal());
+        Task.WaitAny(server.ShutdownTask, InterruptSignal());
         server.Stop();
       }
     }

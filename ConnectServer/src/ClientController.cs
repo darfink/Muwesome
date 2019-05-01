@@ -7,15 +7,15 @@ using log4net;
 using Muwesome.ConnectServer.Utility;
 
 namespace Muwesome.ConnectServer {
-  public class ClientController : IClientController, IDisposable {
+  internal class ClientController : IClientController, IDisposable {
     private static readonly ILog Logger = LogManager.GetLogger(typeof(ClientController));
     private readonly ConcurrentDictionary<Client, byte> clients;
-    private readonly Configuration config;
+    private readonly TimeSpan maxClientIdleTime;
 
     /// <summary>Initializes a new instance of the <see cref="ClientController"/> class.</summary>
-    public ClientController(Configuration config) {
+    public ClientController(TimeSpan maxClientIdleTime) {
       this.clients = new ConcurrentDictionary<Client, byte>();
-      this.config = config;
+      this.maxClientIdleTime = maxClientIdleTime;
     }
 
     /// <inheritdoc />
@@ -29,7 +29,7 @@ namespace Muwesome.ConnectServer {
 
     /// <inheritdoc />
     public void AddClient(Client client) {
-      client.MaxIdleTime = this.config.MaxIdleTime;
+      client.MaxIdleTime = this.maxClientIdleTime;
       Debug.Assert(this.clients.TryAdd(client, 0), "Client could not be added");
       client.Connection.Disconnected += (_, ev) => this.OnClientDisconnected(client);
       this.ClientSessionStarted?.Invoke(this, new ClientSessionEventArgs(client));

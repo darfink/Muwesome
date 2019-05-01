@@ -14,11 +14,9 @@ namespace Muwesome.ConnectServer {
 
     /// <summary>Initializes a new instance of the <see cref="ClientProtocolHandler" /> class.</summary>
     public ClientProtocolHandler(
-        Configuration config,
         IGameServerController gameServerController,
         IClientController clientsController) {
       clientsController.ClientSessionStarted += this.OnClientSessionStarted;
-      this.DisconnectOnUnknownPacket = config.DisconnectOnUnknownPacket;
       this.RegisterPacketHandlers(gameServerController);
     }
 

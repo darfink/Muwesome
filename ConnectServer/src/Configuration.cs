@@ -3,11 +3,12 @@ using System.Net;
 
 namespace Muwesome.ConnectServer {
   public class Configuration {
-    /// <summary>Gets or sets the client listener address.</summary>
-    public IPAddress ClientListenerHost { get; set; } = IPAddress.Any;
+    /// <summary>Initializes a new instance of the <see cref="Configuration" /> class.</summary>
+    public Configuration() =>
+      this.ClientListenerEndPoints = new IPEndPoint[] { new IPEndPoint(IPAddress.Any, 2004) };
 
-    /// <summary>Gets or sets the client listener port.</summary>
-    public ushort ClientListenerPort { get; set; } = 2004;
+    /// <summary>Gets or sets the client listener address.</summary>
+    public IPEndPoint[] ClientListenerEndPoints { get; set; }
 
     /// <summary>Gets or sets the maximum client idle time until being disconnected.</summary>
     public TimeSpan MaxIdleTime { get; set; } = TimeSpan.FromMinutes(1);
@@ -25,7 +26,7 @@ namespace Muwesome.ConnectServer {
     public bool DisconnectOnUnknownPacket { get; set; } = true;
 
     /// <summary>Gets or sets the gRPC host.</summary>
-    public string GrpcListenerHost { get; set; } = "0.0.0.0";
+    public string GrpcListenerHost { get; set; } = "127.0.0.1";
 
     /// <summary>Gets or sets the gRPC port.</summary>
     public ushort GrpcListenerPort { get; set; } = 22336;

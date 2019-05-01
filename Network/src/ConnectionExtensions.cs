@@ -3,13 +3,13 @@ using Muwesome.Packet.Utility;
 
 namespace Muwesome.Network {
   public static class ConnectionExtensions {
-    /// <summary>Initiates a thread-safe transaction.</summary>
-    public static ThreadSafeWriter StartWrite(this IConnection connection, int payloadSize) =>
-      new ThreadSafeWriter(connection, payloadSize);
+    /// <summary>Initiates a thread-safe write transaction.</summary>
+    public static WriteTransaction StartWrite(this IConnection connection, int payloadSize) =>
+      new WriteTransaction(connection, payloadSize);
 
     /// <summary>Initiates a packet write.</summary>
-    public static PacketWriter<T> SendPacket<T>(this IConnection connection)
+    public static PacketWrite<T> SendPacket<T>(this IConnection connection)
         where T : struct, IFixedPacket =>
-      new PacketWriter<T>(new ThreadSafeWriter(connection, PacketHelper.GetPacketSize<T>()));
+      new PacketWrite<T>(new WriteTransaction(connection, PacketHelper.GetPacketSize<T>()));
   }
 }

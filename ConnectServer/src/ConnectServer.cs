@@ -4,16 +4,18 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using log4net;
-using Muwesome.ConnectServer.Plugins;
+using Muwesome.ConnectServer.Filters;
+using Muwesome.Interfaces;
+using Muwesome.Network;
 using Muwesome.Protocol;
 using Muwesome.ServerCommon;
 
 namespace Muwesome.ConnectServer {
   // TODO: Cmds, blacklist? exit? actvserv? Over gRPC?
-  public class ConnectServer : LifecycleServerBase {
+  public class ConnectServer : LifecycleController {
     private readonly IGameServerController gameServerController;
     private readonly IClientController clientController;
-    private readonly IConnectPlugin[] connectPlugins;
+    private readonly IClientConnectFilter[] connectPlugins;
 
     /// <summary>Initializes a new instance of the <see cref="ConnectServer"/> class.</summary>
     public ConnectServer(
@@ -32,9 +34,9 @@ namespace Muwesome.ConnectServer {
       clientListener.AfterClientAccepted += (_, ev) =>
         clientController.AddClient(new Client(ev.ClientConnection, clientProtocol));
 
-      this.connectPlugins = new IConnectPlugin[] {
-        new CheckMaxConnectionsPlugin(this.clientController, config.MaxConnections),
-        new CheckMaxConnectionsPerIpPlugin(this.clientController, config.MaxConnectionsPerIp),
+      this.connectPlugins = new IClientConnectFilter[] {
+        new CheckMaxConnectionsFilter(this.clientController, config.MaxConnections),
+        new CheckMaxConnectionsPerIpFilter(this.clientController, config.MaxConnectionsPerIp),
       };
     }
 
@@ -45,7 +47,7 @@ namespace Muwesome.ConnectServer {
     public IReadOnlyCollection<Client> Clients => this.clientController.Clients;
 
     /// <summary>Gets a list of the server's registered game servers.</summary>
-    public IReadOnlyCollection<GameServer> Servers => this.gameServerController.Servers;
+    public IReadOnlyCollection<GameServerEntry> Servers => this.gameServerController.Servers;
 
     /// <inheritdoc />
     public override void Dispose() {

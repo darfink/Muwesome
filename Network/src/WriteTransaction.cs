@@ -5,12 +5,12 @@ using Muwesome.Packet;
 using Muwesome.Packet.Utility;
 
 namespace Muwesome.Network {
-  public struct ThreadSafeWriter : IDisposable {
+  public struct WriteTransaction : IDisposable {
     private readonly IConnection connection;
     private readonly int payloadSize;
 
-    /// <summary>Initializes a new instance of the <see cref="ThreadSafeWriter"/> struct.</summary>
-    internal ThreadSafeWriter(IConnection connection, int payloadSize) {
+    /// <summary>Initializes a new instance of the <see cref="WriteTransaction"/> struct.</summary>
+    internal WriteTransaction(IConnection connection, int payloadSize) {
       Monitor.Enter(connection);
       this.connection = connection;
       this.payloadSize = payloadSize;

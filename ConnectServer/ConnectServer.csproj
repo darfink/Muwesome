@@ -30,5 +30,6 @@
     <ProjectReference Include="..\Packet\Packet.csproj" />
     <ProjectReference Include="..\Protocol\Protocol.csproj" />
     <ProjectReference Include="..\ServerCommon\ServerCommon.csproj" />
+    <ProjectReference Include="..\Interfaces\Interfaces.csproj" />
   </ItemGroup>
 </Project>

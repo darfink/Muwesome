@@ -4,14 +4,14 @@ using System.Net;
 using System.Net.Sockets;
 using log4net;
 
-namespace Muwesome.ConnectServer.Plugins {
-  internal class CheckMaxConnectionsPerIpPlugin : IConnectPlugin {
-    private static readonly ILog Logger = LogManager.GetLogger(typeof(CheckMaxConnectionsPerIpPlugin));
+namespace Muwesome.ConnectServer.Filters {
+  internal class CheckMaxConnectionsPerIpFilter : IClientConnectFilter {
+    private static readonly ILog Logger = LogManager.GetLogger(typeof(CheckMaxConnectionsPerIpFilter));
     private readonly ConcurrentDictionary<IPAddress, uint> ipAddressConnections;
     private readonly int maxConnectionsPerIp;
 
-    /// <summary>Initializes a new instance of the <see cref="CheckMaxConnectionsPerIpPlugin"/> class.</summary>
-    public CheckMaxConnectionsPerIpPlugin(IClientController clientsController, int maxConnectionsPerIp) {
+    /// <summary>Initializes a new instance of the <see cref="CheckMaxConnectionsPerIpFilter"/> class.</summary>
+    public CheckMaxConnectionsPerIpFilter(IClientController clientsController, int maxConnectionsPerIp) {
       this.ipAddressConnections = new ConcurrentDictionary<IPAddress, uint>();
       this.maxConnectionsPerIp = maxConnectionsPerIp;
       clientsController.ClientSessionStarted += this.OnClientSessionStarted;

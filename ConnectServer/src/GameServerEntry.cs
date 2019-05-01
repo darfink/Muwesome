@@ -3,12 +3,12 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
 namespace Muwesome.ConnectServer {
-  public class GameServer : INotifyPropertyChanged {
+  public class GameServerEntry : INotifyPropertyChanged {
     private uint clientCapacity;
     private uint clientCount;
 
-    /// <summary>Initializes a new instance of the <see cref="GameServer"/> class.</summary>
-    public GameServer(ushort code, string host, ushort port, uint clientCount, uint clientCapacity) {
+    /// <summary>Initializes a new instance of the <see cref="GameServerEntry"/> class.</summary>
+    public GameServerEntry(ushort code, string host, ushort port, uint clientCount, uint clientCapacity) {
       this.Code = code;
       this.Host = host;
       this.Port = port;

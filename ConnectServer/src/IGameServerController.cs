@@ -13,23 +13,23 @@ namespace Muwesome.ConnectServer {
     event EventHandler<GameServerEventArgs> GameServerDeregistered;
 
     /// <summary>Gets a list of registered servers.</summary>
-    IReadOnlyCollection<GameServer> Servers { get; }
+    IReadOnlyCollection<GameServerEntry> Servers { get; }
 
     /// <summary>Registers a new game server</summary>
-    void RegisterServer(GameServer server);
+    void RegisterServer(GameServerEntry server);
 
     /// <summary>Deregisters an existing game server</summary>
-    void DeregisterServer(GameServer server);
+    void DeregisterServer(GameServerEntry server);
 
     /// <summary>Gets a registered game server by its code.</summary>
-    GameServer GetServerByCode(ushort code);
+    GameServerEntry GetServerByCode(ushort code);
   }
 
   public class GameServerEventArgs : EventArgs {
     /// <summary>Initializes a new instance of the <see cref="GameServerEventArgs"/> class.</summary>
-    public GameServerEventArgs(GameServer server) => this.Server = server;
+    public GameServerEventArgs(GameServerEntry server) => this.Server = server;
 
     /// <summary>Gets the game server.</summary>
-    public GameServer Server { get; }
+    public GameServerEntry Server { get; }
   }
 }

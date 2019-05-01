@@ -1,15 +1,18 @@
-using Muwesome.ConnectServer.Rpc;
+using Muwesome.ConnectServer.Services;
+using Muwesome.Network;
 
 namespace Muwesome.ConnectServer {
   public static class ConnectServerFactory {
     /// <summary>Initializes a new instance of the <see cref="ConnectServer" /> class with default implementations.</summary>
     public static ConnectServer Create(Configuration config) {
       var gameServerController = new GameServerController();
-      var rpcServiceController = new RpcServiceController(config, gameServerController);
+      var serviceController = ServiceControllerFactory.Create(config, gameServerController);
 
-      var clientController = new ClientController(config);
-      var clientListener = new ClientTcpListener(config);
-      var clientProtocol = new ClientProtocolHandler(config, gameServerController, clientController);
+      var clientController = new ClientController(config.MaxIdleTime);
+      var clientListener = new ClientTcpListener(config.MaxPacketSize, config.ClientListenerEndPoints);
+      var clientProtocol = new ClientProtocolHandler(gameServerController, clientController) {
+        DisconnectOnUnknownPacket = config.DisconnectOnUnknownPacket,
+      };
 
       return new ConnectServer(
         config,
@@ -17,7 +20,7 @@ namespace Muwesome.ConnectServer {
         clientController,
         clientListener,
         clientProtocol,
-        rpcServiceController);
+        serviceController);
     }
   }
 }

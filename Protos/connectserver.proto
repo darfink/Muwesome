@@ -2,14 +2,14 @@ syntax = "proto3";
 
 package Muwesome.ConnectServer.Rpc;
 
-service GameServerRegister {
+service GameServerRegistrar {
   rpc RegisterGameServer (stream GameServerParams) returns (GameServerRegisterResponse);
 }
 
 message GameServerParams {
   message GameServerRegister {
-    // Server ID
-    uint32 id = 1;
+    // Server code
+    uint32 code = 1;
 
     // Server address & port
     string host = 2;

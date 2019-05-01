@@ -33,7 +33,7 @@ namespace Muwesome.ConnectServer.PacketHandlers {
       return true;
     }
 
-    private void CreateServerListPacket(IReadOnlyCollection<GameServer> servers) {
+    private void CreateServerListPacket(IReadOnlyCollection<GameServerEntry> servers) {
       this.gameServerListPacketSize = PacketHelper.GetPacketSize<GameServerList, GameServerList.GameServer>(servers.Count);
 
       if (this.gameServerListPacket.Length < this.gameServerListPacketSize) {
