@@ -5,13 +5,13 @@ using System.Net.Sockets;
 using log4net;
 
 namespace Muwesome.ConnectServer.Filters {
-  internal class CheckMaxConnectionsPerIpFilter : IClientConnectFilter {
-    private static readonly ILog Logger = LogManager.GetLogger(typeof(CheckMaxConnectionsPerIpFilter));
+  internal class MaxConnectionsPerIpFilter : IClientConnectFilter {
+    private static readonly ILog Logger = LogManager.GetLogger(typeof(MaxConnectionsPerIpFilter));
     private readonly ConcurrentDictionary<IPAddress, uint> ipAddressConnections;
     private readonly int maxConnectionsPerIp;
 
-    /// <summary>Initializes a new instance of the <see cref="CheckMaxConnectionsPerIpFilter"/> class.</summary>
-    public CheckMaxConnectionsPerIpFilter(IClientController clientsController, int maxConnectionsPerIp) {
+    /// <summary>Initializes a new instance of the <see cref="MaxConnectionsPerIpFilter"/> class.</summary>
+    public MaxConnectionsPerIpFilter(IClientController clientsController, int maxConnectionsPerIp) {
       this.ipAddressConnections = new ConcurrentDictionary<IPAddress, uint>();
       this.maxConnectionsPerIp = maxConnectionsPerIp;
       clientsController.ClientSessionStarted += this.OnClientSessionStarted;

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using System.Threading;
 using System.Threading.Tasks;
 using log4net;
 using Muwesome.Interfaces;
@@ -14,6 +15,7 @@ namespace Muwesome.Network {
     private static readonly ILog Logger = LogManager.GetLogger(typeof(ClientTcpListener));
     private readonly Dictionary<IPEndPoint, TcpListener> listeners;
     private readonly int maxClientPacketSize;
+    private int isRunning;
 
     /// <summary>Initializes a new instance of the <see cref="ClientTcpListener"/> class.</summary>
     public ClientTcpListener(int maxClientPacketSize, params IPEndPoint[] endPoints) {
@@ -34,15 +36,15 @@ namespace Muwesome.Network {
     public event EventHandler<AfterClientAcceptEventArgs> AfterClientAccepted;
 
     /// <inheritdoc />
+    public Task ShutdownTask { get; private set; } = Task.CompletedTask;
+
+    /// <summary>Gets a value indicating whether the listener is bound or not.</summary>
     public bool IsBound => this.listeners.Values.Any(listener => listener?.Server.IsBound ?? false);
 
     /// <inheritdoc />
-    public Task ShutdownTask { get; private set; } = Task.CompletedTask;
-
-    /// <inheritdoc />
     public void Start() {
-      if (this.IsBound) {
-        throw new InvalidOperationException("The client listener is already running");
+      if (this.isRunning == 1) {
+        throw new InvalidOperationException("The client listener is already active");
       }
 
       var tasks = this.listeners.Keys.ToList().Select(endPoint => {
@@ -52,6 +54,7 @@ namespace Muwesome.Network {
         return Task.Run(() => this.AcceptIncomingSocketsAsync(listener));
       });
 
+      this.isRunning = 1;
       this.ShutdownTask = Task.WhenAll(tasks).ContinueWith(task => this.OnListenerComplete(task.Exception));
       this.AfterLifecycleStarted?.Invoke(this, new LifecycleEventArgs());
 
@@ -99,7 +102,7 @@ namespace Muwesome.Network {
         Logger.Error("An unexpected error occured whilst listening for incoming clients", ex);
       }
 
-      if (this.IsBound) {
+      if (Interlocked.Exchange(ref this.isRunning, 0) == 1) {
         try {
           foreach (var listener in this.listeners.Values) {
             listener.Stop();

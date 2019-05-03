@@ -35,8 +35,8 @@ namespace Muwesome.ConnectServer {
         clientController.AddClient(new Client(ev.ClientConnection, clientProtocol));
 
       this.connectPlugins = new IClientConnectFilter[] {
-        new CheckMaxConnectionsFilter(this.clientController, config.MaxConnections),
-        new CheckMaxConnectionsPerIpFilter(this.clientController, config.MaxConnectionsPerIp),
+        new MaxConnectionsFilter(this.clientController, config.MaxConnections),
+        new MaxConnectionsPerIpFilter(this.clientController, config.MaxConnectionsPerIp),
       };
     }
 

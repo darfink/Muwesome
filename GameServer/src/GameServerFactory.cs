@@ -6,8 +6,9 @@ namespace Muwesome.GameServer {
     /// <summary>Initializes a new instance of the <see cref="GameServer" /> class with default implementations.</summary>
     public static GameServer Create(Configuration config) {
       var clientListener = new ClientTcpListener(config.MaxPacketSize);
+      var connectRegisterer = new ConnectServerRegisterer(config, clientListener);
 
-      return new GameServer(config);
+      return new GameServer(config, connectRegisterer, clientListener);
     }
   }
 }

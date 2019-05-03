@@ -9,8 +9,5 @@ namespace Muwesome.Network {
 
     /// <summary>An event that is raised after a client has been accepted.</summary>
     event EventHandler<AfterClientAcceptEventArgs> AfterClientAccepted;
-
-    /// <summary>Gets a value indicating whether the listener is bound or not.</summary>
-    bool IsBound { get; }
   }
 }
