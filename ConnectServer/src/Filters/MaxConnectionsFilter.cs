@@ -4,7 +4,7 @@ using System.Net.Sockets;
 using log4net;
 
 namespace Muwesome.ConnectServer.Filters {
-  internal class MaxConnectionsFilter : IClientConnectFilter {
+  internal class MaxConnectionsFilter : IClientSocketFilter {
     private static readonly ILog Logger = LogManager.GetLogger(typeof(MaxConnectionsFilter));
     private readonly IClientController clientController;
     private readonly int maxConnections;
@@ -17,7 +17,7 @@ namespace Muwesome.ConnectServer.Filters {
 
     /// <inheritdoc />
     public bool OnAllowClientSocketAccept(Socket socket) {
-      if (this.clientController.Clients.Count >= this.maxConnections) {
+      if (this.clientController.ClientsConnected >= this.maxConnections) {
         var ipAddress = socket.RemoteEndPoint;
         Logger.Warn($"Connection refused from {ipAddress}; maximum server connections ({this.maxConnections}) reached");
         return false;

@@ -8,8 +8,8 @@ namespace Muwesome.ConnectServer {
       var gameServerController = new GameServerController();
       var serviceController = ServiceControllerFactory.Create(config, gameServerController);
 
+      var clientListener = new DefaultClientTcpListener(config.ClientListenerEndPoint, config.MaxPacketSize);
       var clientController = new ClientController(config.MaxIdleTime);
-      var clientListener = new ClientTcpListener(config.MaxPacketSize, config.ClientListenerEndPoints);
       var clientProtocol = new ClientProtocolHandler(gameServerController, clientController) {
         DisconnectOnUnknownPacket = config.DisconnectOnUnknownPacket,
       };

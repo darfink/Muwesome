@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 
 namespace Muwesome.ConnectServer {
   public interface IClientController {
@@ -9,8 +8,8 @@ namespace Muwesome.ConnectServer {
     /// <summary>An event that is raised when a client session is ended.</summary>
     event EventHandler<ClientSessionEventArgs> ClientSessionEnded;
 
-    /// <summary>Gets a list of connected clients.</summary>
-    IReadOnlyCollection<Client> Clients { get; }
+    /// <summary>Gets the number of connected clients.</summary>
+    int ClientsConnected { get; }
 
     /// <summary>Adds a new client to the session.</summary>
     void AddClient(Client client);

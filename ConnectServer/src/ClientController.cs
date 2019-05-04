@@ -25,7 +25,7 @@ namespace Muwesome.ConnectServer {
     public event EventHandler<ClientSessionEventArgs> ClientSessionEnded;
 
     /// <inheritdoc />
-    public IReadOnlyCollection<Client> Clients => this.clients.Keys.AsReadOnly();
+    public int ClientsConnected => this.clients.Count;
 
     /// <inheritdoc />
     public void AddClient(Client client) {

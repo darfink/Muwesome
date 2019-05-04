@@ -11,16 +11,16 @@ using Muwesome.Network;
 using Pipelines.Sockets.Unofficial;
 
 namespace Muwesome.Network {
-  public class ClientTcpListener : IClientListener, IDisposable {
-    private static readonly ILog Logger = LogManager.GetLogger(typeof(ClientTcpListener));
-    private readonly Dictionary<IPEndPoint, TcpListener> listeners;
+  public class DefaultClientTcpListener : IClientTcpListener, IDisposable {
+    private static readonly ILog Logger = LogManager.GetLogger(typeof(DefaultClientTcpListener));
     private readonly int maxClientPacketSize;
+    private TcpListener listener;
     private int isRunning;
 
-    /// <summary>Initializes a new instance of the <see cref="ClientTcpListener"/> class.</summary>
-    public ClientTcpListener(int maxClientPacketSize, params IPEndPoint[] endPoints) {
-      this.listeners = endPoints.ToDictionary(l => l, _ => (TcpListener)null);
+    /// <summary>Initializes a new instance of the <see cref="DefaultClientTcpListener"/> class.</summary>
+    public DefaultClientTcpListener(IPEndPoint endPoint, int maxClientPacketSize) {
       this.maxClientPacketSize = maxClientPacketSize;
+      this.SourceEndPoint = endPoint;
     }
 
     /// <inheritdoc />
@@ -33,13 +33,19 @@ namespace Muwesome.Network {
     public event EventHandler<BeforeClientAcceptEventArgs> BeforeClientAccepted;
 
     /// <inheritdoc />
-    public event EventHandler<AfterClientAcceptEventArgs> AfterClientAccepted;
+    public event EventHandler<ClientConnectedEventArgs> ClientConnected;
 
     /// <inheritdoc />
     public Task ShutdownTask { get; private set; } = Task.CompletedTask;
 
+    /// <inheritdoc />
+    public IPEndPoint SourceEndPoint { get; private set; }
+
+    /// <inheritdoc />
+    public IPEndPoint BoundEndPoint => (IPEndPoint)this.listener?.LocalEndpoint;
+
     /// <summary>Gets a value indicating whether the listener is bound or not.</summary>
-    public bool IsBound => this.listeners.Values.Any(listener => listener?.Server.IsBound ?? false);
+    public bool IsBound => this.listener?.Server.IsBound ?? false;
 
     /// <inheritdoc />
     public void Start() {
@@ -47,19 +53,16 @@ namespace Muwesome.Network {
         throw new InvalidOperationException("The client listener is already active");
       }
 
-      var tasks = this.listeners.Keys.ToList().Select(endPoint => {
-        var listener = this.listeners[endPoint] = new TcpListener(endPoint);
-        SocketConnection.SetRecommendedServerOptions(listener.Server);
-        listener.Start();
-        return Task.Run(() => this.AcceptIncomingSocketsAsync(listener));
-      });
+      this.listener = new TcpListener(this.SourceEndPoint);
+      SocketConnection.SetRecommendedServerOptions(this.listener.Server);
+      this.listener.Start();
 
+      this.ShutdownTask = Task.Run(() => this.AcceptIncomingSocketsAsync())
+        .ContinueWith(task => this.OnListenerComplete(task.Exception));
       this.isRunning = 1;
-      this.ShutdownTask = Task.WhenAll(tasks).ContinueWith(task => this.OnListenerComplete(task.Exception));
-      this.AfterLifecycleStarted?.Invoke(this, new LifecycleEventArgs());
 
-      var activeEndPoints = string.Join(", ", this.listeners.Keys);
-      Logger.Info($"Client listener started; listening on {activeEndPoints}");
+      this.AfterLifecycleStarted?.Invoke(this, new LifecycleEventArgs());
+      Logger.Info($"Client listener started; listening on {this.BoundEndPoint}");
     }
 
     /// <inheritdoc />
@@ -69,23 +72,23 @@ namespace Muwesome.Network {
     public void Dispose() => this.Stop();
 
     /// <summary>Processes incoming connections until finish.</summary>
-    private async Task AcceptIncomingSocketsAsync(TcpListener listener) {
+    private async Task AcceptIncomingSocketsAsync() {
       Socket socket;
       try {
-        socket = await listener.AcceptSocketAsync();
+        socket = await this.listener.AcceptSocketAsync();
       } catch (ObjectDisposedException) {
         return;
       }
 
-      this.OnSocketAccepted((IPEndPoint)listener.LocalEndpoint, socket);
+      this.OnSocketAccepted(socket);
 
-      if (listener.Server.IsBound) {
-        await this.AcceptIncomingSocketsAsync(listener);
+      if (this.IsBound) {
+        await this.AcceptIncomingSocketsAsync();
       }
     }
 
-    private void OnSocketAccepted(IPEndPoint localEndPoint, Socket socket) {
-      var beforeClientAccept = new BeforeClientAcceptEventArgs(localEndPoint, socket);
+    private void OnSocketAccepted(Socket socket) {
+      var beforeClientAccept = new BeforeClientAcceptEventArgs(socket);
       this.BeforeClientAccepted?.Invoke(this, beforeClientAccept);
 
       if (beforeClientAccept.RejectClient) {
@@ -93,7 +96,7 @@ namespace Muwesome.Network {
         socket.Dispose();
       } else {
         var connection = this.CreateConnectionForSocket(socket);
-        this.AfterClientAccepted?.Invoke(this, new AfterClientAcceptEventArgs(localEndPoint, connection));
+        this.ClientConnected?.Invoke(this, new ClientConnectedEventArgs(connection));
       }
     }
 
@@ -104,9 +107,7 @@ namespace Muwesome.Network {
 
       if (Interlocked.Exchange(ref this.isRunning, 0) == 1) {
         try {
-          foreach (var listener in this.listeners.Values) {
-            listener.Stop();
-          }
+          this.listener.Stop();
         } catch (ObjectDisposedException) {
         }
 

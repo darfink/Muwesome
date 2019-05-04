@@ -23,9 +23,10 @@ namespace Muwesome.ConnectServer.PacketHandlers {
         }
       } else {
         using (var writer = client.Connection.SendPacket<GameServerInfo>()) {
-          ref var server = ref writer.Packet;
-          server.Host = selectedServer.Host;
-          server.Port = selectedServer.Port;
+          writer.Packet = new GameServerInfo {
+            Host = selectedServer.Host,
+            Port = selectedServer.Port,
+          };
         }
       }
 

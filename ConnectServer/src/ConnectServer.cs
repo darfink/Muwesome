@@ -14,8 +14,8 @@ namespace Muwesome.ConnectServer {
   // TODO: Cmds, blacklist? exit? actvserv? Over gRPC?
   public class ConnectServer : LifecycleController {
     private readonly IGameServerController gameServerController;
+    private readonly IClientSocketFilter[] clientSocketFilters;
     private readonly IClientController clientController;
-    private readonly IClientConnectFilter[] connectPlugins;
 
     /// <summary>Initializes a new instance of the <see cref="ConnectServer"/> class.</summary>
     public ConnectServer(
@@ -30,21 +30,23 @@ namespace Muwesome.ConnectServer {
       this.gameServerController = gameServerController;
       this.clientController = clientController;
 
-      clientListener.BeforeClientAccepted += this.OnBeforeClientAccepted;
-      clientListener.AfterClientAccepted += (_, ev) =>
+      clientListener.ClientConnected += (_, ev) =>
         clientController.AddClient(new Client(ev.ClientConnection, clientProtocol));
 
-      this.connectPlugins = new IClientConnectFilter[] {
-        new MaxConnectionsFilter(this.clientController, config.MaxConnections),
-        new MaxConnectionsPerIpFilter(this.clientController, config.MaxConnectionsPerIp),
-      };
+      if (clientListener is IClientTcpListener clientTcpListener) {
+        clientTcpListener.BeforeClientAccepted += this.OnBeforeClientAccepted;
+        this.clientSocketFilters = new IClientSocketFilter[] {
+          new MaxConnectionsFilter(this.clientController, config.MaxConnections),
+          new MaxConnectionsPerIpFilter(this.clientController, config.MaxConnectionsPerIp),
+        };
+      }
     }
 
     /// <summary>Gets the server's configuration.</summary>
     public Configuration Config { get; }
 
-    /// <summary>Gets a list of the server's clients.</summary>
-    public IReadOnlyCollection<Client> Clients => this.clientController.Clients;
+    /// <summary>Gets the number of connected clients.</summary>
+    public int ClientsConnected => this.clientController.ClientsConnected;
 
     /// <summary>Gets a list of the server's registered game servers.</summary>
     public IReadOnlyCollection<GameServerEntry> Servers => this.gameServerController.Servers;
@@ -56,6 +58,6 @@ namespace Muwesome.ConnectServer {
     }
 
     private void OnBeforeClientAccepted(object sender, BeforeClientAcceptEventArgs ev) =>
-      ev.RejectClient = this.connectPlugins.Any(plugin => !plugin.OnAllowClientSocketAccept(ev.ClientSocket));
+      ev.RejectClient = this.clientSocketFilters.Any(filter => !filter.OnAllowClientSocketAccept(ev.ClientSocket));
   }
 }

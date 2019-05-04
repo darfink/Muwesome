@@ -5,7 +5,7 @@ using System.Net.Sockets;
 using log4net;
 
 namespace Muwesome.ConnectServer.Filters {
-  internal class MaxConnectionsPerIpFilter : IClientConnectFilter {
+  internal class MaxConnectionsPerIpFilter : IClientSocketFilter {
     private static readonly ILog Logger = LogManager.GetLogger(typeof(MaxConnectionsPerIpFilter));
     private readonly ConcurrentDictionary<IPAddress, uint> ipAddressConnections;
     private readonly int maxConnectionsPerIp;

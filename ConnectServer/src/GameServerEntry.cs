@@ -47,7 +47,7 @@ namespace Muwesome.ConnectServer {
     public float Load => (float)this.ClientCount / this.ClientCapacity;
 
     /// <inheritdoc />
-    public override string ToString() => $"{this.Host}:{this.Port}<{this.Code}>";
+    public override string ToString() => $"{this.Host}:{this.Port} [{this.Code}]";
 
     private bool SetField<T>(ref T field, T value, [CallerMemberName] string propertyName = null) {
       if (EqualityComparer<T>.Default.Equals(field, value)) {
