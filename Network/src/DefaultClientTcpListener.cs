@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO.Pipelines;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -8,9 +9,14 @@ using System.Threading.Tasks;
 using log4net;
 using Muwesome.Interfaces;
 using Muwesome.Network;
+using Muwesome.Packet.IO;
 using Pipelines.Sockets.Unofficial;
 
 namespace Muwesome.Network {
+  public delegate IPipelineEncryptor PipelineEncryptorFactory(PipeWriter writer);
+
+  public delegate IPipelineDecryptor PipelineDecryptorFactory(PipeReader reader);
+
   public class DefaultClientTcpListener : IClientTcpListener, IDisposable {
     private static readonly ILog Logger = LogManager.GetLogger(typeof(DefaultClientTcpListener));
     private readonly int maxClientPacketSize;
@@ -39,6 +45,7 @@ namespace Muwesome.Network {
     public Task ShutdownTask { get; private set; } = Task.CompletedTask;
 
     /// <inheritdoc />
+    // TODO: Rename 'Original', 'Initial'?
     public IPEndPoint SourceEndPoint { get; private set; }
 
     /// <inheritdoc />
@@ -46,6 +53,12 @@ namespace Muwesome.Network {
 
     /// <summary>Gets a value indicating whether the listener is bound or not.</summary>
     public bool IsBound => this.listener?.Server.IsBound ?? false;
+
+    /// <summary>Gets or sets the connection encryptor factory.</summary>
+    public PipelineEncryptorFactory Encryption { get; set; }
+
+    /// <summary>Gets or sets the connection decryptor factory.</summary>
+    public PipelineDecryptorFactory Decryption { get; set; }
 
     /// <inheritdoc />
     public void Start() {
@@ -122,7 +135,10 @@ namespace Muwesome.Network {
 
       // Raw sockets themselves are not compatible with pipes
       var socketConnection = SocketConnection.Create(socket);
-      var pipe = new PipelinedSocket(socketConnection, encryptor: null, decryptor: null);
+      var pipe = new PipelinedSocket(
+        socketConnection,
+        this.Encryption?.Invoke(socketConnection.Output),
+        this.Decryption?.Invoke(socketConnection.Input));
 
       return new DuplexConnection(pipe, this.maxClientPacketSize);
     }
