@@ -29,5 +29,6 @@
     <ProjectReference Include="..\Interfaces\Interfaces.csproj" />
     <ProjectReference Include="..\Network\Network.csproj" />
     <ProjectReference Include="..\Protocol\Protocol.csproj" />
+    <ProjectReference Include="..\GameLogic\GameLogic.csproj" />
   </ItemGroup>
 </Project>

@@ -2,11 +2,14 @@ using System;
 using System.Net;
 using System.Threading;
 using log4net;
+using Muwesome.GameLogic;
+using Muwesome.GameServer.Utility;
 using Muwesome.Network;
 using Muwesome.Packet;
 using Muwesome.Protocol;
+using Muwesome.Protocol.Game;
 
-namespace Muwesome.ConnectServer {
+namespace Muwesome.GameServer {
   /// <summary>Represents a connected client.</summary>
   public class Client : IDisposable {
     private static readonly ILog Logger = LogManager.GetLogger(typeof(Client));
@@ -16,15 +19,27 @@ namespace Muwesome.ConnectServer {
     private int isDisposed = 0;
 
     /// <summary>Initializes a new instance of the <see cref="Client"/> class.</summary>
-    public Client(IConnection connection, IPacketHandler<Client> packetHandler) {
+    public Client(
+        IConnection connection,
+        IPacketHandler<Client> packetHandler) {
       this.packetHandler = packetHandler;
       this.Connection = connection;
       this.Connection.PacketReceived += this.OnPacketReceived;
       this.Connection.BeginReceive().ContinueWith(task => this.OnReceiveComplete(task.Exception));
+      this.Player = new Player();
     }
 
     /// <summary>Gets the client's connection.</summary>
     public IConnection Connection { get; }
+
+    /// <summary>Gets the client's player instance.</summary>
+    public Player Player { get; private set; }
+
+    /// <summary>Gets or sets the client's version.</summary>
+    public ClientVersion Version { get; set; }
+
+    /// <summary>Gets or sets the client's serial.</summary>
+    public byte[] Serial { get; set; }
 
     /// <summary>Gets or sets the maximum idle time.</summary>
     internal TimeSpan MaxIdleTime {
@@ -48,6 +63,7 @@ namespace Muwesome.ConnectServer {
       this.idleTimeoutTimer?.Dispose();
       this.Connection.PacketReceived -= this.OnPacketReceived;
       this.Connection.Dispose();
+      this.Player.Dispose();
     }
 
     /// <inheritdoc />

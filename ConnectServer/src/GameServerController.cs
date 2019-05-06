@@ -59,7 +59,7 @@ namespace Muwesome.ConnectServer {
 
     private void OnGameServerChange(object sender, PropertyChangedEventArgs ev) {
       var server = (GameServerEntry)sender;
-      Logger.Debug($"Game server updated {server}; {server.ClientCount}/{server.ClientCapacity}");
+      Logger.Debug($"Game server update {server}; clients {server.ClientCount}/{server.ClientCapacity}");
       this.GameServerUpdated?.Invoke(this, new GameServerEventArgs(server));
     }
   }

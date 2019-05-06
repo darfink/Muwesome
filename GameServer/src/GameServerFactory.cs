@@ -1,14 +1,27 @@
+using Muwesome.GameServer.Protocol;
 using Muwesome.Network;
+using Muwesome.Packet.IO.Xor;
 
 namespace Muwesome.GameServer {
   /// <summary>A factory for game servers.</summary>
   public static class GameServerFactory {
     /// <summary>Initializes a new instance of the <see cref="GameServer" /> class with default implementations.</summary>
     public static GameServer Create(Configuration config) {
-      var clientListener = new ClientTcpListener(config.MaxPacketSize);
-      var connectRegisterer = new ConnectServerRegisterer(config, clientListener);
+      var clientController = new ClientController(config.MaxIdleTime);
+      var clientListener = new DefaultClientTcpListener(config.ClientListenerEndPoint, config.MaxPacketSize) {
+        Decryption = reader => new XorPipelineDecryptor(reader),
+        Encryption = null,
+      };
 
-      return new GameServer(config, connectRegisterer, clientListener);
+      var clientProtocolResolver = new ClientProtocolResolver(config, clientController);
+      var connectServerRegisterer = new ConnectServerRegisterer(config, clientController, clientListener);
+
+      return new GameServer(
+        config,
+        connectServerRegisterer,
+        clientController,
+        clientListener,
+        clientProtocolResolver);
     }
   }
 }

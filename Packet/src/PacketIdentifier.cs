@@ -60,7 +60,7 @@ namespace Muwesome.Packet {
         throw new ArgumentOutOfRangeException(nameof(data));
       }
 
-      if (packet.Length < this.Type.ReadSize(data)) {
+      if (packet.Length != this.Type.ReadSize(data)) {
         // TODO: Specialized exception
         throw new ArgumentException(nameof(data));
       }

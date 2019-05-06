@@ -4,9 +4,9 @@ using System.Net;
 namespace Muwesome.LoginServer {
   public class Configuration {
     /// <summary>Gets or sets the gRPC host.</summary>
-    public string GrpcListenerHost { get; set; } = "127.0.0.1";
+    public string GrpcServiceHost { get; set; } = "127.0.0.1";
 
     /// <summary>Gets or sets the gRPC port.</summary>
-    public ushort GrpcListenerPort { get; set; } = 22337;
+    public ushort GrpcServicePort { get; set; } = 22337;
   }
 }
