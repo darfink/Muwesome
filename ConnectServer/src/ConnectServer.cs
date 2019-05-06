@@ -49,7 +49,7 @@ namespace Muwesome.ConnectServer {
     public int ClientsConnected => this.clientController.ClientsConnected;
 
     /// <summary>Gets a list of the server's registered game servers.</summary>
-    public IReadOnlyCollection<GameServerEntry> Servers => this.gameServerController.Servers;
+    public int GameServersRegistered => this.gameServerController.Servers.Count;
 
     /// <inheritdoc />
     public override void Dispose() {

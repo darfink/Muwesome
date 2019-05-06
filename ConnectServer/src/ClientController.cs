@@ -29,9 +29,10 @@ namespace Muwesome.ConnectServer {
 
     /// <inheritdoc />
     public void AddClient(Client client) {
-      client.MaxIdleTime = this.maxClientIdleTime;
       Debug.Assert(this.clients.TryAdd(client, 0), "Client could not be added");
+      client.MaxIdleTime = this.maxClientIdleTime;
       client.Connection.Disconnected += (_, ev) => this.OnClientDisconnected(client);
+
       this.ClientSessionStarted?.Invoke(this, new ClientSessionEventArgs(client));
       Logger.Info($"Client connected {client}; current client count {this.clients.Count}");
     }
