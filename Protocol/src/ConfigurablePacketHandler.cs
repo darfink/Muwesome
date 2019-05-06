@@ -23,13 +23,13 @@ namespace Muwesome.Protocol {
     }
 
     /// <summary>Registers a new handler for a packet type.</summary>
-    protected void Register<TPacket>(IPacketHandler<T> handler)
+    public void Register<TPacket>(IPacketHandler<T> handler)
         where TPacket : IPacket {
       this.InsertHandlerForPacket(PacketIdentifierFor<TPacket>.Identifier, handler);
     }
 
     /// <summary>Registers a new handler for a packet.</summary>
-    protected void Register(PacketIdentifier packet, IPacketHandler<T> handler) {
+    public void Register(PacketIdentifier packet, IPacketHandler<T> handler) {
       this.InsertHandlerForPacket(packet, handler);
     }
 
