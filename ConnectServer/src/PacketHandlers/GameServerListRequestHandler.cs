@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using Muwesome.ConnectServer.Utility;
 using Muwesome.Network;
 using Muwesome.Packet.Utility;
 using Muwesome.Protocol;
@@ -27,8 +28,7 @@ namespace Muwesome.ConnectServer.PacketHandlers {
 
     /// <inheritdoc />
     public bool HandlePacket(Client client, Span<byte> packet) {
-      this.packetLock.EnterUpgradeableReadLock();
-      try {
+      using (this.packetLock.UpgradeableReadLock()) {
         if (this.gameServerListPacketSize == 0) {
           this.CreateServerListPacket(this.gameServerController.Servers);
         }
@@ -38,23 +38,17 @@ namespace Muwesome.ConnectServer.PacketHandlers {
         }
 
         if (this.gameServersInResponse == 0) {
-          this.packetLock.EnterWriteLock();
-          try {
+          using (this.packetLock.WriteLock()) {
             this.impairedClients.Add(client);
-          } finally {
-            this.packetLock.ExitWriteLock();
           }
         }
-      } finally {
-        this.packetLock.ExitUpgradeableReadLock();
       }
 
       return true;
     }
 
     private void CreateServerListPacket(IReadOnlyCollection<GameServerEntry> servers) {
-      this.packetLock.EnterWriteLock();
-      try {
+      using (this.packetLock.WriteLock()) {
         this.gameServerListPacketSize = PacketHelper.GetPacketSize<GameServerList, GameServerList.GameServer>(servers.Count);
         this.gameServersInResponse = servers.Count;
 
@@ -71,8 +65,6 @@ namespace Muwesome.ConnectServer.PacketHandlers {
           serverEntries[index].Code = server.Code;
           serverEntries[index].Load = server.Load;
         }
-      } finally {
-        this.packetLock.ExitWriteLock();
       }
     }
 
@@ -85,14 +77,13 @@ namespace Muwesome.ConnectServer.PacketHandlers {
 
     /// <summary>Frees any impaired game clients.</summary>
     /// <remarks>
-    /// If the client receives an empty server list response, it becomes stuck
-    /// due to the user not being able to issue new requests, forcing them to
-    /// restart the client. To solve this, a new server list response is sent to
-    /// all clients that have previously received any empty response.
+    /// If the client receives an empty server list response it becomes stuck due
+    /// to the user not being able to issue new requests forcing them to restart
+    /// the client. To solve this, a new server list response is sent to all
+    /// clients that have previously received an empty response.
     /// </remarks>
     private void FreeImpairedClients() {
-      this.packetLock.EnterUpgradeableReadLock();
-      try {
+      using (this.packetLock.UpgradeableReadLock()) {
         if (this.impairedClients.Count == 0) {
           return;
         }
@@ -116,8 +107,6 @@ namespace Muwesome.ConnectServer.PacketHandlers {
         }
 
         this.impairedClients.Clear();
-      } finally {
-        this.packetLock.ExitUpgradeableReadLock();
       }
     }
   }
