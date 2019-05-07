@@ -1,5 +1,5 @@
 using Muwesome.ConnectServer.Services;
-using Muwesome.Network;
+using Muwesome.Network.Tcp;
 
 namespace Muwesome.ConnectServer {
   public static class ConnectServerFactory {

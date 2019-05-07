@@ -5,6 +5,7 @@ using Muwesome.GameServer.Filters;
 using Muwesome.GameServer.Protocol;
 using Muwesome.Interfaces;
 using Muwesome.Network;
+using Muwesome.Network.Tcp;
 using Muwesome.Protocol.Game;
 using Muwesome.ServerCommon;
 

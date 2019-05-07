@@ -3,7 +3,6 @@ using System.IO.Pipelines;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
-using Muwesome.Packet;
 using Muwesome.Packet.IO;
 
 namespace Muwesome.Network {

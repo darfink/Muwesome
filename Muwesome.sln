@@ -5,13 +5,13 @@ VisualStudioVersion = 15.0.26124.0
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConnectServer", "ConnectServer\ConnectServer.csproj", "{E5FC8B16-C3EF-4FC5-BB2A-B25E35492B94}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Packet", "Packet\Packet.csproj", "{3936B9B0-6186-4C1C-963B-628545BAE9C6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Packet", "Other\Packet\Packet.csproj", "{3936B9B0-6186-4C1C-963B-628545BAE9C6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Packet.Tests", "Tests\Packet.Tests\Packet.Tests.csproj", "{1B371231-3975-402C-BE84-EB95021C226E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Protocol", "Protocol\Protocol.csproj", "{5804A6CB-1197-4929-BD89-AF2BED9A1D55}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Protocol", "Other\Protocol\Protocol.csproj", "{5804A6CB-1197-4929-BD89-AF2BED9A1D55}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Network", "Network\Network.csproj", "{2689C6C5-DAD9-459E-9EB2-9503A5DE03A9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Network", "Other\Network\Network.csproj", "{2689C6C5-DAD9-459E-9EB2-9503A5DE03A9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Network.Tests", "Tests\Network.Tests\Network.Tests.csproj", "{0B1AC948-9BD8-4E05-8D9D-EF3043E6C25E}"
 EndProject
@@ -19,13 +19,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Protocol.Tests", "Tests\Pro
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LoginServer", "LoginServer\LoginServer.csproj", "{4EBD26FC-0C05-40EC-933A-37012FB3B278}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerCommon", "ServerCommon\ServerCommon.csproj", "{40C283F4-4309-44B1-A6FF-672CA82E60B5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerCommon", "Other\ServerCommon\ServerCommon.csproj", "{40C283F4-4309-44B1-A6FF-672CA82E60B5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DomainModel", "DomainModel\DomainModel.csproj", "{52FE454E-DE43-40EA-B73C-8D57AAA64654}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DomainModel", "Other\DomainModel\DomainModel.csproj", "{52FE454E-DE43-40EA-B73C-8D57AAA64654}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameServer", "GameServer\GameServer.csproj", "{E4B4A544-A970-402C-B856-2974D4F7C0F2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Interfaces", "Interfaces\Interfaces.csproj", "{FC6A65F3-A292-4A83-9F85-6CA8454331B6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Interfaces", "Other\Interfaces\Interfaces.csproj", "{FC6A65F3-A292-4A83-9F85-6CA8454331B6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

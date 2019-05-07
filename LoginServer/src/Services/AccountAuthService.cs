@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Grpc.Core;
-using Muwesome.LoginServer.Rpc;
+using Muwesome.Rpc.LoginServer;
 
 namespace Muwesome.LoginServer.Services {
   internal class AccountAuthService : AccountAuth.AccountAuthBase {

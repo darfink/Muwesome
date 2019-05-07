@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package Muwesome.ConnectServer.Rpc;
+package Muwesome.Rpc.ConnectServer;
 
 service GameServerRegistrar {
   rpc RegisterGameServer (stream GameServerParams) returns (GameServerRegisterResponse);

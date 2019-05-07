@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using Grpc.Core;
-using Muwesome.ConnectServer.Rpc;
+using Muwesome.Rpc.ConnectServer;
 
 namespace Muwesome.ConnectServer.Services {
   public class GameServerRegistrarService : GameServerRegistrar.GameServerRegistrarBase {

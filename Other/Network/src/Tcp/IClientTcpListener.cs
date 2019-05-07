@@ -1,7 +1,7 @@
 using System;
 using System.Net;
 
-namespace Muwesome.Network {
+namespace Muwesome.Network.Tcp {
   public interface IClientTcpListener : IClientListener {
     /// <summary>An event that is raised before a client is accepted.</summary>
     event EventHandler<BeforeClientAcceptEventArgs> BeforeClientAccepted;

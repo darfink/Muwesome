@@ -20,13 +20,13 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <Protobuf Include="../Protos/loginserver.proto" GrpcServices="Server" Generator="MSBuild:Compile" />
+    <Protobuf Include="../Protos/LoginServer.proto" GrpcServices="Server" Generator="MSBuild:Compile" />
     <Content Include="@(Protobuf)" />
     <None Remove="@(Protobuf)" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ServerCommon\ServerCommon.csproj" />
-    <ProjectReference Include="..\DomainModel\DomainModel.csproj" />
-    <ProjectReference Include="..\Interfaces\Interfaces.csproj" />
+    <ProjectReference Include="..\Other\ServerCommon\ServerCommon.csproj" />
+    <ProjectReference Include="..\Other\DomainModel\DomainModel.csproj" />
+    <ProjectReference Include="..\Other\Interfaces\Interfaces.csproj" />
   </ItemGroup>
 </Project>

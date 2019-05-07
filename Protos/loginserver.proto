@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package Muwesome.LoginServer.Rpc;
+package Muwesome.Rpc.LoginServer;
 
 service AccountAuth {
   rpc Login (LoginRequest) returns (LoginResponse);

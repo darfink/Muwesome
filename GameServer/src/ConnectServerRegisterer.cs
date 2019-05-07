@@ -3,9 +3,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using Grpc.Core;
 using log4net;
-using Muwesome.ConnectServer.Rpc;
 using Muwesome.GameServer.Utility;
-using Muwesome.Network;
+using Muwesome.Network.Tcp;
+using Muwesome.Rpc.ConnectServer;
 
 namespace Muwesome.GameServer {
   /// <summary>A connect server registerer.</summary>

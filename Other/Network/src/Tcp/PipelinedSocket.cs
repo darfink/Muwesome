@@ -5,7 +5,7 @@ using System.Net.Sockets;
 using Muwesome.Packet.IO;
 using Pipelines.Sockets.Unofficial;
 
-namespace Muwesome.Network {
+namespace Muwesome.Network.Tcp {
   internal class PipelinedSocket : IRemoteDuplexPipe, IDisposable {
     private readonly IPipelineEncryptor encryptor;
     private readonly IPipelineDecryptor decryptor;

@@ -1,10 +1,7 @@
 using System;
-using System.Net;
 using System.Net.Sockets;
-using System.Threading.Tasks;
-using Muwesome.Network;
 
-namespace Muwesome.Network {
+namespace Muwesome.Network.Tcp {
   public class BeforeClientAcceptEventArgs : EventArgs {
     /// <summary>Initializes a new instance of the <see cref="BeforeClientAcceptEventArgs"/> class.</summary>
     public BeforeClientAcceptEventArgs(Socket socket) => this.ClientSocket = socket;

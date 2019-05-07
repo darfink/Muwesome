@@ -20,15 +20,15 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <Protobuf Include="../Protos/connectserver.proto" GrpcServices="Client" Generator="MSBuild:Compile" />
+    <Protobuf Include="../Protos/ConnectServer.proto" GrpcServices="Client" Generator="MSBuild:Compile" />
     <Content Include="@(Protobuf)" />
     <None Remove="@(Protobuf)" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ServerCommon\ServerCommon.csproj" />
-    <ProjectReference Include="..\Interfaces\Interfaces.csproj" />
-    <ProjectReference Include="..\Network\Network.csproj" />
-    <ProjectReference Include="..\Protocol\Protocol.csproj" />
-    <ProjectReference Include="..\GameLogic\GameLogic.csproj" />
+    <ProjectReference Include="..\Other\ServerCommon\ServerCommon.csproj" />
+    <ProjectReference Include="..\Other\Interfaces\Interfaces.csproj" />
+    <ProjectReference Include="..\Other\Network\Network.csproj" />
+    <ProjectReference Include="..\Other\Protocol\Protocol.csproj" />
+    <ProjectReference Include="..\Other\GameLogic\GameLogic.csproj" />
   </ItemGroup>
 </Project>

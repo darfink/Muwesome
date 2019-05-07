@@ -1,18 +1,15 @@
 using System;
-using System.Collections.Generic;
 using System.IO.Pipelines;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 using log4net;
 using Muwesome.Interfaces;
-using Muwesome.Network;
 using Muwesome.Packet.IO;
 using Pipelines.Sockets.Unofficial;
 
-namespace Muwesome.Network {
+namespace Muwesome.Network.Tcp {
   public delegate IPipelineEncryptor PipelineEncryptorFactory(PipeWriter writer);
 
   public delegate IPipelineDecryptor PipelineDecryptorFactory(PipeReader reader);

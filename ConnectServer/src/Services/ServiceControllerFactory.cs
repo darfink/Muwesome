@@ -1,6 +1,6 @@
 using Grpc.Core;
-using Muwesome.ConnectServer.Rpc;
 using Muwesome.Interfaces;
+using Muwesome.Rpc.ConnectServer;
 using Muwesome.ServerCommon;
 
 namespace Muwesome.ConnectServer.Services {

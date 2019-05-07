@@ -8,8 +8,8 @@ namespace Muwesome.Network {
       new WriteTransaction(connection, payloadSize);
 
     /// <summary>Initiates a packet write.</summary>
-    public static PacketWrite<T> SendPacket<T>(this IConnection connection)
+    public static PacketWriteTransaction<T> SendPacket<T>(this IConnection connection)
         where T : struct, IFixedPacket =>
-      new PacketWrite<T>(new WriteTransaction(connection, PacketHelper.GetPacketSize<T>()));
+      new PacketWriteTransaction<T>(new WriteTransaction(connection, PacketHelper.GetPacketSize<T>()));
   }
 }

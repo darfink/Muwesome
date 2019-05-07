@@ -7,6 +7,7 @@ using log4net;
 using Muwesome.ConnectServer.Filters;
 using Muwesome.Interfaces;
 using Muwesome.Network;
+using Muwesome.Network.Tcp;
 using Muwesome.Protocol;
 using Muwesome.ServerCommon;
 

@@ -1,5 +1,5 @@
 using Muwesome.GameServer.Protocol;
-using Muwesome.Network;
+using Muwesome.Network.Tcp;
 using Muwesome.Packet.IO.SimpleModulus;
 using Muwesome.Packet.IO.Xor;
 

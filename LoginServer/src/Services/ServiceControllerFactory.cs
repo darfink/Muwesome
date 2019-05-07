@@ -1,6 +1,6 @@
 using Grpc.Core;
 using Muwesome.Interfaces;
-using Muwesome.LoginServer.Rpc;
+using Muwesome.Rpc.LoginServer;
 using Muwesome.ServerCommon;
 
 namespace Muwesome.LoginServer.Services {
