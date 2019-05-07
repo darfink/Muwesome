@@ -24,6 +24,9 @@ namespace Muwesome.GameLogic {
     }
 
     /// <summary>Registers actions associated with the player.</summary>
+    public void RegisterActions(params IPlayerActionFactory[] actions) => this.RegisterActions(actions);
+
+    /// <summary>Registers actions associated with the player.</summary>
     public void RegisterActions(IEnumerable<IPlayerActionFactory> actions) {
       foreach (var actionFactory in actions) {
         var action = actionFactory.CreateAction(this);

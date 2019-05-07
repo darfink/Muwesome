@@ -7,14 +7,12 @@ using Muwesome.Packet.Utility;
 
 namespace Muwesome.Packet.IO.SimpleModulus {
   public class SimpleModulusPipelineDecryptor : SimpleModulusPipeline, IPipelineDecryptor {
-    public static readonly SimpleModulusKeys DefaultServerKey = SimpleModulusKeys.CreateDecryptionKeys(new uint[] { 128079, 164742, 70235, 106898, 31544, 2047, 57011, 10183, 48413, 46165, 15171, 37433 });
-
     private readonly SimpleModulusKeys decryptionKeys;
     private readonly Pipe pipe = new Pipe();
 
     /// <summary>Initializes a new instance of the <see cref="SimpleModulusPipelineDecryptor"/> class.</summary>
     public SimpleModulusPipelineDecryptor(PipeReader source)
-        : this(source, DefaultServerKey) {
+        : this(source, SimpleModulusKeys.DefaultClientKeys) {
     }
 
     /// <summary>Initializes a new instance of the <see cref="SimpleModulusPipelineDecryptor"/> class.</summary>
@@ -94,7 +92,7 @@ namespace Muwesome.Packet.IO.SimpleModulus {
     }
 
     private int DecryptBlock(Span<byte> input, Span<byte> output) {
-      for (int i = 0; i < 4; i++) {
+      for (int i = 0; i < this.EncryptionResult.Length; i++) {
         this.EncryptionResult[i] = this.ReadInputBuffer(input, i);
       }
 
@@ -108,7 +106,7 @@ namespace Muwesome.Packet.IO.SimpleModulus {
       }
 
       var output = MemoryMarshal.Cast<byte, ushort>(outputBlock);
-      for (int i = 0; i < 4; i++) {
+      for (int i = 0; i < this.EncryptionResult.Length; i++) {
         var previousValue = i == 0 ? 0 : (this.EncryptionResult[i - 1] & 0xFFFF);
         var encryptMulMod = (this.EncryptionResult[i] * this.decryptionKeys.DecryptKey[i]) % this.decryptionKeys.ModulusKey[i];
         output[i] = (ushort)(this.decryptionKeys.XorKey[i] ^ encryptMulMod ^ previousValue);
