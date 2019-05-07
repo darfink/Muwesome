@@ -6,6 +6,14 @@ using Muwesome.Packet.Utility;
 using Muwesome.Protocol.Utility;
 
 namespace Muwesome.Protocol.Game {
+  [Packet(0xC1, 0x0E, 0x00)]
+  [StructLayout(LayoutKind.Sequential, Pack = 1)]
+  public struct ClientTime : IFixedPacket {
+    public LittleEndian<uint> TickCount;
+    public LittleEndian<ushort> AttackSpeed;
+    public LittleEndian<ushort> MagicSpeed;
+  }
+
   [Packet(0xC1, 0xF1, 0x01)]
   [StructLayout(LayoutKind.Sequential, Pack = 1)]
   public struct LoginRequest : IFixedPacket {
@@ -14,7 +22,7 @@ namespace Muwesome.Protocol.Game {
 
     private unsafe fixed byte username[10];
     private unsafe fixed byte password[10];
-    public LittleEndian<uint> ClientTime;
+    public LittleEndian<uint> TickCount;
     private unsafe fixed byte version[5];
     private unsafe fixed byte serial[16];
 
