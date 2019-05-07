@@ -28,6 +28,7 @@ namespace Muwesome.Packet.IO {
       await this.target.FlushAsync();
     }
 
+    /// <summary>Writes the data sequence directly to the writer.</summary>
     private void CopyAndWrite(ReadOnlySequence<byte> packet) {
       int packetSize = (int)packet.Length;
       var output = this.target.GetSpan(packetSize).Slice(0, packetSize);

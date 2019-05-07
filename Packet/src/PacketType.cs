@@ -48,6 +48,9 @@ namespace Muwesome.Packet {
     /// </remarks>
     public bool IsEncrypted => this.Type == 0xC3 || this.Type == 0xC4;
 
+    /// <summary>Gets the corresponding decrypted packet type.</summary>
+    public PacketType Decrypted => this.IsEncrypted ? (this.Type == 0xC3 ? C1 : C2) : this;
+
     /// <summary>Converts a byte to its corresponding packet type.</summary>
     /// <remarks>
     /// This operator throws an exception if the value is out of range. Albeit
@@ -81,7 +84,11 @@ namespace Muwesome.Packet {
     }
 
     /// <summary>Writes the header to a packet buffer.</summary>
-    public void WriteHeader(Span<byte> data, ReadOnlySpan<byte> identifier, int size, bool validateBufferSize = true) {
+    public void WriteHeader(Span<byte> data, int size, bool validateBufferSize = true) =>
+      this.WriteHeader(data, size, ReadOnlySpan<byte>.Empty, validateBufferSize);
+
+    /// <summary>Writes the header to a packet buffer.</summary>
+    public void WriteHeader(Span<byte> data, int size, ReadOnlySpan<byte> identifier, bool validateBufferSize = true) {
       data.WriteByte(this.Type);
       this.WriteSize(data, size);
       identifier.CopyTo(data.Slice(this.HeaderLength));

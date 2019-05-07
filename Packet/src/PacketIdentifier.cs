@@ -43,7 +43,7 @@ namespace Muwesome.Packet {
 
     /// <summary>Copies the packet's identifier into a destination.</summary>
     public void CopyTo(Span<byte> packet, int payloadSize) {
-      this.Type.WriteHeader(packet, ((ReadOnlySpan<byte>)this.identifier).Slice(1), this.PayloadOffset + payloadSize);
+      this.Type.WriteHeader(packet, this.PayloadOffset + payloadSize, ((ReadOnlySpan<byte>)this.identifier).Slice(1));
     }
 
     /// <summary>Throws an exception if the packet header does not match.</summary>

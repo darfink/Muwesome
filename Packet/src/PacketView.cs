@@ -14,6 +14,9 @@ namespace Muwesome.Packet {
     /// <summary>Gets the packet's length.</summary>
     public int Length => this.Type.ReadSize(this.Data);
 
+    /// <summary>Gets the packet's payload length.</summary>
+    public int PayloadLength => this.Length - this.Type.HeaderLength;
+
     /// <summary>Gets a value indicating whether this view is of a partial or complete packet.</summary>
     public bool IsPartial => this.Data.Length < this.Length;
 

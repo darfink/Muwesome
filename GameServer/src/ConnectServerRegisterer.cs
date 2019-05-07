@@ -54,7 +54,7 @@ namespace Muwesome.GameServer {
         });
 
         this.IsRegistered = true;
-        Logger.Info("Game server registered");
+        Logger.Info("Server registered");
 
         try {
           this.updateClientCount = () => registration.RequestStream.WriteAsync(new GameServerParams { Status = this.GetServerStatus() });
@@ -97,7 +97,7 @@ namespace Muwesome.GameServer {
 
       if (this.IsRegistered) {
         this.IsRegistered = false;
-        Logger.Info("Game server deregistered");
+        Logger.Info("Server deregistered");
       }
     }
   }

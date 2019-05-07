@@ -30,7 +30,7 @@ namespace Muwesome.Packet.IO.Xor {
 
     /// <inheritdoc/>
     protected override async Task ReadPacket(ReadOnlySequence<byte> packet) {
-      this.ApplyCipherAndWrite(this.target, packet, encrypt: true);
+      this.ApplyCipherAndWrite(this.target, packet, XorOperation.Encrypt);
       await this.target.FlushAsync();
     }
   }

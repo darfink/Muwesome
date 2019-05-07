@@ -1,5 +1,6 @@
 using Muwesome.GameServer.Protocol;
 using Muwesome.Network;
+using Muwesome.Packet.IO.SimpleModulus;
 using Muwesome.Packet.IO.Xor;
 
 namespace Muwesome.GameServer {
@@ -9,7 +10,7 @@ namespace Muwesome.GameServer {
     public static GameServer Create(Configuration config) {
       var clientController = new ClientController(config.MaxIdleTime);
       var clientListener = new DefaultClientTcpListener(config.ClientListenerEndPoint, config.MaxPacketSize) {
-        Decryption = reader => new XorPipelineDecryptor(reader),
+        Decryption = reader => new XorPipelineDecryptor(new SimpleModulusPipelineDecryptor(reader).Reader),
         Encryption = null,
       };
 

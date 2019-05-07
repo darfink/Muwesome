@@ -49,7 +49,7 @@ namespace Muwesome.Packet.IO {
       Span<byte> packetSpan;
       IMemoryOwner<byte> owner = null;
       if (packet.Length <= this.packetBuffer.Length) {
-        packetSpan = this.packetBuffer;
+        packetSpan = this.packetBuffer.AsSpan().Slice(0, (int)packet.Length);
       } else {
         owner = MemoryPool<byte>.Shared.Rent((int)packet.Length);
         packetSpan = owner.Memory.Span.Slice(0, (int)packet.Length);

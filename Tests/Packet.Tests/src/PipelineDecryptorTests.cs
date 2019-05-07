@@ -1,5 +1,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Muwesome.Packet.Utility;
 using Muwesome.Packet.IO;
+using Muwesome.Packet.IO.SimpleModulus;
 using Muwesome.Packet.IO.Xor;
 using System;
 using System.Buffers;
@@ -22,13 +24,13 @@ namespace Muwesome.Packet.Tests {
     [TestMethod]
     public async Task Rejects_Decryption_Of_Non_Packet() {
       await Assert.ThrowsExceptionAsync<InvalidPacketTypeException>(
-        async () => await DecryptWithXor(new byte[] { 5, 9, 25 }, new byte[0]));
+        async () => await DecryptWithXor(new byte[] { 5, 9, 25 }, Array.Empty<byte>()));
     }
 
     [TestMethod]
     public async Task Rejects_Decryption_Of_Invalid_Packet_Size() {
       await Assert.ThrowsExceptionAsync<InvalidPacketSizeException>(
-        async () => await DecryptWithXor(Samples.InvalidSizePacket, new byte[0]));
+        async () => await DecryptWithXor(Samples.InvalidSizePacket, Array.Empty<byte>()));
     }
 
     [TestMethod]
@@ -102,7 +104,7 @@ namespace Muwesome.Packet.Tests {
 
     private async Task DecryptWithXor(byte[] encryptedPacket, byte[] decryptedPacket) {
       var pipe = new Pipe();
-      var decryptor = new XorPipelineDecryptor(pipe.Reader);
+      var decryptor = new XorPipelineDecryptor(new SimpleModulusPipelineDecryptor(pipe.Reader).Reader);
       await pipe.Writer.WriteAsync(encryptedPacket);
       await pipe.Writer.FlushAsync();
       var result = await decryptor.Reader.ReadAsync();
