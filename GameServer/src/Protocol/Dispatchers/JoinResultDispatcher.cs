@@ -5,18 +5,15 @@ using Muwesome.Protocol.Game;
 
 namespace Muwesome.GameServer.Protocol.Dispatchers {
   /// <summary>A packet dispatcher for join results.</summary>
-  internal class JoinResultDispatcher : IPlayerActionFactory<ShowLoginWindowAction> {
-    private readonly IClientController clientController;
-
+  internal class JoinResultDispatcher : PacketDispatcher<ShowLoginWindowAction> {
     /// <summary>Initializes a new instance of the <see cref="JoinResultDispatcher"/> class.</summary>
-    public JoinResultDispatcher(IClientController clientController) =>
-      this.clientController = clientController;
+    public JoinResultDispatcher(IClientController clientController)
+        : base(clientController) {
+    }
 
     /// <inheritdoc />
-    public ShowLoginWindowAction CreateAction(Player player) {
-      var client = this.clientController.GetClientByPlayer(player);
-      return () => this.SendJoinResult(client, true);
-    }
+    protected override ShowLoginWindowAction CreateAction(Client client) =>
+      () => this.SendJoinResult(client, true);
 
     /// <summary>Sends the join result to a client.</summary>
     private void SendJoinResult(Client client, bool success) {

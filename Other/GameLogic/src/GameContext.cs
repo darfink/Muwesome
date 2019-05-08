@@ -11,6 +11,7 @@ namespace Muwesome.GameLogic {
     /// <summary>Adds a player to the game.</summary>
     public void AddPlayer(Player player) {
       this.Players.Add(player);
+      player.RegisterActions((new LoginActionHandler() as IPlayerActionProvider<LoginAction>).AsGeneric());
       player.Disposed += (_, ev) => this.Players.Remove(player);
       player.Action<ShowLoginWindowAction>()?.Invoke();
     }

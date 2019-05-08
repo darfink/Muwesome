@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Muwesome.GameLogic.Actions;
 
 namespace Muwesome.GameLogic {
@@ -24,10 +25,11 @@ namespace Muwesome.GameLogic {
     }
 
     /// <summary>Registers actions associated with the player.</summary>
-    public void RegisterActions(params IPlayerActionFactory[] actions) => this.RegisterActions(actions);
+    public void RegisterActions(params IPlayerActionProvider[] actions) =>
+      this.RegisterActions(actions.AsEnumerable());
 
     /// <summary>Registers actions associated with the player.</summary>
-    public void RegisterActions(IEnumerable<IPlayerActionFactory> actions) {
+    public void RegisterActions(IEnumerable<IPlayerActionProvider> actions) {
       foreach (var actionFactory in actions) {
         var action = actionFactory.CreateAction(this);
         this.actions[action.GetType()] = action;

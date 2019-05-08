@@ -54,6 +54,7 @@ namespace Muwesome.GameServer.Protocol {
       var clientPacketDispatcher = new ClientPacketDispatcher();
 
       // TODO: Implement dynamic client version range and do this dynamically
+      clientPacketDispatcher.Register(new LoginResultDispatcher(this.clientController));
       clientPacketDispatcher.Register(new JoinResultDispatcher(this.clientController));
 
       return clientPacketDispatcher;

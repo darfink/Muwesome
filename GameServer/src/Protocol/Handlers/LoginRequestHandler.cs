@@ -3,7 +3,6 @@ using log4net;
 using Muwesome.GameLogic.Actions;
 using Muwesome.Packet.Utility;
 using Muwesome.Protocol;
-using Muwesome.Protocol.Game;
 
 namespace Muwesome.GameServer.Protocol.Handlers {
   /// <summary>A packet handler for incoming login requests.</summary>
@@ -12,11 +11,11 @@ namespace Muwesome.GameServer.Protocol.Handlers {
 
     /// <inheritdoc />
     public bool HandlePacket(Client client, Span<byte> packet) {
-      ref var login = ref PacketHelper.ParsePacket<LoginRequest>(packet);
+      ref var login = ref PacketHelper.ParsePacket<Muwesome.Protocol.Game.LoginRequest>(packet);
 
       if (login.Version != client.Version) {
         Logger.Info($"Client version mismatch for {client}; expected {client.Version}, was {login.Version}");
-        client.Connection.Disconnect();
+        client.Player.Action<ShowLoginResultAction>()?.Invoke(LoginResult.InvalidGameVersion);
       } else if (!login.Serial.SequenceEqual(client.Serial)) {
         // TODO: Print serial ASCII escaped?
         Logger.Info($"Client serial mismatch for {client}; expected {client.Serial}, was {login.Serial.ToArray()}");

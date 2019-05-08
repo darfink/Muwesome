@@ -18,4 +18,10 @@ namespace Muwesome.Protocol.Game {
       set { unsafe { fixed(byte* data = version) value.CopyToFiveBytes(new Span<byte>(data, 5)); } }
     }
   }
+
+  [Packet(0xC1, 0xF1, 0x01)]
+  [StructLayout(LayoutKind.Sequential, Pack = 1)]
+  public struct LoginResult : IFixedPacket {
+    public byte Result;
+  }
 }

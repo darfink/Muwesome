@@ -95,7 +95,7 @@ namespace Muwesome.GameServer {
 
     private void OnRegisterComplete(Exception ex) {
       if (ex != null && ex.GetExceptionByType<RpcException>()?.StatusCode != StatusCode.Cancelled) {
-        Logger.Error("An unexpected error during game server registration", ex);
+        Logger.Error("An unexpected error occurred during game server registration", ex);
       }
 
       if (this.IsRegistered) {

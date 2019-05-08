@@ -45,7 +45,7 @@ namespace Muwesome.Protocol.Connect.V20050502 {
     public struct GameServer {
       public LittleEndian<ushort> Code;
       private byte load;
-      private byte unused;
+      private readonly byte unused;
 
       public float Load {
         get => (load & 0x7F) / 100.0f;
