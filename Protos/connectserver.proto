@@ -3,11 +3,11 @@ syntax = "proto3";
 package Muwesome.Rpc.ConnectServer;
 
 service GameServerRegistrar {
-  rpc RegisterGameServer (stream GameServerParams) returns (GameServerRegisterResponse);
+  rpc RegisterGameServer (stream GameServerRequest) returns (GameServerRegisterResponse);
 }
 
-message GameServerParams {
-  message GameServerRegister {
+message GameServerRequest {
+  message Register {
     // Server code
     uint32 code = 1;
 
@@ -16,18 +16,18 @@ message GameServerParams {
     uint32 port = 3;
 
     // Server status
-    GameServerStatus status = 4;
+    StatusUpdate status = 4;
   }
 
-  message GameServerStatus {
+  message StatusUpdate {
     // Client count & capacity
     uint32 client_count = 1;
     uint32 client_capacity = 2;
   }
 
-  oneof kind {
-    GameServerRegister register = 1;
-    GameServerStatus status = 2;
+  oneof type {
+    Register register = 1;
+    StatusUpdate status = 2;
   }
 }
 

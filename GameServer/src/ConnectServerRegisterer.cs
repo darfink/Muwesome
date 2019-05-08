@@ -44,8 +44,8 @@ namespace Muwesome.GameServer {
 
       var client = new GameServerRegistrar.GameServerRegistrarClient(channel);
       using (var registration = client.RegisterGameServer(cancellationToken: cancellationToken)) {
-        await registration.RequestStream.WriteAsync(new GameServerParams {
-          Register = new GameServerParams.Types.GameServerRegister {
+        await registration.RequestStream.WriteAsync(new GameServerRequest {
+          Register = new GameServerRequest.Types.Register {
             Code = this.config.ServerCode,
             Host = this.config.ClientListenerEndPoint.ExternalHost ?? this.clientListener.BoundEndPoint.Address.ToString(),
             Port = this.config.ClientListenerEndPoint.ExternalPort ?? (ushort)this.clientListener.BoundEndPoint.Port,
@@ -57,7 +57,7 @@ namespace Muwesome.GameServer {
         Logger.Info("Server registered");
 
         try {
-          this.updateClientCount = () => registration.RequestStream.WriteAsync(new GameServerParams { Status = this.GetServerStatus() });
+          this.updateClientCount = () => registration.RequestStream.WriteAsync(new GameServerRequest { Status = this.GetServerStatus() });
           await registration.ResponseAsync;
         } finally {
           this.updateClientCount = null;
@@ -76,8 +76,8 @@ namespace Muwesome.GameServer {
       }
     }
 
-    private GameServerParams.Types.GameServerStatus GetServerStatus() {
-      return checked(new GameServerParams.Types.GameServerStatus {
+    private GameServerRequest.Types.StatusUpdate GetServerStatus() {
+      return checked(new GameServerRequest.Types.StatusUpdate {
         ClientCount = (uint)this.clientController.ClientsConnected,
         ClientCapacity = (uint)this.config.MaxConnections,
       });

@@ -19,7 +19,7 @@ namespace Muwesome.ConnectServer.Services {
 
     /// <summary>Processes an incoming game server session.</summary>
     public override async Task<GameServerRegisterResponse> RegisterGameServer(
-        IAsyncStreamReader<GameServerParams> requestStream,
+        IAsyncStreamReader<GameServerRequest> requestStream,
         ServerCallContext context) {
       var server = await this.GameServerRegisterAsync(requestStream);
 
@@ -32,7 +32,7 @@ namespace Muwesome.ConnectServer.Services {
       return new GameServerRegisterResponse();
     }
 
-    private async Task<GameServerEntry> GameServerRegisterAsync(IAsyncStreamReader<GameServerParams> requestStream) {
+    private async Task<GameServerEntry> GameServerRegisterAsync(IAsyncStreamReader<GameServerRequest> requestStream) {
       if (!await requestStream.MoveNext(this.cancellationToken)) {
         throw new RpcException(Status.DefaultCancelled);
       }
@@ -58,7 +58,7 @@ namespace Muwesome.ConnectServer.Services {
       return server;
     }
 
-    private async Task GameServerUpdatesAsync(IAsyncStreamReader<GameServerParams> requestStream, GameServerEntry server) {
+    private async Task GameServerUpdatesAsync(IAsyncStreamReader<GameServerRequest> requestStream, GameServerEntry server) {
       while (await requestStream.MoveNext(this.cancellationToken)) {
         var status = requestStream.Current.Status;
         if (status is null) {

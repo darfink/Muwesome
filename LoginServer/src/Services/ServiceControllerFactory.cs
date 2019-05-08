@@ -8,7 +8,7 @@ namespace Muwesome.LoginServer.Services {
     public static ILifecycle Create(Configuration config, AccountController accountController) {
       var port = new ServerPort(config.GrpcServiceHost, config.GrpcServicePort, ServerCredentials.Insecure);
       var controller = new RpcServiceController(port);
-      controller.RegisterService(token => AccountAuth.BindService(new AccountAuthService(accountController)));
+      controller.RegisterService(token => AccountAuth.BindService(new AccountAuthService(accountController, token)));
       return controller;
     }
   }

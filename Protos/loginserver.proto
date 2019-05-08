@@ -3,23 +3,35 @@ syntax = "proto3";
 package Muwesome.Rpc.LoginServer;
 
 service AccountAuth {
-  rpc Login (LoginRequest) returns (LoginResponse);
-
-  rpc Logout (LogoutRequest) returns (LogoutResponse);
+  rpc RegisterAuthSession (stream AuthRequest) returns (stream AuthResponse);
 }
 
-message LoginRequest {
-  string username = 1;
-  string password = 2;
+message AuthRequest {
+  message Login {
+    string username = 1;
+    string password = 2;
+  }
+
+  message Logout {
+    bytes account_id = 1;
+  }
+
+  oneof type {
+    Login login = 1;
+    Logout logout = 2;
+  }
 }
 
-message LoginResponse {
-  bytes account_guid = 1;
-}
+message AuthResponse {
+  LoginResult result = 1;
+  bytes account_id = 2;
 
-message LogoutRequest {
-  bytes account_guid = 1;
-}
-
-message LogoutResponse {
+  enum LoginResult {
+    SUCCESS = 0;
+    INVALID_PASSWORD = 1;
+    INVALID_ACCOUNT = 2;
+    ACCOUNT_IS_BLOCKED = 3;
+    ACCOUNT_IS_ALREADY_CONNECTED = 4;
+    ACCOUNT_THROTTLED = 5;
+  }
 }
