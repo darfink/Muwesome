@@ -71,6 +71,6 @@ namespace Muwesome.Protocol.Game {
     public bool Equals(ClientVersion other) => CompareTo(other) == 0;
 
     /// <inheritdoc />
-    public override string ToString() => $"{Major}.{Minor}.{(char)('A' + Patch)}";
+    public override string ToString() => $"{Major}.{Minor}.{(char)('@' + Patch)}";
   }
 }
