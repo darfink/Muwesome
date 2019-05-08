@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Muwesome.Packet.IO.SimpleModulus {
@@ -17,24 +18,43 @@ namespace Muwesome.Packet.IO.SimpleModulus {
       encKey: new uint[] { 23489, 11911, 19816, 13647 },
       decKey: new uint[] { 31544, 2047, 57011, 10183 });
 
+    /// <summary>The number of values for each key.</summary>
+    private const int ValuesPerKey = 4;
+
     /// <summary>Initializes a new instance of the <see cref="SimpleModulusKeys"/> class.</summary>
     public SimpleModulusKeys(uint[] modKey, uint[] xorKey, uint[] encKey, uint[] decKey) {
-      Array.Copy(modKey, this.ModulusKey, this.ModulusKey.Length);
-      Array.Copy(encKey, this.EncryptKey, this.EncryptKey.Length);
-      Array.Copy(decKey, this.DecryptKey, this.DecryptKey.Length);
-      Array.Copy(xorKey, this.XorKey, this.XorKey.Length);
+      if (modKey.Length != ValuesPerKey) {
+        throw new ArgumentOutOfRangeException(nameof(modKey));
+      }
+
+      if (xorKey.Length != ValuesPerKey) {
+        throw new ArgumentOutOfRangeException(nameof(xorKey));
+      }
+
+      if (encKey.Length != ValuesPerKey) {
+        throw new ArgumentOutOfRangeException(nameof(encKey));
+      }
+
+      if (decKey.Length != ValuesPerKey) {
+        throw new ArgumentOutOfRangeException(nameof(decKey));
+      }
+
+      this.ModulusKey = modKey;
+      this.EncryptKey = encKey;
+      this.DecryptKey = decKey;
+      this.XorKey = xorKey;
     }
 
     /// <summary>Gets the keys used for modulus operations.</summary>
-    public uint[] ModulusKey { get; } = { 0, 0, 0, 0 };
+    public IReadOnlyList<uint> ModulusKey { get; private set; }
 
     /// <summary>Gets the keys used for XOR operations.</summary>
-    public uint[] XorKey { get; } = { 0, 0, 0, 0 };
+    public IReadOnlyList<uint> XorKey { get; private set; }
 
     /// <summary>Gets the encryption keys used for multiplicative operations.</summary>
-    public uint[] EncryptKey { get; } = { 0, 0, 0, 0 };
+    public IReadOnlyList<uint> EncryptKey { get; private set; }
 
     /// <summary>Gets the decryption keys used for multiplicative operations.</summary>
-    public uint[] DecryptKey { get; } = { 0, 0, 0, 0 };
+    public IReadOnlyList<uint> DecryptKey { get; private set; }
   }
 }

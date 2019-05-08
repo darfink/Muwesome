@@ -85,9 +85,7 @@ namespace Muwesome.Packet.IO.SimpleModulus {
         decryptedSize += decryptedBlockSize;
       }
 
-      this.Counter++;
-      this.Counter %= byte.MaxValue;
-
+      this.Counter = (this.Counter + 1) % byte.MaxValue;
       return decryptedSize;
     }
 
