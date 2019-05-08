@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Muwesome.GameLogic;
 using Muwesome.GameServer.Filters;
 using Muwesome.GameServer.Protocol;
@@ -43,6 +44,9 @@ namespace Muwesome.GameServer {
         };
       }
     }
+
+    /// <inheritdoc />
+    public override Task ShutdownTask => Task.WhenAll(base.ShutdownTask, this.connectServerRegisterer.ShutdownTask);
 
     /// <summary>Gets the server's configuration.</summary>
     public Configuration Config { get; }

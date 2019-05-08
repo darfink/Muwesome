@@ -22,7 +22,7 @@ namespace Muwesome.ServerCommon {
     public event EventHandler<LifecycleEventArgs> AfterLifecycleEnded;
 
     /// <inheritdoc />
-    public Task ShutdownTask => Task.WhenAll(this.lifecycleInstances.Select(instance => instance.ShutdownTask));
+    public virtual Task ShutdownTask => Task.WhenAll(this.lifecycleInstances.Select(instance => instance.ShutdownTask));
 
     /// <summary>Gets the controller's logger instance.</summary>
     protected ILog Logger => LogManager.GetLogger(this.GetType());
@@ -53,6 +53,7 @@ namespace Muwesome.ServerCommon {
         instance.Stop();
       }
 
+      this.ShutdownTask.Wait();
       this.AfterLifecycleEnded?.Invoke(this, new LifecycleEventArgs());
       this.Logger.Info($"{this.Identifier} stopped");
     }

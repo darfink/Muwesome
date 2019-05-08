@@ -31,6 +31,9 @@ namespace Muwesome.GameServer {
     }
 
     /// <inheritdoc />
+    public Task ShutdownTask { get; private set; } = Task.CompletedTask;
+
+    /// <inheritdoc />
     public bool IsRegistered { get; private set; }
 
     /// <inheritdoc />
@@ -86,13 +89,13 @@ namespace Muwesome.GameServer {
     private void OnClientListenerStarted(object sender, EventArgs ev) {
       this.cancellationTokenSource = new CancellationTokenSource();
       Channel channel = new Channel(this.config.ConnectServerGrpcHost, this.config.ConnectServerGrpcPort, ChannelCredentials.Insecure);
-      this.RegisterAsync(channel, this.cancellationTokenSource.Token)
+      this.ShutdownTask = this.RegisterAsync(channel, this.cancellationTokenSource.Token)
         .ContinueWith(t => this.OnRegisterComplete(t.Exception));
     }
 
     private void OnRegisterComplete(Exception ex) {
-      if (ex != null) {
-        Logger.Error("An unexpected error occured whilst registering game server", ex);
+      if (ex != null && ex.GetExceptionByType<RpcException>()?.StatusCode != StatusCode.Cancelled) {
+        Logger.Error("An unexpected error during game server registration", ex);
       }
 
       if (this.IsRegistered) {
