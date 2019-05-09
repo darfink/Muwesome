@@ -6,7 +6,7 @@ namespace Muwesome.Persistence.EntityFramework {
   internal class PersistenceContext : IContext {
     private readonly DbContext context;
 
-    /// <inheritdoc />
+    /// <summary>Initializes a new instance of the <see cref="PersistenceContext"/> class.</summary>
     public PersistenceContext(DbContext context) => this.context = context;
 
     /// <inheritdoc />

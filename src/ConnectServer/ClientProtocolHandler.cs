@@ -6,7 +6,8 @@ using Muwesome.Network;
 using Muwesome.Packet;
 using Muwesome.Packet.Utility;
 using Muwesome.Protocol;
-using Muwesome.Protocol.Connect.V20050502;
+using Muwesome.Protocol.Connect.Client;
+using Muwesome.Protocol.Connect.Server;
 
 namespace Muwesome.ConnectServer {
   internal class ClientProtocolHandler : ConfigurablePacketHandler<Client> {

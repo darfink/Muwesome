@@ -15,14 +15,14 @@ namespace Muwesome.Persistence.EntityFramework {
 
     /// <summary>Applies any pending updates to the underlying storage engine.</summary>
     public void ApplyPendingStorageUpdates() {
-      using (var updateContext = new DatabaseContext(contextOptions)) {
+      using (var updateContext = new DatabaseContext(this.contextOptions)) {
         updateContext.Database.Migrate();
       }
     }
 
     /// <summary>Applies any pending updates to the underlying storage engine.</summary>
     public void RecreateStorage() {
-      using (var createContext = new DatabaseContext(contextOptions)) {
+      using (var createContext = new DatabaseContext(this.contextOptions)) {
         createContext.Database.EnsureDeleted();
         createContext.Database.EnsureCreated();
       }

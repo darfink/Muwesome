@@ -1,7 +1,7 @@
 using Muwesome.GameLogic;
 using Muwesome.GameLogic.Actions;
 using Muwesome.Network;
-using Muwesome.Protocol.Game;
+using Muwesome.Protocol.Game.Server;
 
 namespace Muwesome.GameServer.Protocol.Dispatchers {
   /// <summary>A packet dispatcher for join results.</summary>

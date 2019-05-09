@@ -1,6 +1,6 @@
-using Muwesome.Persistence.Initialization;
-using Muwesome.Persistence.EntityFramework;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Muwesome.Persistence.EntityFramework;
+using Muwesome.Persistence.Initialization;
 
 namespace Muwesome.Persistence.Initialization.Tests {
   [TestClass]

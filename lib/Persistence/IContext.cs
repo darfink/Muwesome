@@ -11,13 +11,16 @@ namespace Muwesome.Persistence {
     void Detach(object item);
 
     /// <summary>Creates a new entity of the specified type.</summary>
-    TEntity Create<TEntity>(params object[] args) where TEntity : class;
+    TEntity Create<TEntity>(params object[] args)
+      where TEntity : class;
 
     /// <summary>Retrieves an entity by ID.</summary>
-    TEntity GetById<TEntity>(Guid id) where TEntity : class;
+    TEntity GetById<TEntity>(Guid id)
+      where TEntity : class;
 
     /// <summary>Deletes an entity.</summary>
-    bool Delete<TEntity>(TEntity entity) where TEntity : class;
+    bool Delete<TEntity>(TEntity entity)
+      where TEntity : class;
 
     /// <summary>Saves any pending changes.</summary>
     void SaveChanges();

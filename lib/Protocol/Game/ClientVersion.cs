@@ -13,13 +13,40 @@ namespace Muwesome.Protocol.Game {
     }
 
     /// <summary>Gets the major version.</summary>
-    public byte Major { get; set; }
+    public byte Major { get; }
 
     /// <summary>Gets the minor version.</summary>
-    public byte Minor { get; set; }
+    public byte Minor { get; }
 
     /// <summary>Gets the patch version.</summary>
-    public byte Patch { get; set; }
+    public byte Patch { get; }
+
+    /// <summary>Equality compares this version to another one.</summary>
+    public static bool operator ==(ClientVersion left, ClientVersion right) => Equals(left, right);
+
+    /// <summary>Inequality compares this version to another one.</summary>
+    public static bool operator !=(ClientVersion left, ClientVersion right) => !Equals(left, right);
+
+    /// <inheritdoc />
+    public int CompareTo(ClientVersion other) {
+      int major = this.Major.CompareTo(other.Major);
+      int minor = this.Minor.CompareTo(other.Minor);
+      int patch = this.Patch.CompareTo(other.Patch);
+
+      return major != 0 ? major : (minor != 0 ? minor : patch);
+    }
+
+    /// <inheritdoc />
+    public override int GetHashCode() => (this.Major, this.Minor, this.Patch).GetHashCode();
+
+    /// <inheritdoc />
+    public override bool Equals(object other) => other is ClientVersion version && this.Equals(version);
+
+    /// <inheritdoc />
+    public bool Equals(ClientVersion other) => this.CompareTo(other) == 0;
+
+    /// <inheritdoc />
+    public override string ToString() => $"{this.Major}.{this.Minor}.{(char)('@' + this.Patch)}";
 
     /// <summary>Creates a client version from bytes.</summary>
     internal static ClientVersion FromFiveBytes(Span<byte> bytes) {
@@ -29,8 +56,8 @@ namespace Muwesome.Protocol.Game {
 
       return new ClientVersion(
         major: (byte)(bytes[0] - '0'),
-        minor: (byte)((bytes[1] - '0') * 10 + (bytes[2] - '0')),
-        patch: (byte)((bytes[3] - '0') * 10 + (bytes[4] - '0')));
+        minor: (byte)(((bytes[1] - '0') * 10) + (bytes[2] - '0')),
+        patch: (byte)(((bytes[3] - '0') * 10) + (bytes[4] - '0')));
     }
 
     /// <summary>Copies the client version to a span.</summary>
@@ -39,38 +66,11 @@ namespace Muwesome.Protocol.Game {
         throw new ArgumentOutOfRangeException(nameof(span));
       }
 
-      span[0] = (byte)(Major + '0');
-      span[1] = (byte)(Minor / 10 + '0');
-      span[2] = (byte)(Minor % 10 + '0');
-      span[3] = (byte)(Patch / 10 + '0');
-      span[4] = (byte)(Patch % 10 + '0');
+      span[0] = (byte)(this.Major + '0');
+      span[1] = (byte)((this.Minor / 10) + '0');
+      span[2] = (byte)((this.Minor % 10) + '0');
+      span[3] = (byte)((this.Patch / 10) + '0');
+      span[4] = (byte)((this.Patch % 10) + '0');
     }
-
-    /// <inheritdoc />
-    public static bool operator ==(ClientVersion left, ClientVersion right) => Equals(left, right);
-
-    /// <inheritdoc />
-    public static bool operator !=(ClientVersion left, ClientVersion right) => !Equals(left, right);
-
-    /// <inheritdoc />
-    public int CompareTo(ClientVersion other) {
-      int major = Major.CompareTo(other.Major);
-      int minor = Minor.CompareTo(other.Minor);
-      int patch = Patch.CompareTo(other.Patch);
-
-      return major != 0 ? major : (minor != 0 ? minor : patch);
-    }
-
-    /// <inheritdoc />
-    public override int GetHashCode() => (Major, Minor, Patch).GetHashCode();
-
-    /// <inheritdoc />
-    public override bool Equals(Object other) => (other is ClientVersion version) && Equals(version);
-
-    /// <inheritdoc />
-    public bool Equals(ClientVersion other) => CompareTo(other) == 0;
-
-    /// <inheritdoc />
-    public override string ToString() => $"{Major}.{Minor}.{(char)('@' + Patch)}";
   }
 }

@@ -7,7 +7,7 @@ using Muwesome.ConnectServer.Utility;
 using Muwesome.Network;
 using Muwesome.Packet.Utility;
 using Muwesome.Protocol;
-using Muwesome.Protocol.Connect.V20050502;
+using Muwesome.Protocol.Connect.Server;
 
 namespace Muwesome.ConnectServer.PacketHandlers {
   internal class GameServerListRequestHandler : IPacketHandler<Client> {

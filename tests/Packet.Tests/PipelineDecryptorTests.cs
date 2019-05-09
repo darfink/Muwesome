@@ -1,36 +1,36 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Muwesome.Packet.Utility;
-using Muwesome.Packet.IO;
-using Muwesome.Packet.IO.SimpleModulus;
-using Muwesome.Packet.IO.Xor;
 using System;
 using System.Buffers;
 using System.IO.Pipelines;
 using System.Threading.Tasks;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Muwesome.Packet.IO;
+using Muwesome.Packet.IO.SimpleModulus;
+using Muwesome.Packet.IO.Xor;
+using Muwesome.Packet.Utility;
 
 namespace Muwesome.Packet.Tests {
   [TestClass]
   public class PipelineDecryptorTests {
     [TestMethod]
     public async Task Decrypts_C1_With_Xor_Cipher() {
-      await DecryptWithXor(Samples.XorEncryptedC1Packet, Samples.UnencryptedC1Packet);
+      await this.DecryptWithXor(Samples.XorEncryptedC1Packet, Samples.UnencryptedC1Packet);
     }
 
     [TestMethod]
     public async Task Decrypts_C2_With_Xor_Cipher() {
-      await DecryptWithXor(Samples.XorEncryptedC2Packet, Samples.UnencryptedC2Packet);
+      await this.DecryptWithXor(Samples.XorEncryptedC2Packet, Samples.UnencryptedC2Packet);
     }
 
     [TestMethod]
     public async Task Rejects_Decryption_Of_Non_Packet() {
       await Assert.ThrowsExceptionAsync<InvalidPacketTypeException>(
-        async () => await DecryptWithXor(new byte[] { 5, 9, 25 }, Array.Empty<byte>()));
+        async () => await this.DecryptWithXor(new byte[] { 5, 9, 25 }, Array.Empty<byte>()));
     }
 
     [TestMethod]
     public async Task Rejects_Decryption_Of_Invalid_Packet_Size() {
       await Assert.ThrowsExceptionAsync<InvalidPacketSizeException>(
-        async () => await DecryptWithXor(Samples.InvalidSizePacket, Array.Empty<byte>()));
+        async () => await this.DecryptWithXor(Samples.InvalidSizePacket, Array.Empty<byte>()));
     }
 
     [TestMethod]

@@ -19,8 +19,9 @@ namespace Muwesome.GameLogic {
     public ushort Id { get; set; }
 
     /// <summary>Gets an invokable action.</summary>
-    public T Action<T>() where T : Delegate {
-      actions.TryGetValue(typeof(T), out object result);
+    public T Action<T>()
+        where T : Delegate {
+      this.actions.TryGetValue(typeof(T), out object result);
       return result as T;
     }
 
@@ -38,7 +39,7 @@ namespace Muwesome.GameLogic {
 
     /// <inheritdoc />
     public void Dispose() {
-      Disposed?.Invoke(this, EventArgs.Empty);
+      this.Disposed?.Invoke(this, EventArgs.Empty);
     }
   }
 }

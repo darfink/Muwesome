@@ -27,7 +27,7 @@ namespace Muwesome.Persistence.EntityFramework {
           contextBuilder.UseSqlite(this.ConnectionString);
           break;
         default:
-          throw new ArgumentException(nameof(StorageEngine));
+          throw new ArgumentException(nameof(this.StorageEngine));
       }
 
       return contextBuilder.Options;

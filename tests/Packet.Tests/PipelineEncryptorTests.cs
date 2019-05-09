@@ -1,34 +1,34 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Muwesome.Packet.IO;
-using Muwesome.Packet.IO.Xor;
 using System;
 using System.Buffers;
 using System.IO.Pipelines;
 using System.Threading.Tasks;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Muwesome.Packet.IO;
+using Muwesome.Packet.IO.Xor;
 
 namespace Muwesome.Packet.Tests {
   [TestClass]
   public class PipelineEncryptorTests {
     [TestMethod]
     public async Task Encrypts_C1_With_Xor_Cipher() {
-      await EncryptWithXor(Samples.UnencryptedC1Packet, Samples.XorEncryptedC1Packet);
+      await this.EncryptWithXor(Samples.UnencryptedC1Packet, Samples.XorEncryptedC1Packet);
     }
 
     [TestMethod]
     public async Task Encrypts_C2_With_Xor_Cipher() {
-      await EncryptWithXor(Samples.UnencryptedC2Packet, Samples.XorEncryptedC2Packet);
+      await this.EncryptWithXor(Samples.UnencryptedC2Packet, Samples.XorEncryptedC2Packet);
     }
 
     [TestMethod]
     public async Task Rejects_Encryption_Of_Non_Packet() {
       await Assert.ThrowsExceptionAsync<InvalidPacketTypeException>(
-        async () => await EncryptWithXor(new byte[] { 5, 9, 25 }, new byte[0]));
+        async () => await this.EncryptWithXor(new byte[] { 5, 9, 25 }, new byte[0]));
     }
 
     [TestMethod]
     public async Task Rejects_Encryption_Of_Invalid_Packet_Size() {
       await Assert.ThrowsExceptionAsync<InvalidPacketSizeException>(
-        async () => await EncryptWithXor(Samples.InvalidSizePacket, new byte[0]));
+        async () => await this.EncryptWithXor(Samples.InvalidSizePacket, new byte[0]));
     }
 
     [TestMethod]

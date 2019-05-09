@@ -5,7 +5,6 @@ using Muwesome.Network;
 using Muwesome.Packet;
 using Muwesome.Packet.Utility;
 using Muwesome.Protocol;
-using Muwesome.Protocol.Connect.V20050502;
 
 namespace Muwesome.GameServer.Protocol {
   /// <summary>A client packet handler.</summary>

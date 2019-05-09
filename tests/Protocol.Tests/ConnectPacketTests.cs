@@ -1,19 +1,20 @@
 using System;
-using System.Text;
 using System.Linq;
+using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Muwesome.Packet;
 using Muwesome.Packet.Utility;
-using Muwesome.Protocol.Connect.V20050502;
+using Muwesome.Protocol.Connect.Client;
+using Muwesome.Protocol.Connect.Server;
 
 namespace Muwesome.Protocol.Tests {
   [TestClass]
-  public class ConnectPacketsV20050502Tests {
-    static readonly byte[] ConnectResultPacketSuccess = new byte[] { 0xC1, 0x04, 0x00, 0x01 };
-    static readonly byte[] GameServerUnavailablePacket = new byte[] { 0xC1, 0x06, 0xF4, 0x05, 0x39, 0x05 };
-    static readonly byte[] GameServerInfoPacket = Convert.FromBase64String("wRb0AzE5Mi4xNjguMS4xMDAAAADUBw==");
-    static readonly byte[] GameServerListPacket = Convert.FromBase64String("wgAX9AYABAEAIAACAAAAAwAgAAQAgAA=");
-    static readonly (ushort, float, bool)[] GameServerListEntries = new (ushort, float, bool)[] { (1, 0.32f, false), (2, 0f, false), (3, 0.32f, false), (4, 0f, true) };
+  public class ConnectPacketTests {
+    private static readonly byte[] ConnectResultPacketSuccess = new byte[] { 0xC1, 0x04, 0x00, 0x01 };
+    private static readonly byte[] GameServerUnavailablePacket = new byte[] { 0xC1, 0x06, 0xF4, 0x05, 0x39, 0x05 };
+    private static readonly byte[] GameServerInfoPacket = Convert.FromBase64String("wRb0AzE5Mi4xNjguMS4xMDAAAADUBw==");
+    private static readonly byte[] GameServerListPacket = Convert.FromBase64String("wgAX9AYABAEAIAACAAAAAwAgAAQAgAA=");
+    private static readonly (ushort, float, bool)[] GameServerListEntries = new(ushort, float, bool)[] { (1, 0.32f, false), (2, 0f, false), (3, 0.32f, false), (4, 0f, true) };
 
     [TestMethod]
     [ExpectedException(typeof(ArgumentException))]

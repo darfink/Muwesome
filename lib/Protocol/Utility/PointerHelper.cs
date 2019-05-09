@@ -5,7 +5,9 @@ namespace Muwesome.Protocol.Utility {
     public static unsafe string GetString(byte* data, int maxLength, Encoding encoding, byte[] xorCipher = null) {
       xorCipher?.ApplyCipher(data, maxLength);
       int stringLength = 0;
-      for (; stringLength < maxLength && data[stringLength] != 0; stringLength++) { }
+      while (stringLength < maxLength && data[stringLength] != 0) {
+        stringLength++;
+      }
 
       string result = encoding.GetString(data, stringLength);
       xorCipher?.ApplyCipher(data, maxLength);

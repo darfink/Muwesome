@@ -3,5 +3,14 @@
     <LangVersion>7.3</LangVersion>
     <BaseIntermediateOutputPath>$(MSBuildThisFileDirectory)/artifacts/$(MSBuildProjectName)/obj</BaseIntermediateOutputPath>
     <OutputPath>$(MSBuildThisFileDirectory)/artifacts/$(MSBuildProjectName)/bin</OutputPath>
+    <CodeAnalysisRuleSet>$(MSBuildThisFileDirectory)/ca.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Condition="'$(UseStyleCopAnalyzer)' != 'false' and '$(MSBuildProjectExtension)' == '.csproj'" Include="StyleCop.Analyzers" Version="1.0.2" PrivateAssets="All" />
+  </ItemGroup>
+  <ItemGroup>
+    <AdditionalFiles Include="$(MSBuildThisFileDirectory)stylecop.json">
+      <Link>stylecop.json</Link>
+    </AdditionalFiles>
+  </ItemGroup>
 </Project>

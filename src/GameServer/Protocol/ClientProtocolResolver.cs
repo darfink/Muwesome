@@ -5,6 +5,7 @@ using Muwesome.GameServer.Protocol.Dispatchers;
 using Muwesome.GameServer.Protocol.Handlers;
 using Muwesome.Protocol;
 using Muwesome.Protocol.Game;
+using Muwesome.Protocol.Game.Client;
 
 namespace Muwesome.GameServer.Protocol {
   /// <summary>A client protocol resolver.</summary>

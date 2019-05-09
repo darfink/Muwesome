@@ -1,7 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <CodeAnalysisRuleSet>../../ca.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\Packet\Muwesome.Packet.csproj" />
@@ -11,10 +10,6 @@
     <PackageReference Include="ConfigureAwait.Fody" Version="3.1.0" />
     <PackageReference Include="log4net" Version="2.0.8" />
     <PackageReference Include="Pipelines.Sockets.Unofficial" Version="2.0.22" />
-    <PackageReference Include="StyleCop.Analyzers" Version="1.0.2">
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
     <PackageReference Include="System.IO.Pipelines" Version="4.5.3" />
   </ItemGroup>
 </Project>

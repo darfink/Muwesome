@@ -3,6 +3,7 @@ using log4net;
 using Muwesome.GameLogic.Actions;
 using Muwesome.Packet.Utility;
 using Muwesome.Protocol;
+using Muwesome.Protocol.Game.Client;
 
 namespace Muwesome.GameServer.Protocol.Handlers {
   /// <summary>A packet handler for incoming login requests.</summary>
@@ -11,7 +12,7 @@ namespace Muwesome.GameServer.Protocol.Handlers {
 
     /// <inheritdoc />
     public bool HandlePacket(Client client, Span<byte> packet) {
-      ref var login = ref PacketHelper.ParsePacket<Muwesome.Protocol.Game.LoginRequest>(packet);
+      ref var login = ref PacketHelper.ParsePacket<LoginRequest>(packet);
 
       if (login.Version != client.Version) {
         Logger.Info($"Client version mismatch for {client}; expected {client.Version}, was {login.Version}");

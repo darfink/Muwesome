@@ -16,7 +16,7 @@ namespace Muwesome.GameServer.Protocol.Dispatchers {
 
     /// <summary>Sends the login result to a client.</summary>
     private void SendLoginResult(Client client, LoginResult result) {
-      using (var writer = client.Connection.SendPacket<Muwesome.Protocol.Game.LoginResult>()) {
+      using (var writer = client.Connection.SendPacket<Muwesome.Protocol.Game.Server.LoginResult>()) {
         writer.Packet.Result = (byte)result;
       }
     }
