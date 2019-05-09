@@ -1,5 +1,7 @@
+using System;
+
 namespace Muwesome.Persistence {
-  public interface IPersistenceContextProvider {
+  public interface IPersistenceContextProvider : IDisposable {
     /// <summary>Creates a new persistence context.</summary>
     IContext CreateContext();
 

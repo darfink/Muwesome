@@ -1,12 +1,14 @@
+using System.Data.Common;
 using Microsoft.EntityFrameworkCore;
 
 namespace Muwesome.Persistence.EntityFramework {
   public class PersistenceContextProvider : IPersistenceContextProvider {
+    private readonly DbConnection persistentConnection;
     private readonly DbContextOptions contextOptions;
 
     /// <summary>Initializes a new instance of the <see cref="PersistenceContextProvider"/> class.</summary>
-    public PersistenceContextProvider(ConnectionConfiguration connectionConfig) {
-      this.contextOptions = connectionConfig.ToDbContextOptions();
+    public PersistenceContextProvider(PersistenceConfiguration config) {
+      this.contextOptions = config.ToDbContextOptions(out this.persistentConnection);
     }
 
     /// <inheritdoc />
@@ -31,5 +33,8 @@ namespace Muwesome.Persistence.EntityFramework {
         createContext.Database.EnsureCreated();
       }
     }
+
+    /// <inheritdoc />
+    public void Dispose() => this.persistentConnection?.Dispose();
   }
 }

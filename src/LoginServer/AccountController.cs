@@ -30,20 +30,22 @@ namespace Muwesome.LoginServer {
     public async Task<AccountLoginResult> LoginAccountAsync(string username, string password) {
       var accountLoginResult = new AccountLoginResult();
       using (var accountContext = this.persistenceContextProvider.CreateAccountContext()) {
+        // TODO: Alternative way to return this information?
         var (account, validPassword) = await accountContext.GetAccountByCredentialsAsync(username, password);
 
         if (account == null) {
-          accountLoginResult.InvalidAccount = true;
+          accountLoginResult.Type = AccountLoginResultType.InvalidAccount;
         } else if (this.IsAccountTimedOut(account)) {
-          accountLoginResult.TimedOut = true;
+          accountLoginResult.Type = AccountLoginResultType.LockedOut;
         } else if (validPassword) {
-          accountLoginResult.InvalidPassword = true;
+          accountLoginResult.Type = AccountLoginResultType.InvalidPassword;
           account.ConsecutiveFailedLoginAttempts++;
           account.LastFailedLoginTime = DateTime.UtcNow;
           await accountContext.SaveChangesAsync();
         } else if (!this.TryAddAccount(account)) {
-          accountLoginResult.AlreadyConnected = true;
+          accountLoginResult.Type = AccountLoginResultType.AlreadyConnected;
         } else {
+          accountLoginResult.Type = AccountLoginResultType.Success;
           accountLoginResult.Account = account;
           account.ConsecutiveFailedLoginAttempts = 0;
           account.LastFailedLoginTime = null;

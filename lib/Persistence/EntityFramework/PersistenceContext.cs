@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 
@@ -38,6 +39,12 @@ namespace Muwesome.Persistence.EntityFramework {
     /// <inheritdoc />
     public TEntity GetById<TEntity>(Guid id)
         where TEntity : class => this.Context.Set<TEntity>().Find(id);
+
+    /// <inheritdoc />
+    public IEnumerable<TEntity> GetAll<TEntity>()
+      where TEntity : class {
+      return this.Context.Set<TEntity>();
+    }
 
     /// <inheritdoc />
     public bool Delete<TEntity>(TEntity entity)

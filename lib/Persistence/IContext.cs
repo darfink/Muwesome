@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Muwesome.Persistence {
@@ -16,6 +17,10 @@ namespace Muwesome.Persistence {
 
     /// <summary>Retrieves an entity by ID.</summary>
     TEntity GetById<TEntity>(Guid id)
+      where TEntity : class;
+
+    /// <summary>Retrieves all entities of a specific type.</summary>
+    IEnumerable<TEntity> GetAll<TEntity>()
       where TEntity : class;
 
     /// <summary>Deletes an entity.</summary>

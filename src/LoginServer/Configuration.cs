@@ -16,7 +16,7 @@ namespace Muwesome.LoginServer {
     /// <summary>Gets or sets the maximum account time out.</summary>
     public TimeSpan MaxAccountLockOut { get; set; } = TimeSpan.FromDays(2);
 
-    /// <summary>Gets or sets the database configuration.</summary>
-    public ConnectionConfiguration Database { get; set; } = new ConnectionConfiguration();
+    /// <summary>Gets or sets the persistence configuration.</summary>
+    public PersistenceConfiguration PersistenceConfiguration { get; set; } = PersistenceConfiguration.InMemory();
   }
 }
