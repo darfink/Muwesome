@@ -4,6 +4,9 @@ using Muwesome.Packet;
 using Muwesome.Packet.Utility;
 using Muwesome.Protocol.Utility;
 
+#pragma warning disable SA1501
+#pragma warning disable SA1503
+
 namespace Muwesome.Protocol.Game.Server {
   [Packet(0xC1, 0xF1, 0x00)]
   [StructLayout(LayoutKind.Sequential, Pack = 1)]

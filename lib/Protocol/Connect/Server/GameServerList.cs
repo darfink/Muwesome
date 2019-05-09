@@ -5,6 +5,8 @@ using Muwesome.Packet;
 using Muwesome.Packet.Utility;
 using Muwesome.Protocol.Utility;
 
+#pragma warning disable SA1214
+
 namespace Muwesome.Protocol.Connect.Server {
   [Packet(0xC2, 0xF4, 0x06)]
   [StructLayout(LayoutKind.Sequential, Pack = 1)]
