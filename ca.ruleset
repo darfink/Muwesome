@@ -6,6 +6,7 @@
 
       <!-- Remove this when StyleCop C# 7.X support arrives -->
       <Rule Id="SA1008" Action="None" />
+      <Rule Id="SA1009" Action="None" />
       <Rule Id="SA1206" Action="None" />
 
       <!-- Documentation requirements -->

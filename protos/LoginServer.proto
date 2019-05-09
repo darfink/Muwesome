@@ -32,6 +32,6 @@ message AuthResponse {
     INVALID_ACCOUNT = 2;
     ACCOUNT_IS_BLOCKED = 3;
     ACCOUNT_IS_ALREADY_CONNECTED = 4;
-    ACCOUNT_THROTTLED = 5;
+    ACCOUNT_IS_TIMED_OUT = 5;
   }
 }

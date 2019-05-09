@@ -9,9 +9,13 @@ namespace Muwesome.Persistence.EntityFramework {
       this.contextOptions = connectionConfig.ToDbContextOptions();
     }
 
-    /// <summary>Creates a new persistence context.</summary>
+    /// <inheritdoc />
     public IContext CreateContext() =>
       new PersistenceContext(new DatabaseContext(this.contextOptions));
+
+    /// <inheritdoc />
+    public IAccountContext CreateAccountContext() =>
+      new AccountContext(new DatabaseContext(this.contextOptions));
 
     /// <summary>Applies any pending updates to the underlying storage engine.</summary>
     public void ApplyPendingStorageUpdates() {

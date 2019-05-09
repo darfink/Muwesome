@@ -28,6 +28,6 @@ namespace Muwesome.DomainModel.Entities {
     public DateTime? LastFailedLoginTime { get; set; }
 
     /// <summary>Gets or sets the number of consecutively failed login attempts.</summary>
-    public int FailedLoginAttempts { get; set; }
+    public int ConsecutiveFailedLoginAttempts { get; set; }
   }
 }

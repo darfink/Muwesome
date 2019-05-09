@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Muwesome.Persistence.EntityFramework {
   /// <summary>The available storage engines.</summary>
   public enum StorageEngine {
+    /// <summary>The SQLite file database.</summary>
     Sqlite,
   }
 

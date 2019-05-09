@@ -4,17 +4,18 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Muwesome.Persistence.EntityFramework {
   internal class PersistenceContext : IContext {
-    private readonly DbContext context;
-
     /// <summary>Initializes a new instance of the <see cref="PersistenceContext"/> class.</summary>
-    public PersistenceContext(DbContext context) => this.context = context;
+    public PersistenceContext(DbContext context) => this.Context = context;
+
+    /// <summary>Gets the database context.</summary>
+    protected DbContext Context { get; private set; }
 
     /// <inheritdoc />
-    public void Attach(object item) => this.context.Attach(item);
+    public void Attach(object item) => this.Context.Attach(item);
 
     /// <inheritdoc />
     public void Detach(object item) {
-      var entry = this.context.Entry(item);
+      var entry = this.Context.Entry(item);
       if (entry != null) {
         entry.State = EntityState.Detached;
       }
@@ -28,7 +29,7 @@ namespace Muwesome.Persistence.EntityFramework {
         : Activator.CreateInstance(typeof(TEntity));
 
       if (entity != null) {
-        this.context.Add(entity);
+        this.Context.Add(entity);
       }
 
       return entity as TEntity;
@@ -36,19 +37,19 @@ namespace Muwesome.Persistence.EntityFramework {
 
     /// <inheritdoc />
     public TEntity GetById<TEntity>(Guid id)
-        where TEntity : class => this.context.Set<TEntity>().Find(id);
+        where TEntity : class => this.Context.Set<TEntity>().Find(id);
 
     /// <inheritdoc />
     public bool Delete<TEntity>(TEntity entity)
-        where TEntity : class => this.context.Remove(entity) != null;
+        where TEntity : class => this.Context.Remove(entity) != null;
 
     /// <inheritdoc />
-    public void SaveChanges() => this.context.SaveChanges();
+    public void SaveChanges() => this.Context.SaveChanges();
 
     /// <inheritdoc />
-    public Task SaveChangesAsync() => this.context.SaveChangesAsync();
+    public Task SaveChangesAsync() => this.Context.SaveChangesAsync();
 
     /// <inheritdoc />
-    public void Dispose() => this.context?.Dispose();
+    public void Dispose() => this.Context?.Dispose();
   }
 }

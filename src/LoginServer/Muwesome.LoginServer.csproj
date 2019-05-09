@@ -22,5 +22,7 @@
     <ProjectReference Include="..\..\lib\ServerCommon\Muwesome.ServerCommon.csproj" />
     <ProjectReference Include="..\..\lib\DomainModel\Muwesome.DomainModel.csproj" />
     <ProjectReference Include="..\..\lib\Interfaces\Muwesome.Interfaces.csproj" />
+    <ProjectReference Include="..\..\lib\Persistence\Muwesome.Persistence.csproj" />
+    <ProjectReference Include="..\..\lib\Persistence\EntityFramework\Muwesome.Persistence.EntityFramework.csproj" />
   </ItemGroup>
 </Project>
