@@ -2,9 +2,9 @@ using System;
 using System.Net.Sockets;
 
 namespace Muwesome.Network.Tcp {
-  public class BeforeClientAcceptEventArgs : EventArgs {
-    /// <summary>Initializes a new instance of the <see cref="BeforeClientAcceptEventArgs"/> class.</summary>
-    public BeforeClientAcceptEventArgs(Socket socket) => this.ClientSocket = socket;
+  public class ClientAcceptEventArgs : EventArgs {
+    /// <summary>Initializes a new instance of the <see cref="ClientAcceptEventArgs"/> class.</summary>
+    public ClientAcceptEventArgs(Socket socket) => this.ClientSocket = socket;
 
     /// <summary>Gets the client's socket.</summary>
     public Socket ClientSocket { get; }

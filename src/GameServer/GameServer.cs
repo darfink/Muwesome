@@ -37,7 +37,7 @@ namespace Muwesome.GameServer {
       clientListener.ClientConnected += this.OnClientConnected;
 
       if (clientListener is IClientTcpListener clientTcpListener) {
-        clientTcpListener.BeforeClientAccepted += this.OnBeforeClientAccepted;
+        clientTcpListener.ClientAccept += this.OnClientAccept;
         this.clientSocketFilters = new IClientSocketFilter[] {
           new MaxConnectionsFilter(this.clientController, config.MaxConnections),
           new MaxConnectionsPerIpFilter(this.clientController, config.MaxConnectionsPerIp),
@@ -67,7 +67,7 @@ namespace Muwesome.GameServer {
     }
 
     /// <summary>Applies any socket filters.</summary>
-    private void OnBeforeClientAccepted(object sender, BeforeClientAcceptEventArgs ev) =>
+    private void OnClientAccept(object sender, ClientAcceptEventArgs ev) =>
       ev.RejectClient = this.clientSocketFilters.Any(filter => !filter.OnAllowClientSocketAccept(ev.ClientSocket));
 
     /// <summary>Configures new clients.</summary>

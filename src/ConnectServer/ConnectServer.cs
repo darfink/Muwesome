@@ -35,7 +35,7 @@ namespace Muwesome.ConnectServer {
         clientController.AddClient(new Client(ev.ClientConnection, clientProtocol));
 
       if (clientListener is IClientTcpListener clientTcpListener) {
-        clientTcpListener.BeforeClientAccepted += this.OnBeforeClientAccepted;
+        clientTcpListener.ClientAccept += this.OnClientAccept;
         this.clientSocketFilters = new IClientSocketFilter[] {
           new MaxConnectionsFilter(this.clientController, config.MaxConnections),
           new MaxConnectionsPerIpFilter(this.clientController, config.MaxConnectionsPerIp),
@@ -58,7 +58,7 @@ namespace Muwesome.ConnectServer {
       (this.clientController as IDisposable)?.Dispose();
     }
 
-    private void OnBeforeClientAccepted(object sender, BeforeClientAcceptEventArgs ev) =>
+    private void OnClientAccept(object sender, ClientAcceptEventArgs ev) =>
       ev.RejectClient = this.clientSocketFilters.Any(filter => !filter.OnAllowClientSocketAccept(ev.ClientSocket));
   }
 }

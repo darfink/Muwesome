@@ -33,7 +33,7 @@ namespace Muwesome.Network.Tcp {
     public event EventHandler<LifecycleEventArgs> AfterLifecycleEnded;
 
     /// <inheritdoc />
-    public event EventHandler<BeforeClientAcceptEventArgs> BeforeClientAccepted;
+    public event EventHandler<ClientAcceptEventArgs> ClientAccept;
 
     /// <inheritdoc />
     public event EventHandler<ClientConnectedEventArgs> ClientConnected;
@@ -98,10 +98,10 @@ namespace Muwesome.Network.Tcp {
     }
 
     private void OnSocketAccepted(Socket socket) {
-      var beforeClientAccept = new BeforeClientAcceptEventArgs(socket);
-      this.BeforeClientAccepted?.Invoke(this, beforeClientAccept);
+      var clientAccept = new ClientAcceptEventArgs(socket);
+      this.ClientAccept?.Invoke(this, clientAccept);
 
-      if (beforeClientAccept.RejectClient) {
+      if (clientAccept.RejectClient) {
         Logger.Debug($"Rejecting client connection {socket.RemoteEndPoint}...");
         socket.Dispose();
       } else {
