@@ -24,7 +24,7 @@ namespace Muwesome.Packet {
     private string BuildMessage() =>
       new StringBuilder()
         .AppendLine(this.Cause)
-        .Append("Packet: ").AppendLine(this.PacketData.AsHexString())
+        .Append("Packet: ").AppendLine(this.PacketData.ToHexString())
         .ToString();
   }
 }

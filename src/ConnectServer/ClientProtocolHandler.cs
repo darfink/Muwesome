@@ -29,7 +29,7 @@ namespace Muwesome.ConnectServer {
       bool packetWasHandled = base.HandlePacket(client, packet);
 
       if (!packetWasHandled) {
-        Logger.Debug($"Received an unhandled packet: {packet.AsHexString()}");
+        Logger.Debug($"Received an unhandled packet: {packet.ToHexString()}");
         if (this.DisconnectOnUnknownPacket) {
           Logger.Info($"Disconnecting client {client}; received an unknown packet");
           client.Connection.Disconnect();

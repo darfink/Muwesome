@@ -14,7 +14,7 @@ namespace Muwesome.Protocol {
       new StringBuilder()
         .AppendLine("Conflicting packet handlers")
         .Append("Packet: ").AppendLine(packet.Name)
-        .Append("Identifier: ").AppendLine(packet.Identifier.AsHexString())
+        .Append("Identifier: ").AppendLine(packet.Identifier.ToHexString())
         .ToString();
   }
 }

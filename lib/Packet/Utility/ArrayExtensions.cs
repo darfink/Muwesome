@@ -25,10 +25,10 @@ namespace Muwesome.Packet.Utility {
     }
 
     /// <summary>Gets a byte array as a hex string.</summary>
-    public static string AsHexString(this IEnumerable<byte> bytes) => string.Join(" ", bytes.Select(v => v.ToString("X2")));
+    public static string ToHexString(this IEnumerable<byte> bytes) => string.Join(" ", bytes.Select(v => v.ToString("X2")));
 
     /// <summary>Gets a byte array as a hex string.</summary>
-    public static string AsHexString(this Span<byte> bytes) => AsHexString((IEnumerable<byte>)bytes.ToArray());
+    public static string ToHexString(this Span<byte> bytes) => ToHexString((IEnumerable<byte>)bytes.ToArray());
 
     /// <summary>Reverses the bytes of a UInt16.</summary>
     private static ushort ReverseUInt16(ushort input) => (ushort)((input >> 8) | (input << 8));
