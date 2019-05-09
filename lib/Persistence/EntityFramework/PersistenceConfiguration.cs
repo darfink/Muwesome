@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 using System.Data.Common;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
@@ -32,8 +33,8 @@ namespace Muwesome.Persistence.EntityFramework {
 
       switch (this.StorageEngine) {
         case StorageEngine.Sqlite:
-          contextBuilder.UseSqlite(this.ConnectionString);
           connection = null;
+          contextBuilder.UseSqlite(this.ConnectionString);
           break;
         case StorageEngine.InMemory:
           connection = new SqliteConnection("DataSource=:memory:");
@@ -41,7 +42,7 @@ namespace Muwesome.Persistence.EntityFramework {
           contextBuilder.UseSqlite(connection);
           break;
         default:
-          throw new ArgumentException(nameof(this.StorageEngine));
+          throw new InvalidEnumArgumentException(nameof(this.StorageEngine), (int)this.StorageEngine, typeof(StorageEngine));
       }
 
       return contextBuilder.Options;

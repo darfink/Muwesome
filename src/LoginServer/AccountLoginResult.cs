@@ -3,6 +3,7 @@ using Muwesome.DomainModel.Entities;
 
 namespace Muwesome.LoginServer {
   /// <summary>Represents all possible login result types.</summary>
+  // TODO: Rename this?
   internal enum AccountLoginResultType {
     Success,
     AlreadyConnected,
