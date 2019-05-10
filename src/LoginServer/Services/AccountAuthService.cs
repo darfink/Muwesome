@@ -49,7 +49,7 @@ namespace Muwesome.LoginServer.Services {
     private async Task<AuthResponse> Login(AuthRequest.Types.Login login, ISet<Guid> accountIds) {
       Logger.Debug($"Login attempt for {login.Username}...");
       var accountLoginResult = await this.accountController.LoginAccountAsync(login.Username, login.Password);
-      var loginResult = this.AccountLoginResultTypeToLoginResult(accountLoginResult.Type);
+      var loginResult = this.ConvertLoginResult(accountLoginResult.Type);
 
       if (accountLoginResult.Type == AccountLoginResultType.Success) {
         accountIds.Add(accountLoginResult.Account.Id);
@@ -69,7 +69,7 @@ namespace Muwesome.LoginServer.Services {
       accountIds.Remove(accountId);
     }
 
-    private LoginResult AccountLoginResultTypeToLoginResult(AccountLoginResultType type) {
+    private LoginResult ConvertLoginResult(AccountLoginResultType type) {
       switch (type) {
         case AccountLoginResultType.Success: return LoginResult.Success;
         case AccountLoginResultType.AlreadyConnected: return LoginResult.AccountIsAlreadyConnected;

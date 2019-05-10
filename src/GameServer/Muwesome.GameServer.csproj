@@ -15,6 +15,7 @@
   </ItemGroup>
   <ItemGroup>
     <Protobuf Include="../../protos/ConnectServer.proto" GrpcServices="Client" Generator="MSBuild:Compile" />
+    <Protobuf Include="../../protos/LoginServer.proto" GrpcServices="Client" Generator="MSBuild:Compile" />
     <Content Include="@(Protobuf)" />
     <None Remove="@(Protobuf)" />
   </ItemGroup>
@@ -24,5 +25,8 @@
     <ProjectReference Include="..\..\lib\Network\Muwesome.Network.csproj" />
     <ProjectReference Include="..\..\lib\Protocol\Muwesome.Protocol.csproj" />
     <ProjectReference Include="..\..\lib\GameLogic\Muwesome.GameLogic.csproj" />
+    <ProjectReference Include="..\..\lib\DomainModel\Muwesome.DomainModel.csproj" />
+    <ProjectReference Include="..\..\lib\Persistence\Muwesome.Persistence.csproj" />
+    <ProjectReference Include="..\..\lib\Persistence\EntityFramework\Muwesome.Persistence.EntityFramework.csproj" />
   </ItemGroup>
 </Project>
