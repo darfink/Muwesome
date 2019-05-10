@@ -27,34 +27,30 @@ namespace Muwesome.LoginServer {
     }
 
     /// <summary>Attempts to login an account using the provided credentials.</summary>
-    public async Task<AccountLoginResult> LoginAccountAsync(string username, string password) {
-      var accountLoginResult = new AccountLoginResult();
+    public async Task<AccountOrLoginError> LoginAccountAsync(string username, string password) {
       using (var accountContext = this.persistenceContextProvider.CreateAccountContext()) {
         // TODO: Alternative way to return this information?
         var (account, validPassword) = await accountContext.GetAccountByCredentialsAsync(username, password);
 
         if (account == null) {
-          accountLoginResult.Type = AccountLoginResultType.InvalidAccount;
+          return LoginError.InvalidAccount;
         } else if (this.IsAccountTimedOut(account)) {
-          accountLoginResult.Type = AccountLoginResultType.LockedOut;
+          return LoginError.LockedOut;
         } else if (validPassword) {
-          accountLoginResult.Type = AccountLoginResultType.InvalidPassword;
           account.ConsecutiveFailedLoginAttempts++;
           account.LastFailedLoginTime = DateTime.UtcNow;
           await accountContext.SaveChangesAsync();
+          return LoginError.InvalidPassword;
         } else if (!this.TryAddAccount(account)) {
-          accountLoginResult.Type = AccountLoginResultType.AlreadyConnected;
+          return LoginError.AlreadyConnected;
         } else {
-          accountLoginResult.Type = AccountLoginResultType.Success;
-          accountLoginResult.Account = account;
           account.ConsecutiveFailedLoginAttempts = 0;
           account.LastFailedLoginTime = null;
           account.LastLoginTime = DateTime.UtcNow;
           await accountContext.SaveChangesAsync();
+          return account;
         }
       }
-
-      return accountLoginResult;
     }
 
     /// <summary>Attempts to log out an account by its ID.</summary>

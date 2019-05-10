@@ -49,18 +49,19 @@ namespace Muwesome.LoginServer.Services {
     private async Task<AuthResponse> Login(AuthRequest.Types.Login login, ISet<Guid> accountIds) {
       Logger.Debug($"Login attempt for {login.Username}...");
       var accountLoginResult = await this.accountController.LoginAccountAsync(login.Username, login.Password);
-      var loginResult = this.ConvertLoginResult(accountLoginResult.Type);
+      var loginResult = this.ConvertToLoginResult(accountLoginResult);
 
-      if (accountLoginResult.Type == AccountLoginResultType.Success) {
-        accountIds.Add(accountLoginResult.Account.Id);
-        Logger.Debug($"Login successful for {login.Username}...");
-
-        var accountId = ByteString.CopyFrom(accountLoginResult.Account.Id.ToByteArray());
-        return new AuthResponse { Result = loginResult, AccountId = accountId };
-      }
-
-      Logger.Info($"Login failed for {login.Username}; {accountLoginResult.Type}");
-      return new AuthResponse { Result = loginResult };
+      return accountLoginResult.Match(
+        account => {
+          Logger.Debug($"Login successful for {login.Username}...");
+          accountIds.Add(account.Id);
+          var accountId = ByteString.CopyFrom(account.Id.ToByteArray());
+          return new AuthResponse { Result = loginResult, AccountId = accountId };
+        },
+        error => {
+          Logger.Info($"Login failed for {login.Username}; {error}");
+          return new AuthResponse { Result = loginResult };
+        });
     }
 
     private async Task Logout(AuthRequest.Types.Logout logout, ISet<Guid> accountIds) {
@@ -69,15 +70,18 @@ namespace Muwesome.LoginServer.Services {
       accountIds.Remove(accountId);
     }
 
-    private LoginResult ConvertLoginResult(AccountLoginResultType type) {
-      switch (type) {
-        case AccountLoginResultType.Success: return LoginResult.Success;
-        case AccountLoginResultType.AlreadyConnected: return LoginResult.AccountIsAlreadyConnected;
-        case AccountLoginResultType.InvalidAccount: return LoginResult.InvalidAccount;
-        case AccountLoginResultType.InvalidPassword: return LoginResult.InvalidPassword;
-        case AccountLoginResultType.LockedOut: return LoginResult.AccountIsLockedOut;
-        default: throw new InvalidEnumArgumentException(nameof(type), (int)type, typeof(AccountLoginResultType));
-      }
+    private LoginResult ConvertToLoginResult(AccountOrLoginError result) {
+      return result.Match(
+        account => LoginResult.Success,
+        error => {
+          switch (error) {
+            case LoginError.AlreadyConnected: return LoginResult.AccountIsAlreadyConnected;
+            case LoginError.InvalidAccount: return LoginResult.InvalidAccount;
+            case LoginError.InvalidPassword: return LoginResult.InvalidPassword;
+            case LoginError.LockedOut: return LoginResult.AccountIsLockedOut;
+            default: throw new InvalidEnumArgumentException(nameof(error), (int)error, typeof(LoginError));
+          }
+        });
     }
   }
 }
