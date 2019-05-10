@@ -19,6 +19,10 @@ namespace Muwesome.Persistence {
     TEntity GetById<TEntity>(Guid id)
       where TEntity : class;
 
+    /// <summary>Retrieves an entity by ID asynchronously.</summary>
+    Task<TEntity> GetByIdAsync<TEntity>(Guid id)
+      where TEntity : class;
+
     /// <summary>Retrieves all entities of a specific type.</summary>
     IEnumerable<TEntity> GetAll<TEntity>()
       where TEntity : class;

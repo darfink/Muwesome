@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.ComponentModel;
 using System.Threading;
 using System.Threading.Tasks;
+using Google.Protobuf;
 using Grpc.Core;
 using log4net;
 using Muwesome.DomainModel.Entities;
@@ -11,12 +12,13 @@ using Muwesome.GameServer.Utility;
 using Muwesome.Interfaces;
 using Muwesome.Persistence;
 using Muwesome.Rpc.LoginServer;
-using OneOf;
 
 namespace Muwesome.GameServer {
   internal class AccountAuthenticator : ILifecycle, IDisposable {
     private static readonly ILog Logger = LogManager.GetLogger(typeof(AccountAuthenticator));
-    private readonly ConcurrentQueue<TaskCompletionSource<AccountOrLoginError>> pendingLoginTasks = new ConcurrentQueue<TaskCompletionSource<AccountOrLoginError>>();
+    private readonly object enqueueLock = new object();
+    private readonly ConcurrentQueue<TaskCompletionSource<AccountOrLoginResult>> pendingLoginTasks = new ConcurrentQueue<TaskCompletionSource<AccountOrLoginResult>>();
+    private readonly ConcurrentQueue<TaskCompletionSource<bool>> pendingLogoutTasks = new ConcurrentQueue<TaskCompletionSource<bool>>();
     private readonly ConcurrentQueue<AuthRequest> pendingAuthRequests = new ConcurrentQueue<AuthRequest>();
     private readonly AsyncManualResetEvent incomingAuthRequestSignal = new AsyncManualResetEvent();
     private readonly IPersistenceContextProvider persistenceContextProvider;
@@ -53,8 +55,8 @@ namespace Muwesome.GameServer {
     /// <inheritdoc />
     public void Dispose() => this.Stop();
 
-    public Task<AccountOrLoginError> Login(string username, string password) {
-      var taskCompletionSource = new TaskCompletionSource<AccountOrLoginError>();
+    public Task<AccountOrLoginResult> Login(string username, string password) {
+      var taskCompletionSource = new TaskCompletionSource<AccountOrLoginResult>();
       var authRequest = new AuthRequest {
         Login = new AuthRequest.Types.Login {
           Username = username,
@@ -62,10 +64,28 @@ namespace Muwesome.GameServer {
         },
       };
 
-      this.pendingLoginTasks.Enqueue(taskCompletionSource);
-      this.pendingAuthRequests.Enqueue(authRequest);
-      this.incomingAuthRequestSignal.Set();
+      lock (this.enqueueLock) {
+        this.pendingLoginTasks.Enqueue(taskCompletionSource);
+        this.pendingAuthRequests.Enqueue(authRequest);
+      }
 
+      this.incomingAuthRequestSignal.Set();
+      return taskCompletionSource.Task;
+    }
+
+    public Task<bool> Logout(Guid accountId) {
+      // TODO: Validate whether the log out was successful or not
+      var taskCompletionSource = new TaskCompletionSource<bool>();
+      var authRequest = new AuthRequest {
+        Logout = new AuthRequest.Types.Logout { AccountId = ByteString.CopyFrom(accountId.ToByteArray()) },
+      };
+
+      lock (this.enqueueLock) {
+        this.pendingLogoutTasks.Enqueue(taskCompletionSource);
+        this.pendingAuthRequests.Enqueue(authRequest);
+      }
+
+      this.incomingAuthRequestSignal.Set();
       return taskCompletionSource.Task;
     }
 
@@ -75,6 +95,7 @@ namespace Muwesome.GameServer {
         await channel.ConnectAsync();
       }
 
+      Logger.Info($"Connected to login server");
       var client = new AccountAuth.AccountAuthClient(channel);
       var stream = client.RegisterAuthSession(cancellationToken: cancellationToken);
 
@@ -90,31 +111,38 @@ namespace Muwesome.GameServer {
             await stream.ResponseStream.MoveNext(cancellationToken);
             this.ProcessLoginResponse(stream.ResponseStream.Current);
             break;
+          case AuthRequest.TypeOneofCase.Logout:
+            this.pendingLogoutTasks.TryDequeue(out TaskCompletionSource<bool> logoutTask);
+            logoutTask.SetResult(true);
+            break;
           }
         }
       }
     }
 
     private void ProcessLoginResponse(AuthResponse login) {
-      this.pendingLoginTasks.TryDequeue(out TaskCompletionSource<AccountOrLoginError> loginTask);
+      this.pendingLoginTasks.TryDequeue(out TaskCompletionSource<AccountOrLoginResult> loginTask);
+      bool loginSuccess = login.Result == AuthResponse.Types.LoginResult.Success;
 
-      if (login.Result != AuthResponse.Types.LoginResult.Success) {
-        loginTask.SetResult((AccountOrLoginError)this.ConvertLoginResult(login.Result));
+      if (!loginSuccess) {
+        loginTask.SetResult(this.ConvertLoginResult(login.Result));
         return;
       }
 
-      var accountId = new Guid(login.AccountId.ToByteArray());
-      using (var context = this.persistenceContextProvider.CreateContext()) {
-        // TODO: Perform this asynchronously
-        var account = context.GetById<Account>(accountId);
+      // Prevent the database query from stalling RPC requests
+      Task.Run(async () => {
+        var accountId = new Guid(login.AccountId.ToByteArray());
+        using (var context = this.persistenceContextProvider.CreateContext()) {
+          var account = await context.GetByIdAsync<Account>(accountId);
 
-        if (account == null) {
-          Logger.Error($"Received a non-existing account ID from login server; {accountId}");
-          loginTask.SetResult((AccountOrLoginError)GameLogic.Actions.LoginResult.InternalError);
-        } else {
-          loginTask.SetResult((AccountOrLoginError)account);
+          if (account == null) {
+            Logger.Error($"Received a non-existing account ID from login server; {accountId}");
+            loginTask.SetResult(GameLogic.Actions.LoginResult.InternalError);
+          } else {
+            loginTask.SetResult(account);
+          }
         }
-      }
+      }).ContinueWith(t => Logger.Error("An exception occurred during an account query", t.Exception), TaskContinuationOptions.OnlyOnFaulted);
     }
 
     private void OnSessionComplete(Exception ex) {
@@ -136,13 +164,13 @@ namespace Muwesome.GameServer {
 
     private GameLogic.Actions.LoginResult ConvertLoginResult(AuthResponse.Types.LoginResult loginResult) {
       switch (loginResult) {
-      case AuthResponse.Types.LoginResult.Success: return Muwesome.GameLogic.Actions.LoginResult.Success;
-      case AuthResponse.Types.LoginResult.InvalidPassword: return Muwesome.GameLogic.Actions.LoginResult.InvalidPassword;
-      case AuthResponse.Types.LoginResult.InvalidAccount: return Muwesome.GameLogic.Actions.LoginResult.InvalidAccount;
-      case AuthResponse.Types.LoginResult.AccountIsBlocked: return Muwesome.GameLogic.Actions.LoginResult.AccountIsBlocked;
-      case AuthResponse.Types.LoginResult.AccountIsLockedOut: return Muwesome.GameLogic.Actions.LoginResult.TooManyFailedLoginAttempts;
-      case AuthResponse.Types.LoginResult.AccountIsAlreadyConnected: return Muwesome.GameLogic.Actions.LoginResult.AccountIsAlreadyConnected;
-      default: throw new InvalidEnumArgumentException(nameof(loginResult), (int)loginResult, loginResult.GetType());
+        case AuthResponse.Types.LoginResult.Success: return Muwesome.GameLogic.Actions.LoginResult.Success;
+        case AuthResponse.Types.LoginResult.InvalidPassword: return Muwesome.GameLogic.Actions.LoginResult.InvalidPassword;
+        case AuthResponse.Types.LoginResult.InvalidAccount: return Muwesome.GameLogic.Actions.LoginResult.InvalidAccount;
+        case AuthResponse.Types.LoginResult.AccountIsBlocked: return Muwesome.GameLogic.Actions.LoginResult.AccountIsBlocked;
+        case AuthResponse.Types.LoginResult.AccountIsLockedOut: return Muwesome.GameLogic.Actions.LoginResult.TooManyFailedLoginAttempts;
+        case AuthResponse.Types.LoginResult.AccountIsAlreadyConnected: return Muwesome.GameLogic.Actions.LoginResult.AccountIsAlreadyConnected;
+        default: throw new InvalidEnumArgumentException(nameof(loginResult), (int)loginResult, loginResult.GetType());
       }
     }
   }

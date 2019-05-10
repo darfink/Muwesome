@@ -41,6 +41,10 @@ namespace Muwesome.Persistence.EntityFramework {
         where TEntity : class => this.Context.Set<TEntity>().Find(id);
 
     /// <inheritdoc />
+    public Task<TEntity> GetByIdAsync<TEntity>(Guid id)
+        where TEntity : class => this.Context.Set<TEntity>().FindAsync(id);
+
+    /// <inheritdoc />
     public IEnumerable<TEntity> GetAll<TEntity>()
       where TEntity : class {
       return this.Context.Set<TEntity>();
