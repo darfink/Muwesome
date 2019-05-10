@@ -16,10 +16,10 @@ namespace Muwesome.ServerCommon {
       this.lifecycleInstances = lifecycleInstances;
 
     /// <inheritdoc />
-    public event EventHandler<LifecycleEventArgs> AfterLifecycleStarted;
+    public event EventHandler<LifecycleEventArgs> LifecycleStarted;
 
     /// <inheritdoc />
-    public event EventHandler<LifecycleEventArgs> AfterLifecycleEnded;
+    public event EventHandler<LifecycleEventArgs> LifecycleEnded;
 
     /// <inheritdoc />
     public virtual Task ShutdownTask => Task.WhenAll(this.lifecycleInstances.Select(instance => instance.ShutdownTask));
@@ -38,7 +38,7 @@ namespace Muwesome.ServerCommon {
       }
 
       this.isRunning = 1;
-      this.AfterLifecycleStarted?.Invoke(this, new LifecycleEventArgs());
+      this.LifecycleStarted?.Invoke(this, new LifecycleEventArgs());
       this.Logger.Info($"{this.Identifier} successfully started");
     }
 
@@ -54,7 +54,7 @@ namespace Muwesome.ServerCommon {
       }
 
       this.ShutdownTask.Wait();
-      this.AfterLifecycleEnded?.Invoke(this, new LifecycleEventArgs());
+      this.LifecycleEnded?.Invoke(this, new LifecycleEventArgs());
       this.Logger.Info($"{this.Identifier} stopped");
     }
 

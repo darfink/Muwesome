@@ -27,10 +27,10 @@ namespace Muwesome.Network.Tcp {
     }
 
     /// <inheritdoc />
-    public event EventHandler<LifecycleEventArgs> AfterLifecycleStarted;
+    public event EventHandler<LifecycleEventArgs> LifecycleStarted;
 
     /// <inheritdoc />
-    public event EventHandler<LifecycleEventArgs> AfterLifecycleEnded;
+    public event EventHandler<LifecycleEventArgs> LifecycleEnded;
 
     /// <inheritdoc />
     public event EventHandler<ClientAcceptEventArgs> ClientAccept;
@@ -71,7 +71,7 @@ namespace Muwesome.Network.Tcp {
         .ContinueWith(task => this.OnListenerComplete(task.Exception));
       this.isRunning = 1;
 
-      this.AfterLifecycleStarted?.Invoke(this, new LifecycleEventArgs());
+      this.LifecycleStarted?.Invoke(this, new LifecycleEventArgs());
       Logger.Info($"Client listener started; listening on {this.BoundEndPoint}");
     }
 
@@ -121,7 +121,7 @@ namespace Muwesome.Network.Tcp {
         } catch (ObjectDisposedException) {
         }
 
-        this.AfterLifecycleEnded?.Invoke(this, new LifecycleEventArgs());
+        this.LifecycleEnded?.Invoke(this, new LifecycleEventArgs());
         Logger.Info("Client listener stopped");
       }
     }

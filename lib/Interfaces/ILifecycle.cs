@@ -5,10 +5,10 @@ namespace Muwesome.Interfaces {
   /// <summary>Represents an object that has a lifetime.</summary>
   public interface ILifecycle {
     /// <summary>An event that is raised when a lifecycle has started.</summary>
-    event EventHandler<LifecycleEventArgs> AfterLifecycleStarted;
+    event EventHandler<LifecycleEventArgs> LifecycleStarted;
 
     /// <summary>An event that is raised whan a lifecycle has ended.</summary>
-    event EventHandler<LifecycleEventArgs> AfterLifecycleEnded;
+    event EventHandler<LifecycleEventArgs> LifecycleEnded;
 
     /// <summary>Gets the lifecycle's task.</summary>
     Task ShutdownTask { get; }

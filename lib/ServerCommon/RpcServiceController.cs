@@ -24,10 +24,10 @@ namespace Muwesome.ServerCommon {
     }
 
     /// <inheritdoc />
-    public event EventHandler<LifecycleEventArgs> AfterLifecycleStarted;
+    public event EventHandler<LifecycleEventArgs> LifecycleStarted;
 
     /// <inheritdoc />
-    public event EventHandler<LifecycleEventArgs> AfterLifecycleEnded;
+    public event EventHandler<LifecycleEventArgs> LifecycleEnded;
 
     /// <inheritdoc />
     public Task ShutdownTask => this.grpcServer?.ShutdownTask ?? Task.CompletedTask;
@@ -59,7 +59,7 @@ namespace Muwesome.ServerCommon {
       this.grpcServer.Start();
       var endPoints = this.grpcServer.Ports
         .Select(server => $"{server.Host}:{server.BoundPort}");
-      this.AfterLifecycleStarted?.Invoke(this, new LifecycleEventArgs());
+      this.LifecycleStarted?.Invoke(this, new LifecycleEventArgs());
       this.Logger.Info($"RPC service started; listening on {string.Join(", ", endPoints)}");
     }
 
@@ -77,7 +77,7 @@ namespace Muwesome.ServerCommon {
       grpcServer.ShutdownAsync().Wait();
       grpcServer = null;
 
-      this.AfterLifecycleEnded?.Invoke(this, new LifecycleEventArgs());
+      this.LifecycleEnded?.Invoke(this, new LifecycleEventArgs());
       this.Logger.Info("RPC service stopped");
     }
 
