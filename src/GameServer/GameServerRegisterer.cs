@@ -9,22 +9,22 @@ using Muwesome.Rpc.ConnectServer;
 
 namespace Muwesome.GameServer {
   /// <summary>A connect server registerer.</summary>
-  internal class ConnectServerRegisterer : IConnectServerRegisterer, IDisposable {
-    private static readonly ILog Logger = LogManager.GetLogger(typeof(ConnectServerRegisterer));
+  internal class GameServerRegisterer : IGameServerRegisterer, IDisposable {
+    private static readonly ILog Logger = LogManager.GetLogger(typeof(GameServerRegisterer));
     private readonly IClientTcpListener clientListener;
     private readonly IClientController clientController;
     private readonly Configuration config;
     private CancellationTokenSource cancellationTokenSource;
     private Action updateClientCount;
 
-    /// <summary>Initializes a new instance of the <see cref="ConnectServerRegisterer"/> class.</summary>
-    public ConnectServerRegisterer(Configuration config, IClientController clientController, IClientTcpListener clientListener) {
+    /// <summary>Initializes a new instance of the <see cref="GameServerRegisterer"/> class.</summary>
+    public GameServerRegisterer(Configuration config, IClientController clientController, IClientTcpListener clientListener) {
       this.config = config;
       this.clientController = clientController;
       this.clientListener = clientListener;
 
-      clientListener.AfterLifecycleStarted += this.OnClientListenerStarted;
-      clientListener.AfterLifecycleEnded += (_, ev) => this.CancelRegistration();
+      clientListener.LifecycleStarted += this.OnClientListenerStarted;
+      clientListener.LifecycleEnded += (_, ev) => this.CancelRegistration();
 
       clientController.ClientSessionStarted += (_, ev) => this.updateClientCount?.Invoke();
       clientController.ClientSessionEnded += (_, ev) => this.updateClientCount?.Invoke();

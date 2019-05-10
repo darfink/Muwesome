@@ -1,8 +1,8 @@
 using System.Threading.Tasks;
 
 namespace Muwesome.GameServer {
-  /// <summary>A connect server registerer.</summary>
-  public interface IConnectServerRegisterer {
+  /// <summary>A game server registerer.</summary>
+  public interface IGameServerRegisterer {
     /// <summary>Gets the registerer's task.</summary>
     Task ShutdownTask { get; }
 

@@ -15,11 +15,11 @@ namespace Muwesome.GameServer {
       };
 
       var clientProtocolResolver = new ClientProtocolResolver(config, clientController);
-      var connectServerRegisterer = new ConnectServerRegisterer(config, clientController, clientListener);
+      var gameServerRegisterer = new GameServerRegisterer(config, clientController, clientListener);
 
       return new GameServer(
         config,
-        connectServerRegisterer,
+        gameServerRegisterer,
         clientController,
         clientListener,
         clientProtocolResolver);

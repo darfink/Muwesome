@@ -13,7 +13,7 @@ using Muwesome.ServerCommon;
 namespace Muwesome.GameServer {
   /// <summary>A game server.</summary>
   public class GameServer : LifecycleController {
-    private readonly IConnectServerRegisterer connectServerRegisterer;
+    private readonly IGameServerRegisterer gameServerRegisterer;
     private readonly IClientSocketFilter[] clientSocketFilters;
     private readonly IClientController clientController;
     private readonly IClientProtocolResolver clientProtocolResolver;
@@ -22,14 +22,14 @@ namespace Muwesome.GameServer {
     /// <summary>Initializes a new instance of the <see cref="GameServer"/> class.</summary>
     public GameServer(
         Configuration config,
-        IConnectServerRegisterer connectServerRegisterer,
+        IGameServerRegisterer gameServerRegisterer,
         IClientController clientController,
         IClientListener clientListener,
         IClientProtocolResolver clientProtocolResolver,
         params ILifecycle[] lifecycleServices)
         : base(lifecycleServices.Prepend(clientListener).ToArray()) {
       this.Config = config;
-      this.connectServerRegisterer = connectServerRegisterer;
+      this.gameServerRegisterer = gameServerRegisterer;
       this.clientController = clientController;
       this.clientProtocolResolver = clientProtocolResolver;
       this.gameContext = new GameContext();
@@ -46,7 +46,7 @@ namespace Muwesome.GameServer {
     }
 
     /// <inheritdoc />
-    public override Task ShutdownTask => Task.WhenAll(base.ShutdownTask, this.connectServerRegisterer.ShutdownTask);
+    public override Task ShutdownTask => Task.WhenAll(base.ShutdownTask, this.gameServerRegisterer.ShutdownTask);
 
     /// <summary>Gets the server's configuration.</summary>
     public Configuration Config { get; }
@@ -57,13 +57,13 @@ namespace Muwesome.GameServer {
     /// <summary>
     /// Gets a value indicating whether the server is registered at the connect server or not.
     /// </summary>
-    public bool IsRegistered => this.connectServerRegisterer.IsRegistered;
+    public bool IsRegistered => this.gameServerRegisterer.IsRegistered;
 
     /// <inheritdoc />
     public override void Dispose() {
       base.Dispose();
       (this.clientController as IDisposable)?.Dispose();
-      (this.connectServerRegisterer as IDisposable)?.Dispose();
+      (this.gameServerRegisterer as IDisposable)?.Dispose();
     }
 
     /// <summary>Applies any socket filters.</summary>
