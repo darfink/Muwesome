@@ -20,5 +20,6 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Muwesome.ConnectServer.csproj" />
+    <ProjectReference Include="..\..\..\lib\Rpc\Muwesome.Rpc.csproj" />
   </ItemGroup>
 </Project>

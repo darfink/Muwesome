@@ -8,7 +8,6 @@
     <PackageReference Include="log4net" Version="2.0.8" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\lib\Rpc\Muwesome.Rpc.csproj" />
     <ProjectReference Include="..\..\lib\Common\Muwesome.Common.csproj" />
     <ProjectReference Include="..\..\lib\Network\Muwesome.Network.csproj" />
     <ProjectReference Include="..\..\lib\Protocol\Muwesome.Protocol.csproj" />

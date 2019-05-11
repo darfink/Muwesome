@@ -106,12 +106,12 @@ namespace Muwesome.GameServer.Program.Proxies {
     private (Task, CancellationTokenSource) SetupGameServerChangeTracking(
         GameServerInfo server,
         AsyncClientStreamingCall<GameServerRequest, GameServerRegisterResponse> stream) {
-      server.PropertyChanged += OnGameServerStatusChanged;
       var sessionCancellationSource = new CancellationTokenSource();
       var sessionTask = Task
         .Run(async () => await stream.ResponseAsync, sessionCancellationSource.Token)
         .ContinueWith(OnGameServerSessionEnded);
 
+      server.PropertyChanged += OnGameServerStatusChanged;
       return (sessionTask, sessionCancellationSource);
 
       async void OnGameServerStatusChanged(object o, PropertyChangedEventArgs ev) {

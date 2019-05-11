@@ -9,7 +9,6 @@ using Muwesome.Network;
 using Muwesome.Network.Tcp;
 using Muwesome.Network.Tcp.Filters;
 using Muwesome.Protocol;
-using Muwesome.Rpc;
 
 namespace Muwesome.ConnectServer {
   // TODO: Cmds, blacklist? exit? actvserv? Over gRPC?

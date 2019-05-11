@@ -51,7 +51,14 @@ namespace Muwesome.GameServer.Program.Proxies {
     }
 
     /// <inheritdoc />
-    public void Stop() => this.CancelSession();
+    public void Stop() {
+      var cancelSource = Interlocked.Exchange(ref this.cancellationTokenSource, null);
+
+      if (cancelSource != null) {
+        cancelSource.Cancel();
+        cancelSource.Dispose();
+      }
+    }
 
     /// <inheritdoc />
     public void Dispose() => this.Stop();
@@ -141,15 +148,6 @@ namespace Muwesome.GameServer.Program.Proxies {
       }
 
       this.LifecycleEnded?.Invoke(this, new LifecycleEventArgs());
-    }
-
-    private void CancelSession() {
-      var cancelSource = Interlocked.Exchange(ref this.cancellationTokenSource, null);
-
-      if (cancelSource != null) {
-        cancelSource.Cancel();
-        cancelSource.Dispose();
-      }
     }
 
     private LoginError? ConvertLoginResult(AuthResponse.Types.LoginResult loginResult) {
