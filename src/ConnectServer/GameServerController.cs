@@ -28,7 +28,7 @@ namespace Muwesome.ConnectServer {
     public IReadOnlyCollection<GameServerInfo> GameServers => this.gameServers.Values.AsReadOnly();
 
     /// <inheritdoc />
-    public Task RegisterGameServerAsync(GameServerInfo server) {
+    public void RegisterGameServer(GameServerInfo server) {
       if (!this.gameServers.TryAdd(server.Code, server)) {
         throw new ArgumentException($"Conflicting game server code {server.Code}", nameof(server));
       }
@@ -36,11 +36,10 @@ namespace Muwesome.ConnectServer {
       server.PropertyChanged += this.OnGameServerChange;
       this.GameServerRegistered?.Invoke(this, new GameServerEventArgs(server));
       Logger.Info($"Game server registered; {server} (server count: {this.gameServers.Count})");
-      return Task.CompletedTask;
     }
 
     /// <inheritdoc />
-    public Task DeregisterGameServerAsync(ushort serverCode) {
+    public void DeregisterGameServer(ushort serverCode) {
       if (!this.gameServers.TryRemove(serverCode, out GameServerInfo server)) {
         throw new ArgumentException($"Non-existing game server code {serverCode}", nameof(serverCode));
       }
@@ -48,7 +47,6 @@ namespace Muwesome.ConnectServer {
       server.PropertyChanged -= this.OnGameServerChange;
       this.GameServerDeregistered?.Invoke(this, new GameServerEventArgs(server));
       Logger.Info($"Game server deregistered {server}");
-      return Task.CompletedTask;
     }
 
     /// <inheritdoc />

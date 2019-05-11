@@ -47,12 +47,16 @@ namespace Muwesome.ConnectServer {
     public int GameServersRegistered => this.gameServerController.GameServersRegistered;
 
     /// <inheritdoc />
-    public Task RegisterGameServerAsync(GameServerInfo server) =>
-      this.gameServerController.RegisterGameServerAsync(server);
+    public Task RegisterGameServerAsync(GameServerInfo server) {
+      this.gameServerController.RegisterGameServer(server);
+      return Task.CompletedTask;
+    }
 
     /// <inheritdoc />
-    public Task DeregisterGameServerAsync(ushort serverCode) =>
-      this.gameServerController.DeregisterGameServerAsync(serverCode);
+    public Task DeregisterGameServerAsync(ushort serverCode) {
+      this.gameServerController.DeregisterGameServer(serverCode);
+      return Task.CompletedTask;
+    }
 
     /// <inheritdoc />
     public override void Dispose() {
