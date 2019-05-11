@@ -1,7 +1,7 @@
 using Grpc.Core;
 using Muwesome.Common;
+using Muwesome.Rpc;
 using Muwesome.Rpc.LoginServer;
-using Muwesome.ServerCommon;
 
 namespace Muwesome.LoginServer.Program.Services {
   internal static class ServiceControllerFactory {

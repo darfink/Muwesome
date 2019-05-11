@@ -1,7 +1,7 @@
 using System;
 using System.Text;
 using Muwesome.Persistence.EntityFramework;
-using Muwesome.ServerCommon;
+using Muwesome.Rpc;
 
 namespace Muwesome.GameServer.Program {
   /// <summary>The game server configuration.</summary>

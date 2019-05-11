@@ -8,7 +8,7 @@ using Muwesome.Network;
 using Muwesome.Network.Tcp;
 using Muwesome.Network.Tcp.Filters;
 using Muwesome.Protocol.Game;
-using Muwesome.ServerCommon;
+using Muwesome.Rpc;
 
 namespace Muwesome.GameServer {
   /// <summary>A game server.</summary>

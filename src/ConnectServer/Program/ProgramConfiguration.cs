@@ -1,4 +1,4 @@
-using Muwesome.ServerCommon;
+using Muwesome.Rpc;
 
 namespace Muwesome.ConnectServer.Program {
   public class ProgramConfiguration : Configuration {

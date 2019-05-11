@@ -1,6 +1,6 @@
 using Muwesome.LoginServer.Program.Services;
 using Muwesome.Persistence.EntityFramework;
-using Muwesome.ServerCommon;
+using Muwesome.Rpc;
 
 namespace Muwesome.LoginServer.Program {
   public class ProgramConfiguration : Configuration {

@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Muwesome.Common;
 using Muwesome.DomainModel.Entities;
 using Muwesome.Persistence;
-using Muwesome.ServerCommon;
+using Muwesome.Rpc;
 
 namespace Muwesome.LoginServer {
   public sealed class LoginServer : LifecycleController, IAccountLoginService {

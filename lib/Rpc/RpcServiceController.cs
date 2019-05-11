@@ -7,7 +7,7 @@ using Grpc.Core;
 using log4net;
 using Muwesome.Common;
 
-namespace Muwesome.ServerCommon {
+namespace Muwesome.Rpc {
   /// <summary>A factory for RPC services.</summary>
   public delegate ServerServiceDefinition ServiceFactory(CancellationToken cancellationToken);
 

@@ -10,8 +10,8 @@ using Muwesome.Common.Utility;
 using Muwesome.DomainModel.Entities;
 using Muwesome.GameServer.Program.Utility;
 using Muwesome.Persistence;
+using Muwesome.Rpc;
 using Muwesome.Rpc.LoginServer;
-using Muwesome.ServerCommon;
 
 namespace Muwesome.GameServer.Program.Proxies {
   /// <summary>A account login service proxy which forwards all requests to an RPC service.</summary>

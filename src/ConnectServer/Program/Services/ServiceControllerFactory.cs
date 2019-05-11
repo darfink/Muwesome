@@ -1,7 +1,7 @@
 using Grpc.Core;
 using Muwesome.Common;
+using Muwesome.Rpc;
 using Muwesome.Rpc.ConnectServer;
-using Muwesome.ServerCommon;
 
 namespace Muwesome.ConnectServer.Program.Services {
   internal static class ServiceControllerFactory {

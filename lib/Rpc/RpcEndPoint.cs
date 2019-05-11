@@ -1,4 +1,4 @@
-namespace Muwesome.ServerCommon {
+namespace Muwesome.Rpc {
   /// <summary>Represents an RPC end point as a host and a port number.</summary>
   public class RpcEndPoint {
     /// <summary>Gets or sets the RPC host domain or address.</summary>

@@ -25,7 +25,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Muwesome.Persistence", "lib
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Muwesome.Protocol", "lib\Protocol\Muwesome.Protocol.csproj", "{1FE418B1-6FD0-4A26-B55D-879E8CAC1B50}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Muwesome.ServerCommon", "lib\ServerCommon\Muwesome.ServerCommon.csproj", "{53E4535A-14DA-45A1-B3E2-8B4274E18DCE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Muwesome.Rpc", "lib\Rpc\Muwesome.Rpc.csproj", "{53E4535A-14DA-45A1-B3E2-8B4274E18DCE}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{B2638EE9-155B-440A-8662-3D68C87A0A25}"
 EndProject

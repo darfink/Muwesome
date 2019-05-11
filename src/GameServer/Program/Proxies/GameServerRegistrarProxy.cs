@@ -9,8 +9,8 @@ using log4net;
 using Muwesome.Common;
 using Muwesome.Common.Utility;
 using Muwesome.Network.Tcp;
+using Muwesome.Rpc;
 using Muwesome.Rpc.ConnectServer;
-using Muwesome.ServerCommon;
 
 namespace Muwesome.GameServer.Program.Proxies {
   /// <summary>A game server registrar proxy which forwards all requests to an RPC service.</summary>

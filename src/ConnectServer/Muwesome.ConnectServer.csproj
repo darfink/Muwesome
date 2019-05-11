@@ -11,7 +11,7 @@
     <ProjectReference Include="..\..\lib\Network\Muwesome.Network.csproj" />
     <ProjectReference Include="..\..\lib\Packet\Muwesome.Packet.csproj" />
     <ProjectReference Include="..\..\lib\Protocol\Muwesome.Protocol.csproj" />
-    <ProjectReference Include="..\..\lib\ServerCommon\Muwesome.ServerCommon.csproj" />
+    <ProjectReference Include="..\..\lib\Rpc\Muwesome.Rpc.csproj" />
     <ProjectReference Include="..\..\lib\Common\Muwesome.Common.csproj" />
   </ItemGroup>
 </Project>
