@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
 
-namespace Muwesome.Interfaces {
+namespace Muwesome.Common {
   /// <summary>A service object that has a lifetime.</summary>
   public interface ILifecycle {
     /// <summary>An event that is raised when a lifecycle has started.</summary>

@@ -4,7 +4,7 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\Packet\Muwesome.Packet.csproj" />
-    <ProjectReference Include="..\Interfaces\Muwesome.Interfaces.csproj" />
+    <ProjectReference Include="..\Common\Muwesome.Common.csproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="ConfigureAwait.Fody" Version="3.1.0" />

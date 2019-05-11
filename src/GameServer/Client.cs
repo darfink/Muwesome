@@ -2,12 +2,12 @@ using System;
 using System.Net;
 using System.Threading;
 using log4net;
+using Muwesome.Common.Utility;
 using Muwesome.GameLogic;
 using Muwesome.Network;
 using Muwesome.Packet;
 using Muwesome.Protocol;
 using Muwesome.Protocol.Game;
-using Muwesome.ServerCommon.Utility;
 
 namespace Muwesome.GameServer {
   /// <summary>Represents a connected client.</summary>

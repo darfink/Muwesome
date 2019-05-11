@@ -1,4 +1,4 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26124.0
@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Muwesome.DomainModel", "lib
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Muwesome.GameLogic", "lib\GameLogic\Muwesome.GameLogic.csproj", "{ACFE4450-FEB8-4756-810A-36792314B6A0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Muwesome.Interfaces", "lib\Interfaces\Muwesome.Interfaces.csproj", "{6BA25B83-553F-46C2-A328-9000E46636ED}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Muwesome.Common", "lib\Common\Muwesome.Common.csproj", "{6BA25B83-553F-46C2-A328-9000E46636ED}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Muwesome.Network", "lib\Network\Muwesome.Network.csproj", "{7832957D-7CC4-40C8-BBF6-A274C67C8BE8}"
 EndProject

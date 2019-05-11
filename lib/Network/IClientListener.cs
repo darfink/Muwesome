@@ -1,5 +1,5 @@
 using System;
-using Muwesome.Interfaces;
+using Muwesome.Common;
 
 namespace Muwesome.Network {
   public interface IClientListener : ILifecycle {

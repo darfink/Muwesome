@@ -1,9 +1,9 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Muwesome.Common;
 using Muwesome.GameLogic;
 using Muwesome.GameServer.Protocol;
-using Muwesome.Interfaces;
 using Muwesome.Network;
 using Muwesome.Network.Tcp;
 using Muwesome.Network.Tcp.Filters;

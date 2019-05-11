@@ -5,7 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Grpc.Core;
 using log4net;
-using Muwesome.Interfaces;
+using Muwesome.Common;
 
 namespace Muwesome.ServerCommon {
   /// <summary>A factory for RPC services.</summary>

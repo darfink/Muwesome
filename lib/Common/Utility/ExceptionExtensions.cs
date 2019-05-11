@@ -1,6 +1,6 @@
 using System;
 
-namespace Muwesome.ServerCommon.Utility {
+namespace Muwesome.Common.Utility {
   /// <summary>Extensions for exceptions.</summary>
   public static class ExceptionExtensions {
     /// <summary>Gets an exception by type if it exists in the error chain.</summary>

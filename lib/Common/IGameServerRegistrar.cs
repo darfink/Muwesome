@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 
-namespace Muwesome.Interfaces {
+namespace Muwesome.Common {
   /// <summary>A game server registrar.</summary>
   /// <remarks>This is implemented by the <see cref="ConnectServer" />.</remarks>
   public interface IGameServerRegistrar {

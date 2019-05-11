@@ -5,7 +5,7 @@ using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 using log4net;
-using Muwesome.Interfaces;
+using Muwesome.Common;
 using Muwesome.Packet.IO;
 using Pipelines.Sockets.Unofficial;
 

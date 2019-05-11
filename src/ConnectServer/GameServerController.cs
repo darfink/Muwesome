@@ -4,8 +4,8 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading.Tasks;
 using log4net;
+using Muwesome.Common;
 using Muwesome.ConnectServer.Utility;
-using Muwesome.Interfaces;
 
 namespace Muwesome.ConnectServer {
   internal class GameServerController : IGameServerController {

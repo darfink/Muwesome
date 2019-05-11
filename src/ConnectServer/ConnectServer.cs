@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using log4net;
-using Muwesome.Interfaces;
+using Muwesome.Common;
 using Muwesome.Network;
 using Muwesome.Network.Tcp;
 using Muwesome.Network.Tcp.Filters;

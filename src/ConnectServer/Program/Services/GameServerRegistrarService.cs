@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using Grpc.Core;
-using Muwesome.Interfaces;
+using Muwesome.Common;
 using Muwesome.Rpc.ConnectServer;
 
 namespace Muwesome.ConnectServer.Program.Services {

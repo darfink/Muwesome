@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Muwesome.Common;
 using Muwesome.DomainModel.Entities;
-using Muwesome.Interfaces;
 using Muwesome.Persistence;
 using Muwesome.ServerCommon;
 

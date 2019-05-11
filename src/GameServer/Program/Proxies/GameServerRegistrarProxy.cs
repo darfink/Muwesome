@@ -6,11 +6,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using Grpc.Core;
 using log4net;
-using Muwesome.Interfaces;
+using Muwesome.Common;
+using Muwesome.Common.Utility;
 using Muwesome.Network.Tcp;
 using Muwesome.Rpc.ConnectServer;
 using Muwesome.ServerCommon;
-using Muwesome.ServerCommon.Utility;
 
 namespace Muwesome.GameServer.Program.Proxies {
   /// <summary>A game server registrar proxy which forwards all requests to an RPC service.</summary>

@@ -5,9 +5,8 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using log4net;
-using Muwesome.Interfaces;
 
-namespace Muwesome.ServerCommon {
+namespace Muwesome.Common {
   public class LifecycleController : ILifecycle, IDisposable {
     private readonly List<ILifecycle> lifecycleInstances;
     private int isRunning;

@@ -2,10 +2,10 @@ using System;
 using System.Net;
 using System.Threading;
 using log4net;
+using Muwesome.Common.Utility;
 using Muwesome.Network;
 using Muwesome.Packet;
 using Muwesome.Protocol;
-using Muwesome.ServerCommon.Utility;
 
 namespace Muwesome.ConnectServer {
   public class Client : IDisposable {

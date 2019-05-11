@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Muwesome.Interfaces {
+namespace Muwesome.Common {
   /// <summary>Represents all possible login errors.</summary>
   public enum LoginError {
     InvalidAccount,

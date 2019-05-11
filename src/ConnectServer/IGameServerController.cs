@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using Muwesome.Interfaces;
+using Muwesome.Common;
 
 namespace Muwesome.ConnectServer {
   internal interface IGameServerController : IGameServerRegistrar {

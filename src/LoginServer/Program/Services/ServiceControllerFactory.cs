@@ -1,5 +1,5 @@
 using Grpc.Core;
-using Muwesome.Interfaces;
+using Muwesome.Common;
 using Muwesome.Rpc.LoginServer;
 using Muwesome.ServerCommon;
 

@@ -10,7 +10,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\lib\ServerCommon\Muwesome.ServerCommon.csproj" />
     <ProjectReference Include="..\..\lib\DomainModel\Muwesome.DomainModel.csproj" />
-    <ProjectReference Include="..\..\lib\Interfaces\Muwesome.Interfaces.csproj" />
+    <ProjectReference Include="..\..\lib\Common\Muwesome.Common.csproj" />
     <ProjectReference Include="..\..\lib\Persistence\Muwesome.Persistence.csproj" />
   </ItemGroup>
 </Project>

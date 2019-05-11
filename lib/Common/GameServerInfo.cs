@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace Muwesome.Interfaces {
+namespace Muwesome.Common {
   /// <summary>A description of a game server.</summary>
   public class GameServerInfo : INotifyPropertyChanged {
     private uint clientCapacity;
