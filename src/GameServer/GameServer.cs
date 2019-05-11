@@ -18,6 +18,7 @@ namespace Muwesome.GameServer {
     private readonly IGameServerRegistrar gameServerRegistrar;
     private readonly GameContext gameContext;
     private GameServerInfo gameServerInfo;
+    private bool isRegistered;
 
     /// <summary>Initializes a new instance of the <see cref="GameServer"/> class.</summary>
     // TODO: Allow multiple client listeners, and remove all TCP logic
@@ -54,6 +55,7 @@ namespace Muwesome.GameServer {
     public override void Dispose() {
       base.Dispose();
       (this.clientController as IDisposable)?.Dispose();
+      (this.gameServerRegistrar as IDisposable)?.Dispose();
     }
 
     /// <summary>Configures new clients.</summary>
@@ -87,11 +89,12 @@ namespace Muwesome.GameServer {
           (uint)this.ClientsConnected,
           (uint)this.Config.MaxConnections);
         await this.gameServerRegistrar.RegisterGameServerAsync(this.gameServerInfo);
+        this.isRegistered = true;
       }
     }
 
     private async void OnClientListenerStopped(object sender, LifecycleEventArgs ev) {
-      if (this.gameServerInfo != null) {
+      if (this.isRegistered) {
         await this.gameServerRegistrar.DeregisterGameServerAsync(this.Config.ServerCode);
       }
     }

@@ -84,7 +84,7 @@ namespace Muwesome.GameServer {
         return;
       }
 
-      var socketException = ex.GetExceptionByType<System.Net.Sockets.SocketException>();
+      var socketException = ex.FindExceptionByType<System.Net.Sockets.SocketException>();
       if (socketException?.SocketErrorCode == System.Net.Sockets.SocketError.ConnectionReset) {
         return;
       }

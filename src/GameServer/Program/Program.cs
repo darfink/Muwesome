@@ -2,7 +2,7 @@ using System;
 using System.Reflection;
 using System.Threading.Tasks;
 using log4net;
-using Muwesome.GameServer.Program.Clients;
+using Muwesome.GameServer.Program.Proxies;
 using Muwesome.Persistence.EntityFramework;
 
 namespace Muwesome.GameServer.Program {
@@ -21,7 +21,7 @@ namespace Muwesome.GameServer.Program {
     }
 
     private static GameServer CreateServer(ProgramConfiguration config) {
-      var gameServerRegistrar = new GameServerRegisterer(config.ConnectServer);
+      var gameServerRegistrar = new GameServerRegistrarProxy(config.ConnectServer);
       var gameServer = GameServerFactory.Create(config, gameServerRegistrar);
       return gameServer;
     }

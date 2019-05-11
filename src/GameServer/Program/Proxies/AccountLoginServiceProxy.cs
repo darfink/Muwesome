@@ -13,9 +13,10 @@ using Muwesome.Rpc.LoginServer;
 using Muwesome.ServerCommon;
 using Muwesome.ServerCommon.Utility;
 
-namespace Muwesome.GameServer.Program.Clients {
-  internal class AccountAuthenticator : IAccountLoginService, ILifecycle, IDisposable {
-    private static readonly ILog Logger = LogManager.GetLogger(typeof(AccountAuthenticator));
+namespace Muwesome.GameServer.Program.Proxies {
+  /// <summary>A account login service proxy which forwards all requests to an RPC service.</summary>
+  internal class AccountLoginServiceProxy : IAccountLoginService, ILifecycle, IDisposable {
+    private static readonly ILog Logger = LogManager.GetLogger(typeof(AccountLoginServiceProxy));
     private readonly object enqueueLock = new object();
     private readonly ConcurrentQueue<TaskCompletionSource<LoginError?>> pendingLoginTasks = new ConcurrentQueue<TaskCompletionSource<LoginError?>>();
     private readonly ConcurrentQueue<TaskCompletionSource<bool>> pendingLogoutTasks = new ConcurrentQueue<TaskCompletionSource<bool>>();
@@ -24,8 +25,8 @@ namespace Muwesome.GameServer.Program.Clients {
     private readonly RpcEndPoint endPoint;
     private CancellationTokenSource cancellationTokenSource;
 
-    /// <summary>Initializes a new instance of the <see cref="AccountAuthenticator"/> class.</summary>
-    public AccountAuthenticator(RpcEndPoint endPoint) => this.endPoint = endPoint;
+    /// <summary>Initializes a new instance of the <see cref="AccountLoginServiceProxy"/> class.</summary>
+    public AccountLoginServiceProxy(RpcEndPoint endPoint) => this.endPoint = endPoint;
 
     /// <inheritdoc />
     public event EventHandler<LifecycleEventArgs> LifecycleStarted;
@@ -135,7 +136,7 @@ namespace Muwesome.GameServer.Program.Clients {
     }
 
     private void OnSessionComplete(Exception ex) {
-      if (ex != null && ex.GetExceptionByType<RpcException>()?.StatusCode != StatusCode.Cancelled) {
+      if (ex != null && ex.FindExceptionByType<RpcException>()?.StatusCode != StatusCode.Cancelled) {
         Logger.Error("An unexpected error occurred during the login server session", ex);
       }
 
