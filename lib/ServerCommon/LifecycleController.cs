@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
@@ -8,12 +9,12 @@ using Muwesome.Interfaces;
 
 namespace Muwesome.ServerCommon {
   public class LifecycleController : ILifecycle, IDisposable {
-    private readonly ILifecycle[] lifecycleInstances;
+    private readonly List<ILifecycle> lifecycleInstances;
     private int isRunning;
 
     /// <summary>Initializes a new instance of the <see cref="LifecycleController"/> class.</summary>
     public LifecycleController(params ILifecycle[] lifecycleInstances) =>
-      this.lifecycleInstances = lifecycleInstances;
+      this.lifecycleInstances = lifecycleInstances.ToList();
 
     /// <inheritdoc />
     public event EventHandler<LifecycleEventArgs> LifecycleStarted;
@@ -57,6 +58,9 @@ namespace Muwesome.ServerCommon {
       this.LifecycleEnded?.Invoke(this, new LifecycleEventArgs());
       this.Logger.Info($"{this.Identifier} stopped");
     }
+
+    /// <summary>Adds a dependency to the controller.</summary>
+    public virtual void AddDependency(ILifecycle lifecycle) => this.lifecycleInstances.Add(lifecycle);
 
     /// <inheritdoc />
     public virtual void Dispose() {

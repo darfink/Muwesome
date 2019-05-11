@@ -8,7 +8,7 @@ using Muwesome.Protocol;
 
 namespace Muwesome.GameServer.Protocol {
   /// <summary>A client packet handler.</summary>
-  public class ClientPacketHandler : ConfigurablePacketHandler<Client> {
+  internal class ClientPacketHandler : ConfigurablePacketHandler<Client> {
     private static readonly ILog Logger = LogManager.GetLogger(typeof(ClientPacketHandler));
 
     /// <summary>Gets or sets a value indicating whether client's are disconnected when sending unknown packets.</summary>

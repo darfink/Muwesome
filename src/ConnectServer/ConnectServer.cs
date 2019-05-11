@@ -4,29 +4,27 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using log4net;
-using Muwesome.ConnectServer.Filters;
 using Muwesome.Interfaces;
 using Muwesome.Network;
 using Muwesome.Network.Tcp;
+using Muwesome.Network.Tcp.Filters;
 using Muwesome.Protocol;
 using Muwesome.ServerCommon;
 
 namespace Muwesome.ConnectServer {
   // TODO: Cmds, blacklist? exit? actvserv? Over gRPC?
-  public class ConnectServer : LifecycleController {
+  public sealed class ConnectServer : LifecycleController, IGameServerRegistrar {
     private readonly IGameServerController gameServerController;
-    private readonly IClientSocketFilter[] clientSocketFilters;
     private readonly IClientController clientController;
 
     /// <summary>Initializes a new instance of the <see cref="ConnectServer"/> class.</summary>
-    public ConnectServer(
+    internal ConnectServer(
         Configuration config,
         IGameServerController gameServerController,
         IClientController clientController,
         IClientListener clientListener,
-        IPacketHandler<Client> clientProtocol,
-        params ILifecycle[] lifecycleServices)
-        : base(lifecycleServices.Prepend(clientListener).ToArray()) {
+        IPacketHandler<Client> clientProtocol)
+        : base(clientListener) {
       this.Config = config;
       this.gameServerController = gameServerController;
       this.clientController = clientController;
@@ -35,11 +33,8 @@ namespace Muwesome.ConnectServer {
         clientController.AddClient(new Client(ev.ClientConnection, clientProtocol));
 
       if (clientListener is IClientTcpListener clientTcpListener) {
-        clientTcpListener.ClientAccept += this.OnClientAccept;
-        this.clientSocketFilters = new IClientSocketFilter[] {
-          new MaxConnectionsFilter(this.clientController, config.MaxConnections),
-          new MaxConnectionsPerIpFilter(this.clientController, config.MaxConnectionsPerIp),
-        };
+        new MaxConnectionsFilter(clientTcpListener, config.MaxConnections);
+        new MaxConnectionsPerIpFilter(clientTcpListener, config.MaxConnectionsPerIp);
       }
     }
 
@@ -49,16 +44,21 @@ namespace Muwesome.ConnectServer {
     /// <summary>Gets the number of connected clients.</summary>
     public int ClientsConnected => this.clientController.ClientsConnected;
 
-    /// <summary>Gets a list of the server's registered game servers.</summary>
-    public int GameServersRegistered => this.gameServerController.Servers.Count;
+    /// <inheritdoc />
+    public int GameServersRegistered => this.gameServerController.GameServersRegistered;
+
+    /// <inheritdoc />
+    public Task RegisterGameServerAsync(GameServerInfo server) =>
+      this.gameServerController.RegisterGameServerAsync(server);
+
+    /// <inheritdoc />
+    public Task DeregisterGameServerAsync(ushort serverCode) =>
+      this.gameServerController.DeregisterGameServerAsync(serverCode);
 
     /// <inheritdoc />
     public override void Dispose() {
       base.Dispose();
       (this.clientController as IDisposable)?.Dispose();
     }
-
-    private void OnClientAccept(object sender, ClientAcceptEventArgs ev) =>
-      ev.RejectClient = this.clientSocketFilters.Any(filter => !filter.OnAllowClientSocketAccept(ev.ClientSocket));
   }
 }

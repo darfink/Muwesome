@@ -1,8 +1,8 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Muwesome.GameServer.Utility {
-  public sealed class AsyncManualResetEvent {
+namespace Muwesome.GameServer.Program.Utility {
+  internal sealed class AsyncManualResetEvent {
     private readonly TaskCompletionSource<object> tcs;
     private readonly object mutex;
 

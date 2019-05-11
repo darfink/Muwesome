@@ -2,7 +2,7 @@ using Muwesome.Protocol;
 
 namespace Muwesome.GameServer.Protocol {
   /// <summary>A client protocol configuration.</summary>
-  public class ClientProtocol {
+  internal class ClientProtocol {
     /// <summary>Initializes a new instance of the <see cref="ClientProtocol"/> class.</summary>
     public ClientProtocol(ClientPacketHandler packetHandler, ClientPacketDispatcher packetDispatcher) {
       this.PacketDispatcher = packetDispatcher;

@@ -1,7 +1,7 @@
 using System;
 
 namespace Muwesome.ConnectServer {
-  public interface IClientController {
+  internal interface IClientController {
     /// <summary>An event that is raised when a new client session started.</summary>
     event EventHandler<ClientSessionEventArgs> ClientSessionStarted;
 
@@ -15,7 +15,7 @@ namespace Muwesome.ConnectServer {
     void AddClient(Client client);
   }
 
-  public class ClientSessionEventArgs : EventArgs {
+  internal class ClientSessionEventArgs : EventArgs {
     /// <summary>Initializes a new instance of the <see cref="ClientSessionEventArgs"/> class.</summary>
     public ClientSessionEventArgs(Client client) => this.Client = client;
 

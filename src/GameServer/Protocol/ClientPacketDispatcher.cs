@@ -4,7 +4,7 @@ using Muwesome.GameLogic.Actions;
 
 namespace Muwesome.GameServer.Protocol {
   /// <summary>A client packet dispatcher.</summary>
-  public class ClientPacketDispatcher {
+  internal class ClientPacketDispatcher {
     private readonly List<IPlayerActionProvider> dispatchers = new List<IPlayerActionProvider>();
 
     /// <summary>Gets the packet dispatcher actions.</summary>

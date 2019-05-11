@@ -2,7 +2,7 @@ using System;
 using System.Threading.Tasks;
 
 namespace Muwesome.Interfaces {
-  /// <summary>Represents an object that has a lifetime.</summary>
+  /// <summary>A service object that has a lifetime.</summary>
   public interface ILifecycle {
     /// <summary>An event that is raised when a lifecycle has started.</summary>
     event EventHandler<LifecycleEventArgs> LifecycleStarted;
@@ -20,6 +20,7 @@ namespace Muwesome.Interfaces {
     void Stop();
   }
 
+  /// <summary>The event arguments for a lifecycle event.</summary>
   public class LifecycleEventArgs : EventArgs {
   }
 }

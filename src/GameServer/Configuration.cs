@@ -1,6 +1,5 @@
 using System;
 using System.Text;
-using Muwesome.Persistence.EntityFramework;
 using Muwesome.Protocol.Game;
 
 namespace Muwesome.GameServer {
@@ -32,20 +31,5 @@ namespace Muwesome.GameServer {
 
     /// <summary>Gets or sets a value indicating whether clients are disconnected when sending unknown packets.</summary>
     public bool DisconnectOnUnknownPacket { get; set; } = false;
-
-    /// <summary>Gets or sets the connect server RPC host.</summary>
-    public string ConnectServerGrpcHost { get; set; } = "127.0.0.1";
-
-    /// <summary>Gets or sets the connect server RPC port.</summary>
-    public ushort ConnectServerGrpcPort { get; set; } = 22336;
-
-    /// <summary>Gets or sets the login server RPC host.</summary>
-    public string LoginServerGrpcHost { get; set; } = "127.0.0.1";
-
-    /// <summary>Gets or sets the login server RPC port.</summary>
-    public ushort LoginServerGrpcPort { get; set; } = 22337;
-
-    /// <summary>Gets or sets the persistence configuration.</summary>
-    public PersistenceConfiguration PersistenceConfiguration { get; set; } = PersistenceConfiguration.InMemory();
   }
 }

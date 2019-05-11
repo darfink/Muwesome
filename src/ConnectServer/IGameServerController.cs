@@ -1,8 +1,9 @@
 using System;
 using System.Collections.Generic;
+using Muwesome.Interfaces;
 
 namespace Muwesome.ConnectServer {
-  public interface IGameServerController {
+  internal interface IGameServerController : IGameServerRegistrar {
     /// <summary>An event that is raised when a game server is registered.</summary>
     event EventHandler<GameServerEventArgs> GameServerRegistered;
 
@@ -13,23 +14,17 @@ namespace Muwesome.ConnectServer {
     event EventHandler<GameServerEventArgs> GameServerDeregistered;
 
     /// <summary>Gets a list of registered servers.</summary>
-    IReadOnlyCollection<GameServerEntry> Servers { get; }
-
-    /// <summary>Registers a new game server</summary>
-    void RegisterServer(GameServerEntry server);
-
-    /// <summary>Deregisters an existing game server</summary>
-    void DeregisterServer(GameServerEntry server);
+    IReadOnlyCollection<GameServerInfo> GameServers { get; }
 
     /// <summary>Gets a registered game server by its code.</summary>
-    GameServerEntry GetServerByCode(ushort code);
+    GameServerInfo GetGameServerByCode(ushort code);
   }
 
-  public class GameServerEventArgs : EventArgs {
+  internal class GameServerEventArgs : EventArgs {
     /// <summary>Initializes a new instance of the <see cref="GameServerEventArgs"/> class.</summary>
-    public GameServerEventArgs(GameServerEntry server) => this.Server = server;
+    public GameServerEventArgs(GameServerInfo server) => this.Server = server;
 
     /// <summary>Gets the game server.</summary>
-    public GameServerEntry Server { get; }
+    public GameServerInfo Server { get; }
   }
 }

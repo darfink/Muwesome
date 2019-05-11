@@ -3,11 +3,11 @@ using System.Net;
 using System.Threading;
 using log4net;
 using Muwesome.GameLogic;
-using Muwesome.GameServer.Utility;
 using Muwesome.Network;
 using Muwesome.Packet;
 using Muwesome.Protocol;
 using Muwesome.Protocol.Game;
+using Muwesome.ServerCommon.Utility;
 
 namespace Muwesome.GameServer {
   /// <summary>Represents a connected client.</summary>

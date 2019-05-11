@@ -4,7 +4,7 @@ using Muwesome.GameLogic;
 
 namespace Muwesome.GameServer {
   /// <summary>A controller for clients.</summary>
-  public interface IClientController {
+  internal interface IClientController {
     /// <summary>An event that is raised when a new client session started.</summary>
     event EventHandler<ClientSessionEventArgs> ClientSessionStarted;
 
@@ -22,7 +22,7 @@ namespace Muwesome.GameServer {
   }
 
   /// <summary>Arguments for a client session event.</summary>
-  public class ClientSessionEventArgs : EventArgs {
+  internal class ClientSessionEventArgs : EventArgs {
     /// <summary>Initializes a new instance of the <see cref="ClientSessionEventArgs"/> class.</summary>
     public ClientSessionEventArgs(Client client) => this.Client = client;
 

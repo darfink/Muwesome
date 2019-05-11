@@ -16,7 +16,7 @@ namespace Muwesome.ConnectServer.PacketHandlers {
     /// <inheritdoc />
     public bool HandlePacket(Client client, Span<byte> packet) {
       ref var request = ref PacketHelper.ParsePacket<GameServerInfoRequest>(packet);
-      var selectedServer = this.gameServerController.GetServerByCode(request.ServerCode);
+      var selectedServer = this.gameServerController.GetGameServerByCode(request.ServerCode);
 
       if (selectedServer is null || selectedServer.IsFull) {
         using (var writer = client.Connection.SendPacket<GameServerUnavailable>()) {

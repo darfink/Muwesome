@@ -2,51 +2,47 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Muwesome.GameLogic;
-using Muwesome.GameServer.Filters;
 using Muwesome.GameServer.Protocol;
 using Muwesome.Interfaces;
 using Muwesome.Network;
 using Muwesome.Network.Tcp;
+using Muwesome.Network.Tcp.Filters;
 using Muwesome.Protocol.Game;
 using Muwesome.ServerCommon;
 
 namespace Muwesome.GameServer {
   /// <summary>A game server.</summary>
-  public class GameServer : LifecycleController {
-    private readonly IGameServerRegisterer gameServerRegisterer;
-    private readonly IClientSocketFilter[] clientSocketFilters;
+  public sealed class GameServer : LifecycleController {
     private readonly IClientController clientController;
     private readonly IClientProtocolResolver clientProtocolResolver;
+    private readonly IGameServerRegistrar gameServerRegistrar;
     private readonly GameContext gameContext;
+    private GameServerInfo gameServerInfo;
 
     /// <summary>Initializes a new instance of the <see cref="GameServer"/> class.</summary>
-    public GameServer(
+    // TODO: Allow multiple client listeners, and remove all TCP logic
+    internal GameServer(
         Configuration config,
-        IGameServerRegisterer gameServerRegisterer,
         IClientController clientController,
         IClientListener clientListener,
         IClientProtocolResolver clientProtocolResolver,
-        params ILifecycle[] lifecycleServices)
-        : base(lifecycleServices.Prepend(clientListener).ToArray()) {
+        IGameServerRegistrar gameServerRegistrar)
+        : base(clientListener) {
       this.Config = config;
-      this.gameServerRegisterer = gameServerRegisterer;
       this.clientController = clientController;
       this.clientProtocolResolver = clientProtocolResolver;
+      this.gameServerRegistrar = gameServerRegistrar;
       this.gameContext = new GameContext();
 
       clientListener.ClientConnected += this.OnClientConnected;
+      clientListener.LifecycleStarted += this.OnClientListenerStarted;
+      clientListener.LifecycleEnded += this.OnClientListenerStopped;
 
       if (clientListener is IClientTcpListener clientTcpListener) {
-        clientTcpListener.ClientAccept += this.OnClientAccept;
-        this.clientSocketFilters = new IClientSocketFilter[] {
-          new MaxConnectionsFilter(this.clientController, config.MaxConnections),
-          new MaxConnectionsPerIpFilter(this.clientController, config.MaxConnectionsPerIp),
-        };
+        new MaxConnectionsFilter(clientTcpListener, config.MaxConnections);
+        new MaxConnectionsPerIpFilter(clientTcpListener, config.MaxConnectionsPerIp);
       }
     }
-
-    /// <inheritdoc />
-    public override Task ShutdownTask => Task.WhenAll(base.ShutdownTask, this.gameServerRegisterer.ShutdownTask);
 
     /// <summary>Gets the server's configuration.</summary>
     public Configuration Config { get; }
@@ -54,21 +50,11 @@ namespace Muwesome.GameServer {
     /// <summary>Gets the number of connected clients.</summary>
     public int ClientsConnected => this.clientController.ClientsConnected;
 
-    /// <summary>
-    /// Gets a value indicating whether the server is registered at the connect server or not.
-    /// </summary>
-    public bool IsRegistered => this.gameServerRegisterer.IsRegistered;
-
     /// <inheritdoc />
     public override void Dispose() {
       base.Dispose();
       (this.clientController as IDisposable)?.Dispose();
-      (this.gameServerRegisterer as IDisposable)?.Dispose();
     }
-
-    /// <summary>Applies any socket filters.</summary>
-    private void OnClientAccept(object sender, ClientAcceptEventArgs ev) =>
-      ev.RejectClient = this.clientSocketFilters.Any(filter => !filter.OnAllowClientSocketAccept(ev.ClientSocket));
 
     /// <summary>Configures new clients.</summary>
     private void OnClientConnected(object sender, ClientConnectedEventArgs ev) {
@@ -85,6 +71,29 @@ namespace Muwesome.GameServer {
       this.clientController.AddClient(client);
       client.Player.RegisterActions(protocol.PacketDispatcher.Actions);
       this.gameContext.AddPlayer(client.Player);
+
+      if (this.gameServerInfo != null) {
+        this.gameServerInfo.ClientCount++;
+        client.Connection.Disconnected += (_, e) => this.gameServerInfo.ClientCount--;
+      }
+    }
+
+    private async void OnClientListenerStarted(object sender, LifecycleEventArgs ev) {
+      if (sender is IClientTcpListener clientTcpListener) {
+        this.gameServerInfo = new GameServerInfo(
+          this.Config.ServerCode,
+          this.Config.ClientListenerEndPoint.ExternalHost ?? clientTcpListener.BoundEndPoint.Address.ToString(),
+          this.Config.ClientListenerEndPoint.ExternalPort ?? (ushort)clientTcpListener.BoundEndPoint.Port,
+          (uint)this.ClientsConnected,
+          (uint)this.Config.MaxConnections);
+        await this.gameServerRegistrar.RegisterGameServerAsync(this.gameServerInfo);
+      }
+    }
+
+    private async void OnClientListenerStopped(object sender, LifecycleEventArgs ev) {
+      if (this.gameServerInfo != null) {
+        await this.gameServerRegistrar.DeregisterGameServerAsync(this.Config.ServerCode);
+      }
     }
   }
 }

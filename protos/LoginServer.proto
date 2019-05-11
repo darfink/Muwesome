@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package Muwesome.Rpc.LoginServer;
 
-service AccountAuth {
+service AccountAuthentication {
   rpc RegisterAuthSession (stream AuthRequest) returns (stream AuthResponse);
 }
 
@@ -13,7 +13,7 @@ message AuthRequest {
   }
 
   message Logout {
-    bytes account_id = 1;
+    string username = 1;
   }
 
   oneof type {
@@ -24,7 +24,6 @@ message AuthRequest {
 
 message AuthResponse {
   LoginResult result = 1;
-  bytes account_id = 2;
 
   enum LoginResult {
     SUCCESS = 0;

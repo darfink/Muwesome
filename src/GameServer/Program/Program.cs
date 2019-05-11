@@ -1,21 +1,29 @@
-﻿using System;
+using System;
 using System.Reflection;
 using System.Threading.Tasks;
 using log4net;
+using Muwesome.GameServer.Program.Clients;
+using Muwesome.Persistence.EntityFramework;
 
-namespace Muwesome.LoginServer {
-  /// <summary>Login server program.</summary>
+namespace Muwesome.GameServer.Program {
+  /// <summary>Game server program.</summary>
   internal static class Program {
     /// <summary>The server entry point.</summary>
     public static void Main() {
       var repository = LogManager.GetRepository(Assembly.GetEntryAssembly());
       log4net.Config.BasicConfigurator.Configure(repository);
 
-      using (var server = LoginServerFactory.Create(new Configuration())) {
+      using (var server = CreateServer(new ProgramConfiguration())) {
         server.Start();
         Task.WaitAny(server.ShutdownTask, InterruptSignal());
         server.Stop();
       }
+    }
+
+    private static GameServer CreateServer(ProgramConfiguration config) {
+      var gameServerRegistrar = new GameServerRegisterer(config.ConnectServer);
+      var gameServer = GameServerFactory.Create(config, gameServerRegistrar);
+      return gameServer;
     }
 
     private static Task InterruptSignal() {

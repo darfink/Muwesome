@@ -21,12 +21,6 @@ namespace Muwesome.ConnectServer {
     /// <summary>Gets or sets a value indicating whether clients are disconnected when sending unknown packets.</summary>
     public bool DisconnectOnUnknownPacket { get; set; } = true;
 
-    /// <summary>Gets or sets the gRPC host.</summary>
-    public string GrpcServiceHost { get; set; } = "127.0.0.1";
-
-    /// <summary>Gets or sets the gRPC port.</summary>
-    public ushort GrpcServicePort { get; set; } = 22336;
-
     // TODO: encryption/decryption settings
   }
 }

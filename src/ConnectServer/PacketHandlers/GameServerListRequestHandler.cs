@@ -4,12 +4,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using Muwesome.ConnectServer.Utility;
+using Muwesome.Interfaces;
 using Muwesome.Network;
 using Muwesome.Packet.Utility;
 using Muwesome.Protocol;
-using Muwesome.Protocol.Connect.Server;
 
 namespace Muwesome.ConnectServer.PacketHandlers {
+  using GameServerList = Protocol.Connect.Server.GameServerList;
+
   internal class GameServerListRequestHandler : IPacketHandler<Client> {
     private readonly ReaderWriterLockSlim packetLock = new ReaderWriterLockSlim();
     private readonly IGameServerController gameServerController;
@@ -30,7 +32,7 @@ namespace Muwesome.ConnectServer.PacketHandlers {
     public bool HandlePacket(Client client, Span<byte> packet) {
       using (this.packetLock.UpgradeableReadLock()) {
         if (this.gameServerListPacketSize == 0) {
-          this.CreateServerListPacket(this.gameServerController.Servers);
+          this.CreateServerListPacket(this.gameServerController.GameServers);
         }
 
         using (var writer = client.Connection.StartWrite(this.gameServerListPacketSize)) {
@@ -47,7 +49,7 @@ namespace Muwesome.ConnectServer.PacketHandlers {
       return true;
     }
 
-    private void CreateServerListPacket(IReadOnlyCollection<GameServerEntry> servers) {
+    private void CreateServerListPacket(IReadOnlyCollection<GameServerInfo> servers) {
       using (this.packetLock.WriteLock()) {
         this.gameServerListPacketSize = PacketHelper.GetPacketSize<GameServerList, GameServerList.GameServer>(servers.Count);
         this.gameServersInResponse = servers.Count;
@@ -89,7 +91,7 @@ namespace Muwesome.ConnectServer.PacketHandlers {
         }
 
         if (this.gameServerListPacketSize == 0) {
-          this.CreateServerListPacket(this.gameServerController.Servers);
+          this.CreateServerListPacket(this.gameServerController.GameServers);
         }
 
         if (this.gameServersInResponse == 0) {

@@ -5,7 +5,6 @@ using System.Diagnostics;
 using System.Linq;
 using log4net;
 using Muwesome.GameLogic;
-using Muwesome.GameServer.Utility;
 
 namespace Muwesome.GameServer {
   /// <summary>A controller for clients.</summary>

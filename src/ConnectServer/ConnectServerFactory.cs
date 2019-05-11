@@ -1,4 +1,3 @@
-using Muwesome.ConnectServer.Services;
 using Muwesome.Network.Tcp;
 
 namespace Muwesome.ConnectServer {
@@ -6,8 +5,6 @@ namespace Muwesome.ConnectServer {
     /// <summary>Initializes a new instance of the <see cref="ConnectServer" /> class with default implementations.</summary>
     public static ConnectServer Create(Configuration config) {
       var gameServerController = new GameServerController();
-      var serviceController = ServiceControllerFactory.Create(config, gameServerController);
-
       var clientListener = new DefaultClientTcpListener(config.ClientListenerEndPoint, config.MaxPacketSize);
       var clientController = new ClientController(config.MaxIdleTime);
       var clientProtocol = new ClientProtocolHandler(gameServerController, clientController) {
@@ -19,8 +16,7 @@ namespace Muwesome.ConnectServer {
         gameServerController,
         clientController,
         clientListener,
-        clientProtocol,
-        serviceController);
+        clientProtocol);
     }
   }
 }

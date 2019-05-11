@@ -4,16 +4,17 @@ using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using Grpc.Core;
+using Muwesome.Interfaces;
 using Muwesome.Rpc.ConnectServer;
 
-namespace Muwesome.ConnectServer.Services {
-  public class GameServerRegistrarService : GameServerRegistrar.GameServerRegistrarBase {
-    private readonly IGameServerController gameServerController;
+namespace Muwesome.ConnectServer.Program.Services {
+  internal class GameServerRegistrarService : GameServerRegistrar.GameServerRegistrarBase {
+    private readonly IGameServerRegistrar gameServerRegistrar;
     private readonly CancellationToken cancellationToken;
 
     /// <summary>Initializes a new instance of the <see cref="GameServerRegistrarService"/> class.</summary>
-    public GameServerRegistrarService(IGameServerController gameServerController, CancellationToken cancellationToken) {
-      this.gameServerController = gameServerController;
+    public GameServerRegistrarService(IGameServerRegistrar gameServerRegistrar, CancellationToken cancellationToken) {
+      this.gameServerRegistrar = gameServerRegistrar;
       this.cancellationToken = cancellationToken;
     }
 
@@ -26,13 +27,13 @@ namespace Muwesome.ConnectServer.Services {
       try {
         await this.GameServerUpdatesAsync(requestStream, server);
       } finally {
-        this.gameServerController.DeregisterServer(server);
+        await this.gameServerRegistrar.DeregisterGameServerAsync(server.Code);
       }
 
       return new GameServerRegisterResponse();
     }
 
-    private async Task<GameServerEntry> GameServerRegisterAsync(IAsyncStreamReader<GameServerRequest> requestStream) {
+    private async Task<GameServerInfo> GameServerRegisterAsync(IAsyncStreamReader<GameServerRequest> requestStream) {
       if (!await requestStream.MoveNext(this.cancellationToken)) {
         throw new RpcException(Status.DefaultCancelled);
       }
@@ -42,15 +43,15 @@ namespace Muwesome.ConnectServer.Services {
         throw new RpcException(new Status(StatusCode.InvalidArgument, "The server is not registered; expected a 'Register' message"));
       }
 
-      GameServerEntry server = null;
+      GameServerInfo server = null;
       try {
-        server = checked(new GameServerEntry((byte)register.Code, register.Host, (ushort)register.Port, register.Status.ClientCount, register.Status.ClientCapacity));
+        server = checked(new GameServerInfo((byte)register.Code, register.Host, (ushort)register.Port, register.Status.ClientCount, register.Status.ClientCapacity));
       } catch (OverflowException) {
         throw new RpcException(new Status(StatusCode.InvalidArgument, "The server fields are out of range"));
       }
 
       try {
-        this.gameServerController.RegisterServer(server);
+        await this.gameServerRegistrar.RegisterGameServerAsync(server);
       } catch (ArgumentException) {
         throw new RpcException(new Status(StatusCode.InvalidArgument, "The server code is already registered"));
       }
@@ -58,7 +59,7 @@ namespace Muwesome.ConnectServer.Services {
       return server;
     }
 
-    private async Task GameServerUpdatesAsync(IAsyncStreamReader<GameServerRequest> requestStream, GameServerEntry server) {
+    private async Task GameServerUpdatesAsync(IAsyncStreamReader<GameServerRequest> requestStream, GameServerInfo server) {
       while (await requestStream.MoveNext(this.cancellationToken)) {
         var status = requestStream.Current.Status;
         if (status is null) {

@@ -2,8 +2,8 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Muwesome.GameServer.Utility {
-  public sealed class CancellationTokenTaskSource<T> : IDisposable {
+namespace Muwesome.GameServer.Program.Utility {
+  internal sealed class CancellationTokenTaskSource<T> : IDisposable {
     private readonly IDisposable registration;
 
     public CancellationTokenTaskSource(CancellationToken cancellationToken) {

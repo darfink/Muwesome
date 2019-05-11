@@ -10,8 +10,10 @@ using Muwesome.Packet.IO;
 using Pipelines.Sockets.Unofficial;
 
 namespace Muwesome.Network.Tcp {
+  /// <summary>Factory for a pipeline encryptor.</summary>
   public delegate IPipelineEncryptor PipelineEncryptorFactory(PipeWriter writer);
 
+  /// <summary>Factory for a pipeline decryptor.</summary>
   public delegate IPipelineDecryptor PipelineDecryptorFactory(PipeReader reader);
 
   public class DefaultClientTcpListener : IClientTcpListener, IDisposable {
