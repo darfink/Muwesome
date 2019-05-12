@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using Muwesome.Common;
 using Muwesome.GameServer.Protocol;
 using Muwesome.Network;
@@ -40,7 +41,7 @@ namespace Muwesome.GameServer {
     public override void Dispose() {
       base.Dispose();
 
-      // TODO: This class may not be unique owner
+      // TODO: This class may not be a unique owner
       (this.gameServerRegistrar as IDisposable)?.Dispose();
     }
 
@@ -52,13 +53,15 @@ namespace Muwesome.GameServer {
         this.GameServerEndPoint.ExternalPort ?? (ushort)this.BoundEndPoint.Port,
         (uint)this.clientController.ClientsConnected,
         (uint)this.config.MaxConnections);
-      this.gameServerRegistrar.RegisterGameServerAsync(this.gameServerInfo);
+      this.gameServerRegistrar.RegisterGameServerAsync(this.gameServerInfo)
+        .ContinueWith(t => this.OnServerRegisterException(t.Exception), TaskContinuationOptions.OnlyOnFaulted);
       base.OnListenerStarted();
     }
 
     /// <inheritdoc />
     protected override void OnListenerStopped() {
-      this.gameServerRegistrar.DeregisterGameServerAsync(this.config.ServerCode);
+      this.gameServerRegistrar.DeregisterGameServerAsync(this.config.ServerCode)
+        .ContinueWith(t => this.OnServerRegisterException(t.Exception), TaskContinuationOptions.OnlyOnFaulted);
       base.OnListenerStopped();
     }
 
@@ -72,6 +75,9 @@ namespace Muwesome.GameServer {
         Serial = clientSerial,
       };
     }
+
+    private void OnServerRegisterException(Exception ex) =>
+      this.Logger.Error("An error occurred whilst registering server", ex);
 
     private void OnServerClientsChanged(object sender, ClientSessionEventArgs ev) {
       if (this.gameServerInfo != null) {
