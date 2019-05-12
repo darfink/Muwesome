@@ -17,7 +17,6 @@ namespace Muwesome.GameServer {
 
       var gameServer = new GameServer(config, clientController);
       gameServer.AddListener(clientListener);
-
       return gameServer;
     }
   }

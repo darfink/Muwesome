@@ -10,7 +10,6 @@ using Muwesome.Protocol.Game.Client;
 namespace Muwesome.GameServer.Protocol {
   /// <summary>A client protocol resolver.</summary>
   internal class ClientProtocolResolver : IClientProtocolResolver {
-    // private static readonly ILog Logger = LogManager.GetLogger(typeof(LoginRequestHandler));
     private readonly object syncLock = new object();
     private readonly Dictionary<ClientVersion, ClientPacketHandler> packetHandlers = new Dictionary<ClientVersion, ClientPacketHandler>();
     private readonly Dictionary<ClientVersion, ClientPacketDispatcher> packetDispatchers = new Dictionary<ClientVersion, ClientPacketDispatcher>();
@@ -45,7 +44,9 @@ namespace Muwesome.GameServer.Protocol {
       };
 
       // TODO: Implement dynamic client version range and do this dynamically
-      clientPacketHandler.Register<LoginRequest>(new LoginRequestHandler());
+      clientPacketHandler.Register<LoginRequest>(new LoginRequestHandler() {
+        ValidateClientSerial = this.config.ValidateClientSerial,
+      });
 
       return clientPacketHandler;
     }

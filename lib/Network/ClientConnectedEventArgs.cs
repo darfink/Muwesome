@@ -3,7 +3,7 @@ using System.Net;
 
 namespace Muwesome.Network {
   public class ClientConnectedEventArgs<TClient> : EventArgs {
-    /// <summary>Initializes a new instance of the <see cref="ClientConnectedEventArgs"/> class.</summary>
+    /// <summary>Initializes a new instance of the <see cref="ClientConnectedEventArgs{T}"/> class.</summary>
     public ClientConnectedEventArgs(TClient client) => this.ConnectedClient = client;
 
     /// <summary>Gets the connected client.</summary>

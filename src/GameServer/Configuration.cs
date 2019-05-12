@@ -31,5 +31,8 @@ namespace Muwesome.GameServer {
 
     /// <summary>Gets or sets a value indicating whether clients are disconnected when sending unknown packets.</summary>
     public bool DisconnectOnUnknownPacket { get; set; } = false;
+
+    /// <summary>Gets or sets a value indicating whether client serials are validated or not.</summary>
+    public bool ValidateClientSerial { get; set; } = false;
   }
 }
