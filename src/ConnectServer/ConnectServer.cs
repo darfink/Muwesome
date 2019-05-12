@@ -11,7 +11,6 @@ using Muwesome.Network.Tcp.Filters;
 using Muwesome.Protocol;
 
 namespace Muwesome.ConnectServer {
-  // TODO: Cmds, blacklist? exit? actvserv? Over gRPC?
   public sealed class ConnectServer : LifecycleController, IGameServerRegistrar {
     private readonly IGameServerController gameServerController;
     private readonly IClientController clientController;
@@ -20,21 +19,10 @@ namespace Muwesome.ConnectServer {
     internal ConnectServer(
         Configuration config,
         IGameServerController gameServerController,
-        IClientController clientController,
-        IClientListener clientListener,
-        IPacketHandler<Client> clientProtocol)
-        : base(clientListener) {
+        IClientController clientController) {
       this.Config = config;
       this.gameServerController = gameServerController;
       this.clientController = clientController;
-
-      clientListener.ClientConnected += (_, ev) =>
-        clientController.AddClient(new Client(ev.ClientConnection, clientProtocol));
-
-      if (clientListener is IClientTcpListener clientTcpListener) {
-        new MaxConnectionsFilter(clientTcpListener, config.MaxConnections);
-        new MaxConnectionsPerIpFilter(clientTcpListener, config.MaxConnectionsPerIp);
-      }
     }
 
     /// <summary>Gets the server's configuration.</summary>
@@ -45,6 +33,12 @@ namespace Muwesome.ConnectServer {
 
     /// <inheritdoc />
     public int GameServersRegistered => this.gameServerController.GameServersRegistered;
+
+    /// <summary>Adds a client listener to the server.</summary>
+    public void AddListener(IClientListener<Client> clientListener) {
+      clientListener.ClientConnected += (_, ev) => this.clientController.AddClient(ev.ConnectedClient);
+      this.AddDependency(clientListener);
+    }
 
     /// <inheritdoc />
     public Task RegisterGameServerAsync(GameServerInfo server) {

@@ -6,19 +6,21 @@ using log4net;
 
 namespace Muwesome.Network.Tcp.Filters {
   /// <summary>A filter limiting the maximum amount of connections per IP.</summary>
-  public class MaxConnectionsPerIpFilter {
+  public class MaxConnectionsPerIpFilter : IClientSocketFilter {
     private static readonly ILog Logger = LogManager.GetLogger(typeof(MaxConnectionsPerIpFilter));
     private readonly ConcurrentDictionary<IPAddress, uint> ipAddressConnections = new ConcurrentDictionary<IPAddress, uint>();
     private readonly int maxConnectionsPerIp;
 
     /// <summary>Initializes a new instance of the <see cref="MaxConnectionsPerIpFilter"/> class.</summary>
-    public MaxConnectionsPerIpFilter(IClientTcpListener clientListener, int maxConnectionsPerIp) {
-      this.maxConnectionsPerIp = maxConnectionsPerIp;
+    public MaxConnectionsPerIpFilter(int maxConnectionsPerIp) => this.maxConnectionsPerIp = maxConnectionsPerIp;
+
+    /// <inheritdoc />
+    public void Register<T>(IClientTcpListener<T> clientListener) {
+      clientListener.ClientConnectionEstablished += this.OnClientConnectionEstablished;
       clientListener.ClientAccept += this.OnClientAccept;
-      clientListener.ClientConnected += this.OnClientConnected;
     }
 
-    private void OnClientAccept(object sender, ClientAcceptEventArgs ev) {
+    private void OnClientAccept(object sender, ClientSocketAcceptEventArgs ev) {
       if (ev.RejectClient) {
         return;
       }
@@ -32,12 +34,12 @@ namespace Muwesome.Network.Tcp.Filters {
       }
     }
 
-    private void OnClientConnected(object sender, ClientConnectedEventArgs ev) {
-      var ipAddress = this.GetIpAddressFromEndPoint(ev.ClientConnection.RemoteEndPoint);
+    private void OnClientConnectionEstablished(object sender, ClientConnectionEstablishedEventArgs ev) {
+      var ipAddress = this.GetIpAddressFromEndPoint(ev.EstablishedConnection.RemoteEndPoint);
       this.ipAddressConnections.AddOrUpdate(ipAddress, 1, (_, count) => count + 1);
 
-      ev.ClientConnection.Disconnected += (s, e) => {
-        var address = this.GetIpAddressFromEndPoint(ev.ClientConnection.RemoteEndPoint);
+      ev.EstablishedConnection.Disconnected += (s, e) => {
+        var address = this.GetIpAddressFromEndPoint(ev.EstablishedConnection.RemoteEndPoint);
         this.ipAddressConnections.AddOrUpdate(address, 0, (_, count) => count - 1);
       };
     }

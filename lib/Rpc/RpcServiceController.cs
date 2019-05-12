@@ -11,6 +11,7 @@ namespace Muwesome.Rpc {
   /// <summary>A factory for RPC services.</summary>
   public delegate ServerServiceDefinition ServiceFactory(CancellationToken cancellationToken);
 
+  /// <summary>A controller for RPC services.</summary>
   public class RpcServiceController : ILifecycle, IDisposable {
     private readonly ServerPort[] serverPorts;
     private readonly List<ServiceFactory> registeredServices;

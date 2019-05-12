@@ -19,9 +19,9 @@
     <None Remove="@(Protobuf)" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Muwesome.LoginServer.csproj" />
     <ProjectReference Include="..\..\..\lib\DomainModel\Muwesome.DomainModel.csproj" />
     <ProjectReference Include="..\..\..\lib\Persistence\EntityFramework\Muwesome.Persistence.EntityFramework.csproj" />
     <ProjectReference Include="..\..\..\lib\Rpc\Muwesome.Rpc.csproj" />
+    <ProjectReference Include="..\Muwesome.LoginServer.csproj" />
   </ItemGroup>
 </Project>

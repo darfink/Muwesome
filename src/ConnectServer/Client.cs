@@ -8,6 +8,7 @@ using Muwesome.Packet;
 using Muwesome.Protocol;
 
 namespace Muwesome.ConnectServer {
+  /// <summary>Represents a connected client.</summary>
   public class Client : IDisposable {
     private static readonly ILog Logger = LogManager.GetLogger(typeof(Client));
     private readonly IPacketHandler<Client> packetHandler;

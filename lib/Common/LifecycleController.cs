@@ -59,7 +59,13 @@ namespace Muwesome.Common {
     }
 
     /// <summary>Adds a dependency to the controller.</summary>
-    public virtual void AddDependency(ILifecycle lifecycle) => this.lifecycleInstances.Add(lifecycle);
+    public virtual void AddDependency(ILifecycle lifecycle) {
+      this.lifecycleInstances.Add(lifecycle);
+
+      if (this.isRunning == 1) {
+        lifecycle.Start();
+      }
+    }
 
     /// <inheritdoc />
     public virtual void Dispose() {

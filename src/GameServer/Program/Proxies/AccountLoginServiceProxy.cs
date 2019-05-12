@@ -14,7 +14,7 @@ using Muwesome.Rpc;
 using Muwesome.Rpc.LoginServer;
 
 namespace Muwesome.GameServer.Program.Proxies {
-  /// <summary>A account login service proxy which forwards all requests to an RPC service.</summary>
+  /// <summary>An account login service proxy which forwards all requests to an RPC service.</summary>
   internal class AccountLoginServiceProxy : IAccountLoginService, ILifecycle, IDisposable {
     private static readonly ILog Logger = LogManager.GetLogger(typeof(AccountLoginServiceProxy));
     private readonly object enqueueLock = new object();

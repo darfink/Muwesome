@@ -4,6 +4,7 @@ using System.Threading;
 using log4net;
 using Muwesome.Common.Utility;
 using Muwesome.GameLogic;
+using Muwesome.GameServer.Protocol;
 using Muwesome.Network;
 using Muwesome.Packet;
 using Muwesome.Protocol;
@@ -19,10 +20,11 @@ namespace Muwesome.GameServer {
     private int isDisposed = 0;
 
     /// <summary>Initializes a new instance of the <see cref="Client"/> class.</summary>
-    public Client(
+    internal Client(
         IConnection connection,
-        IPacketHandler<Client> packetHandler) {
-      this.packetHandler = packetHandler;
+        ClientProtocol protocol) {
+      this.packetHandler = protocol.PacketHandler;
+      this.PacketDispatcher = protocol.PacketDispatcher;
       this.Connection = connection;
       this.Connection.PacketReceived += this.OnPacketReceived;
       this.Connection.BeginReceive().ContinueWith(task => this.OnReceiveComplete(task.Exception));
@@ -40,6 +42,9 @@ namespace Muwesome.GameServer {
 
     /// <summary>Gets or sets the client's serial.</summary>
     public byte[] Serial { get; set; }
+
+    /// <summary>Gets the client's packet dispatcher.</summary>
+    internal ClientPacketDispatcher PacketDispatcher { get; private set; }
 
     /// <summary>Gets or sets the maximum idle time.</summary>
     internal TimeSpan MaxIdleTime {

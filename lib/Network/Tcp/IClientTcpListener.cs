@@ -2,9 +2,9 @@ using System;
 using System.Net;
 
 namespace Muwesome.Network.Tcp {
-  public interface IClientTcpListener : IClientListener {
-    /// <summary>An event that is raised before a client is accepted.</summary>
-    event EventHandler<ClientAcceptEventArgs> ClientAccept;
+  public interface IClientTcpListener<TClient> : IClientListener<TClient> {
+    /// <summary>An event that is raised before a client socket is accepted.</summary>
+    event EventHandler<ClientSocketAcceptEventArgs> ClientAccept;
 
     /// <summary>Gets the original end point.</summary>
     IPEndPoint SourceEndPoint { get; }

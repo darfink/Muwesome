@@ -1,8 +1,6 @@
 using Muwesome.Common;
 using Muwesome.GameServer.Protocol;
-using Muwesome.Network.Tcp;
-using Muwesome.Packet.IO.SimpleModulus;
-using Muwesome.Packet.IO.Xor;
+using Muwesome.Network.Tcp.Filters;
 using Muwesome.Persistence;
 
 namespace Muwesome.GameServer {
@@ -12,17 +10,15 @@ namespace Muwesome.GameServer {
     public static GameServer Create(Configuration config, IGameServerRegistrar gameServerRegistrar) {
       var clientController = new ClientController(config.MaxIdleTime);
       var clientProtocolResolver = new ClientProtocolResolver(config, clientController);
-      var clientListener = new DefaultClientTcpListener(config.ClientListenerEndPoint, config.MaxPacketSize) {
-        Decryption = reader => new XorPipelineDecryptor(new SimpleModulusPipelineDecryptor(reader).Reader),
-        Encryption = null,
-      };
 
-      return new GameServer(
-        config,
-        clientController,
-        clientListener,
-        clientProtocolResolver,
-        gameServerRegistrar);
+      var clientListener = new GameServerTcpListener(config, clientController, clientProtocolResolver, gameServerRegistrar);
+      clientListener.AddFilter(new MaxConnectionsFilter(config.MaxConnections));
+      clientListener.AddFilter(new MaxConnectionsPerIpFilter(config.MaxConnectionsPerIp));
+
+      var gameServer = new GameServer(config, clientController);
+      gameServer.AddListener(clientListener);
+
+      return gameServer;
     }
   }
 }

@@ -5,19 +5,21 @@ using log4net;
 
 namespace Muwesome.Network.Tcp.Filters {
   /// <summary>A filter limiting the maximum amount of connections.</summary>
-  public class MaxConnectionsFilter {
+  public class MaxConnectionsFilter : IClientSocketFilter {
     private static readonly ILog Logger = LogManager.GetLogger(typeof(MaxConnectionsFilter));
     private readonly int maxConnections;
     private int clientsConnected;
 
     /// <summary>Initializes a new instance of the <see cref="MaxConnectionsFilter"/> class.</summary>
-    public MaxConnectionsFilter(IClientTcpListener clientListener, int maxConnections) {
-      this.maxConnections = maxConnections;
+    public MaxConnectionsFilter(int maxConnections) => this.maxConnections = maxConnections;
+
+    /// <inheritdoc />
+    public void Register<T>(IClientTcpListener<T> clientListener) {
+      clientListener.ClientConnectionEstablished += this.OnClientConnectionEstablished;
       clientListener.ClientAccept += this.OnClientAccept;
-      clientListener.ClientConnected += this.OnClientConnected;
     }
 
-    private void OnClientAccept(object sender, ClientAcceptEventArgs ev) {
+    private void OnClientAccept(object sender, ClientSocketAcceptEventArgs ev) {
       if (ev.RejectClient) {
         return;
       }
@@ -29,9 +31,9 @@ namespace Muwesome.Network.Tcp.Filters {
       }
     }
 
-    private void OnClientConnected(object sender, ClientConnectedEventArgs ev) {
+    private void OnClientConnectionEstablished(object sender, ClientConnectionEstablishedEventArgs ev) {
       this.clientsConnected++;
-      ev.ClientConnection.Disconnected += (_, e) => this.clientsConnected--;
+      ev.EstablishedConnection.Disconnected += (_, e) => this.clientsConnected--;
     }
   }
 }
