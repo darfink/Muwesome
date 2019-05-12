@@ -5,7 +5,7 @@ namespace Muwesome.ConnectServer {
     /// <summary>Initializes a new instance of the <see cref="ConnectServer" /> class with default implementations.</summary>
     public static ConnectServer Create(Configuration config) {
       var gameServerController = new GameServerController();
-      var clientController = new ClientController(config.MaxIdleTime);
+      var clientController = new ClientController();
       var clientProtocol = new ClientProtocolHandler(gameServerController, clientController) {
         DisconnectOnUnknownPacket = config.DisconnectOnUnknownPacket,
       };

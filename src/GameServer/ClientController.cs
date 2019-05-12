@@ -11,13 +11,9 @@ namespace Muwesome.GameServer {
   internal class ClientController : IClientController, IDisposable {
     private static readonly ILog Logger = LogManager.GetLogger(typeof(ClientController));
     private readonly ConcurrentDictionary<Player, Client> clients;
-    private readonly TimeSpan maxClientIdleTime;
 
     /// <summary>Initializes a new instance of the <see cref="ClientController"/> class.</summary>
-    public ClientController(TimeSpan maxClientIdleTime) {
-      this.clients = new ConcurrentDictionary<Player, Client>();
-      this.maxClientIdleTime = maxClientIdleTime;
-    }
+    public ClientController() => this.clients = new ConcurrentDictionary<Player, Client>();
 
     /// <inheritdoc />
     public event EventHandler<ClientSessionEventArgs> ClientSessionStarted;
@@ -32,7 +28,6 @@ namespace Muwesome.GameServer {
     public void AddClient(Client client) {
       Debug.Assert(this.clients.TryAdd(client.Player, client), "Client could not be added");
 
-      client.MaxIdleTime = this.maxClientIdleTime;
       client.Connection.Disconnected += (_, ev) => this.OnClientDisconnected(client);
       client.Player.Disposed += (_, ev) => client.Connection.Disconnect();
 

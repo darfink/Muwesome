@@ -71,6 +71,7 @@ namespace Muwesome.GameServer {
       var clientSerial = this.GameServerEndPoint.ClientSerial ?? this.config.DefaultClientSerial;
       var clientProtocol = this.clientProtocolResolver.Resolve(clientVersion);
       return new Client(connection, clientProtocol) {
+        MaxIdleTime = this.config.MaxIdleTime,
         Version = clientVersion,
         Serial = clientSerial,
       };

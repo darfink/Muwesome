@@ -10,13 +10,9 @@ namespace Muwesome.ConnectServer {
   internal class ClientController : IClientController, IDisposable {
     private static readonly ILog Logger = LogManager.GetLogger(typeof(ClientController));
     private readonly ConcurrentDictionary<Client, byte> clients;
-    private readonly TimeSpan maxClientIdleTime;
 
     /// <summary>Initializes a new instance of the <see cref="ClientController"/> class.</summary>
-    public ClientController(TimeSpan maxClientIdleTime) {
-      this.clients = new ConcurrentDictionary<Client, byte>();
-      this.maxClientIdleTime = maxClientIdleTime;
-    }
+    public ClientController() => this.clients = new ConcurrentDictionary<Client, byte>();
 
     /// <inheritdoc />
     public event EventHandler<ClientSessionEventArgs> ClientSessionStarted;
@@ -30,7 +26,6 @@ namespace Muwesome.ConnectServer {
     /// <inheritdoc />
     public void AddClient(Client client) {
       Debug.Assert(this.clients.TryAdd(client, 0), "Client could not be added");
-      client.MaxIdleTime = this.maxClientIdleTime;
       client.Connection.Disconnected += (_, ev) => this.OnClientDisconnected(client);
 
       this.ClientSessionStarted?.Invoke(this, new ClientSessionEventArgs(client));

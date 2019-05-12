@@ -8,7 +8,7 @@ namespace Muwesome.GameServer {
   public static class GameServerFactory {
     /// <summary>Initializes a new instance of the <see cref="GameServer" /> class with default implementations.</summary>
     public static GameServer Create(Configuration config, IGameServerRegistrar gameServerRegistrar) {
-      var clientController = new ClientController(config.MaxIdleTime);
+      var clientController = new ClientController();
       var clientProtocolResolver = new ClientProtocolResolver(config, clientController);
 
       var clientListener = new GameServerTcpListener(config, clientController, clientProtocolResolver, gameServerRegistrar);
