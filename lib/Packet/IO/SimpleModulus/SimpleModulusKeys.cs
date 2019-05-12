@@ -5,14 +5,14 @@ using System.Linq;
 namespace Muwesome.Packet.IO.SimpleModulus {
   public class SimpleModulusKeys {
     /// <summary>Default keys for server encryption and server decryption.</summary>
-    public static readonly SimpleModulusKeys DefaultServerKeys = new SimpleModulusKeys(
+    public static readonly SimpleModulusKeys ServerToClientKeys = new SimpleModulusKeys(
       modKey: new uint[] { 73326, 109989, 98843, 171058 },
       xorKey: new uint[] { 62004, 64409, 35374, 64599 },
       encKey: new uint[] { 13169, 19036, 35482, 29587 },
       decKey: new uint[] { 18035, 30340, 24701, 11141 });
 
     /// <summary>Default keys for client encryption and client decryption.</summary>
-    public static readonly SimpleModulusKeys DefaultClientKeys = new SimpleModulusKeys(
+    public static readonly SimpleModulusKeys ClientToServerKeys = new SimpleModulusKeys(
       modKey: new uint[] { 128079, 164742, 70235, 106898 },
       xorKey: new uint[] { 48413, 46165, 15171, 37433 },
       encKey: new uint[] { 23489, 11911, 19816, 13647 },

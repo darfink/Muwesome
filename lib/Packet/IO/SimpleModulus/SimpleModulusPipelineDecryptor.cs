@@ -12,7 +12,7 @@ namespace Muwesome.Packet.IO.SimpleModulus {
 
     /// <summary>Initializes a new instance of the <see cref="SimpleModulusPipelineDecryptor"/> class.</summary>
     public SimpleModulusPipelineDecryptor(PipeReader source)
-        : this(source, SimpleModulusKeys.DefaultClientKeys) {
+        : this(source, SimpleModulusKeys.ClientToServerKeys) {
     }
 
     /// <summary>Initializes a new instance of the <see cref="SimpleModulusPipelineDecryptor"/> class.</summary>
