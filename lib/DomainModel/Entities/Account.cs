@@ -1,11 +1,9 @@
 using System;
+using System.Collections.Generic;
 
 namespace Muwesome.DomainModel.Entities {
   /// <summary>The account of a user.</summary>
-  public class Account {
-    /// <summary>Gets or sets the ID.</summary>
-    public Guid Id { get; set; }
-
+  public class Account : Identifiable {
     /// <summary>Gets or sets the username.</summary>
     public string Username { get; set; }
 
@@ -17,6 +15,9 @@ namespace Muwesome.DomainModel.Entities {
 
     /// <summary>Gets or sets the security code.</summary>
     public string SecurityCode { get; set; }
+
+    /// <summary>Gets or sets the characters.</summary>
+    public IList<Character> Characters { get; set; }
 
     /// <summary>Gets or sets the registration date.</summary>
     public DateTime RegistrationDate { get; set; }
