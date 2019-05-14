@@ -3,6 +3,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using log4net;
 using Muwesome.LoginServer.Program.Services;
+using Muwesome.Persistence;
 using Muwesome.Persistence.NHibernate;
 
 namespace Muwesome.LoginServer.Program {
@@ -13,17 +14,17 @@ namespace Muwesome.LoginServer.Program {
       var repository = LogManager.GetRepository(Assembly.GetEntryAssembly());
       log4net.Config.BasicConfigurator.Configure(repository);
 
-      using (var server = CreateServer(new ProgramConfiguration())) {
+      var config = new ProgramConfiguration();
+      using (var persistenceContextProvider = new PersistenceContextProvider(config.PersistenceConfiguration))
+      using (var server = CreateServer(config, persistenceContextProvider)) {
         server.Start();
         Task.WaitAny(server.ShutdownTask, InterruptSignal());
         server.Stop();
       }
     }
 
-    private static LoginServer CreateServer(ProgramConfiguration config) {
-      var persistenceContextProvider = new PersistenceContextProvider(config.PersistenceConfiguration);
+    private static LoginServer CreateServer(ProgramConfiguration config, IPersistenceContextProvider persistenceContextProvider) {
       var loginServer = LoginServerFactory.Create(config, persistenceContextProvider);
-
       var serviceController = ServiceControllerFactory.Create(config.RpcService, loginServer);
       loginServer.AddDependency(serviceController);
       return loginServer;
