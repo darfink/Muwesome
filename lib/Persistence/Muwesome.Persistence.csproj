@@ -4,6 +4,6 @@
   </ItemGroup>
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <DefaultItemExcludes>$(DefaultItemExcludes);EntityFramework/**;Initialization/**</DefaultItemExcludes>
+    <DefaultItemExcludes>$(DefaultItemExcludes);NHibernate/**;Initialization/**</DefaultItemExcludes>
   </PropertyGroup>
 </Project>

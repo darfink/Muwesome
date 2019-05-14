@@ -1,5 +1,5 @@
 using Muwesome.LoginServer.Program.Services;
-using Muwesome.Persistence.EntityFramework;
+using Muwesome.Persistence.NHibernate;
 using Muwesome.Rpc;
 
 namespace Muwesome.LoginServer.Program {

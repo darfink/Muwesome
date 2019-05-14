@@ -3,7 +3,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using log4net;
 using Muwesome.LoginServer.Program.Services;
-using Muwesome.Persistence.EntityFramework;
+using Muwesome.Persistence.NHibernate;
 
 namespace Muwesome.LoginServer.Program {
   /// <summary>Login server program.</summary>

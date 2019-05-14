@@ -20,9 +20,9 @@
     <None Remove="@(Protobuf)" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\lib\Persistence\EntityFramework\Muwesome.Persistence.EntityFramework.csproj" />
     <ProjectReference Include="..\..\..\lib\Persistence\Muwesome.Persistence.csproj" />
     <ProjectReference Include="..\..\..\lib\Rpc\Muwesome.Rpc.csproj" />
     <ProjectReference Include="..\Muwesome.GameServer.csproj" />
+    <ProjectReference Include="..\..\..\lib\Persistence\NHibernate\Muwesome.NHibernate.csproj" />
   </ItemGroup>
 </Project>

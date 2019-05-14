@@ -11,6 +11,6 @@
   <ItemGroup>
     <ProjectReference Include="..\..\lib\Persistence\Muwesome.Persistence.csproj" />
     <ProjectReference Include="..\..\lib\Persistence\Initialization\Muwesome.Persistence.Initialization.csproj" />
-    <ProjectReference Include="..\..\lib\Persistence\EntityFramework\Muwesome.Persistence.EntityFramework.csproj" />
+    <ProjectReference Include="..\..\lib\Persistence\NHibernate\Muwesome.NHibernate.csproj" />
   </ItemGroup>
 </Project>

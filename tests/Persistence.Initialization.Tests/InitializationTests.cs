@@ -1,8 +1,8 @@
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Muwesome.DomainModel.Entities;
-using Muwesome.Persistence.EntityFramework;
 using Muwesome.Persistence.Initialization;
+using Muwesome.Persistence.NHibernate;
 
 namespace Muwesome.Persistence.Initialization.Tests {
   [TestClass]
@@ -15,9 +15,9 @@ namespace Muwesome.Persistence.Initialization.Tests {
 
     [TestMethod]
     public void Initialized_Sqlite_Data_Is_Persistent() {
-      var config = new PersistenceConfiguration() {
-        ConnectionString = $"Data Source={nameof(this.Initialized_Sqlite_Data_Is_Persistent)}.db",
-        StorageEngine = StorageEngine.Sqlite,
+      var config = new PersistenceConfiguration(StorageEngine.Sqlite) {
+        ConnectionString = $"Data Source={nameof(this.Initialized_Sqlite_Data_Is_Persistent)}.db;",
+        SchemaOperation = SchemaOperation.Recreate,
       };
 
       this.ValidateDataPersistance(new PersistenceContextProvider(config));
@@ -25,8 +25,6 @@ namespace Muwesome.Persistence.Initialization.Tests {
 
     private void ValidateDataPersistance(PersistenceContextProvider persistenceContextProvider) {
       using (persistenceContextProvider) {
-        persistenceContextProvider.RecreateStorage();
-
         var dataInitializer = new DataInitializer(persistenceContextProvider);
         dataInitializer.CreateInitialData();
 

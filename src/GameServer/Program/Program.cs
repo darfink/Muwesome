@@ -3,7 +3,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using log4net;
 using Muwesome.GameServer.Program.Proxies;
-using Muwesome.Persistence.EntityFramework;
+using Muwesome.Persistence.NHibernate;
 
 namespace Muwesome.GameServer.Program {
   /// <summary>Game server program.</summary>

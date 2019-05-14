@@ -1,6 +1,6 @@
 using System;
 using System.Text;
-using Muwesome.Persistence.EntityFramework;
+using Muwesome.Persistence.NHibernate;
 using Muwesome.Rpc;
 
 namespace Muwesome.GameServer.Program {
