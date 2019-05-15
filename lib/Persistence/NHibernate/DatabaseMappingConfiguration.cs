@@ -7,36 +7,38 @@ using Muwesome.DomainModel;
 using Muwesome.DomainModel.Components;
 using Muwesome.DomainModel.Configuration;
 using Muwesome.DomainModel.Entities;
+using Muwesome.Persistence.NHibernate.Utility;
 
 namespace Muwesome.Persistence.NHibernate {
   public class DatabaseMappingConfiguration : DefaultAutomappingConfiguration {
-    public override bool ShouldMap(Type type) =>
-      type.Namespace.EndsWith("Configuration") || type.Namespace.EndsWith("Entities");
+    /// <inheritdoc />
+    public override bool ShouldMap(Type type) => type.IsSubclassOf(typeof(Identifiable));
 
-    public override bool IsComponent(Type type) =>
-      type.Namespace.EndsWith("Components");
+    /// <inheritdoc />
+    public override bool IsComponent(Type type) => type.Namespace.EndsWith("Components");
 
     public class AccountMappingOverride : IAutoMappingOverride<Account> {
       public void Override(AutoMapping<Account> mapping) {
         mapping.Map(m => m.Username).Unique().Length(10);
         mapping.Map(m => m.SecurityCode).Length(10);
         mapping.Map(m => m.Mail).Nullable();
+        mapping.References(m => m.Vault).Nullable();
         mapping.Map(m => m.RegistrationDate).Default("CURRENT_TIMESTAMP");
-        mapping.HasMany(m => m.Characters)
-          .KeyColumns.Add($"{nameof(Account)}Id", m => m.UniqueKey($"{nameof(Account)}{nameof(Character.Slot)}"));
+        mapping.HasManyNonNullable(m => m.Characters, m => m.UniqueKey($"{nameof(Account)}{nameof(Character.Slot)}"));
       }
     }
 
     public class CharacterMappingOverride : IAutoMappingOverride<Character> {
       public void Override(AutoMapping<Character> mapping) {
+        mapping.Map(m => m.Slot).UniqueKey($"{nameof(Account)}{nameof(Character.Slot)}");
         mapping.Map(m => m.Name).Unique().Length(10);
         mapping.Map(m => m.CreationDate).Default("CURRENT_TIMESTAMP");
-        mapping.Map(m => m.Slot).UniqueKey($"{nameof(Account)}{nameof(Character.Slot)}");
+        mapping.References(m => m.PersonalShop).Nullable();
         mapping.Component(m => m.Position).ColumnPrefix(nameof(Character.Position));
         mapping.HasManyToMany(m => m.Equipment)
           .AsMap(x => x.Key)
           .AsSimpleAssociation(nameof(EquipmentSlot), $"{nameof(Item)}Id")
-          .Table("EquippedItem");
+          .Table($"Equipped{nameof(Item)}");
       }
     }
 
@@ -45,13 +47,14 @@ namespace Muwesome.Persistence.NHibernate {
         mapping.HasManyToMany(m => m.Items)
           .AsMap(x => x.Key)
           .AsSimpleAssociation("Slot", $"{nameof(Item)}Id")
-          .Table("StoredItem");
+          .Table($"Stored{nameof(Item)}");
       }
     }
 
     public class MapDefinitionMappingOverride : IAutoMappingOverride<MapDefinition> {
       public void Override(AutoMapping<MapDefinition> mapping) {
-        mapping.Component(m => m.Terrain);
+        mapping.Component(m => m.Terrain).ColumnPrefix(null);
+        mapping.HasManyNonNullable(m => m.Gates);
       }
     }
 

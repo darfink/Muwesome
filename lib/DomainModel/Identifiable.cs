@@ -1,7 +1,8 @@
 using System;
 
 namespace Muwesome.DomainModel {
-  public abstract class Entity {
+  /// <summary>Represents an identifiable instance.</summary>
+  public abstract class Identifiable {
     /// <summary>Gets or sets the ID.</summary>
     public virtual Guid Id { get; set; }
   }

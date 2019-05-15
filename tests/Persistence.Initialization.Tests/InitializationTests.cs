@@ -25,8 +25,9 @@ namespace Muwesome.Persistence.Initialization.Tests {
 
     private void ValidateDataPersistance(PersistenceContextProvider persistenceContextProvider) {
       using (persistenceContextProvider) {
-        var dataInitializer = new DataInitializer(persistenceContextProvider);
-        dataInitializer.CreateInitialData();
+        var dataInitializer = new PersistenceInitializer(persistenceContextProvider);
+        dataInitializer.CreateConfiguration();
+        dataInitializer.CreateTestData();
 
         // Execute this twice to ensure the data is persistent between contexts
         for (int i = 0; i < 2; i++) {

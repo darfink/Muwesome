@@ -2,11 +2,14 @@ using System;
 
 namespace Muwesome.DomainModel.Configuration {
   /// <summary>A character class configuration.</summary>
-  public class CharacterClass : Entity {
-    public CharacterClass(string name) {
+  public class CharacterClass : Identifiable {
+    /// <summary>Initializes a new instance of the <see cref="CharacterClass"/> class.</summary>
+    public CharacterClass(string name, MapDefinition homeMap) {
+      this.HomeMap = homeMap;
       this.Name = name;
     }
 
+    /// <summary>Initializes a new instance of the <see cref="CharacterClass"/> class.</summary>
     protected CharacterClass() {
     }
 

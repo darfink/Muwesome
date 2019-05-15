@@ -5,14 +5,18 @@ using Muwesome.DomainModel.Configuration;
 
 namespace Muwesome.DomainModel.Entities {
   /// <summary>A character of an account.</summary>
-  public class Character : Entity {
-    public Character(string name, byte slot) {
-      this.Slot = slot;
+  public class Character : Identifiable {
+    /// <summary>Initializes a new instance of the <see cref="Character"/> class.</summary>
+    public Character(string name, CharacterClass @class, ItemStorage inventory) {
       this.Name = name;
+      this.Class = @class;
+      this.CurrentMap = @class.HomeMap;
       this.Equipment = new Dictionary<EquipmentSlot, Item>();
+      this.Inventory = inventory;
       this.CreationDate = DateTime.UtcNow;
     }
 
+    /// <summary>Initializes a new instance of the <see cref="Character"/> class.</summary>
     protected Character() {
     }
 

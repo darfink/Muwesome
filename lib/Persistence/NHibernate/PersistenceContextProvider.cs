@@ -17,6 +17,7 @@ namespace Muwesome.Persistence.NHibernate {
     private readonly PersistenceConfiguration config;
     private readonly ISessionFactory sessionFactory;
 
+    /// <summary>Initializes a new instance of the <see cref="PersistenceContextProvider"/> class.</summary>
     public PersistenceContextProvider(PersistenceConfiguration config) {
       this.config = config;
       var databaseConfig = this.CreateDatabaseConfiguration();
@@ -25,16 +26,15 @@ namespace Muwesome.Persistence.NHibernate {
     }
 
     /// <inheritdoc />
-    public IContext CreateContext() =>
-      new PersistenceContext(this.CreateSession());
+    public IContext CreateContext() => new PersistenceContext(this.CreateSession());
 
     /// <inheritdoc />
-    public IAccountContext CreateAccountContext() =>
-      new AccountContext(this.CreateSession());
+    public IAccountContext CreateAccountContext() => new AccountContext(this.CreateSession());
 
     /// <inheritdoc />
     public void Dispose() => this.sessionFactory.Dispose();
 
+    /// <summary>Creates a manually controlled session.</summary>
     private ISession CreateSession() {
       var session = this.sessionFactory.OpenSession();
       session.FlushMode = FlushMode.Manual;
@@ -42,16 +42,17 @@ namespace Muwesome.Persistence.NHibernate {
       return session;
     }
 
+    /// <summary>Creates a database configuration.</summary>
     private DbConfiguration CreateDatabaseConfiguration() =>
       Fluently
         .Configure()
         .Database(this.CreatePersistenceConfigurer())
         .Mappings(m => m.AutoMappings.Add(
           AutoMap
-            .AssemblyOf<Muwesome.DomainModel.Entity>(new DatabaseMappingConfiguration())
+            .AssemblyOf<Muwesome.DomainModel.Identifiable>(new DatabaseMappingConfiguration())
             .Conventions.Setup(c => {
               c.Add(ForeignKey.EndsWith("Id"));
-              c.Add<NotNullColumnConvention>();
+              c.AddAssembly(Assembly.GetExecutingAssembly());
             })
             .UseOverridesFromAssembly(Assembly.GetExecutingAssembly())))
             .BuildConfiguration();

@@ -3,7 +3,8 @@ using System.Collections.Generic;
 
 namespace Muwesome.DomainModel.Entities {
   /// <summary>The account of a user.</summary>
-  public class Account : Entity {
+  public class Account : Identifiable {
+    /// <summary>Initializes a new instance of the <see cref="Account"/> class.</summary>
     public Account(string username, string passwordHash, string securityCode) {
       this.Username = username;
       this.PasswordHash = passwordHash;
@@ -12,6 +13,7 @@ namespace Muwesome.DomainModel.Entities {
       this.RegistrationDate = DateTime.UtcNow;
     }
 
+    /// <summary>Initializes a new instance of the <see cref="Account"/> class.</summary>
     protected Account() {
     }
 
