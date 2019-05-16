@@ -9,7 +9,7 @@ using NHibernate.Driver;
 
 namespace Muwesome.Persistence.NHibernate.Utility {
   /// <summary>A connection provider for a persistent in-memory database.</summary>
-  public class InMemoryConnectionProvider : IConnectionProvider {
+  internal class InMemoryConnectionProvider : IConnectionProvider {
     private readonly SQLiteConnection connection = new SQLiteConnection("Data Source=:memory:");
 
     /// <summary>Initializes a new instance of the <see cref="InMemoryConnectionProvider"/> class.</summary>

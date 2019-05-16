@@ -18,33 +18,33 @@ namespace Muwesome.DomainModel.Entities {
     }
 
     /// <summary>Gets or sets the username.</summary>
-    public virtual string Username { get; set; }
+    public string Username { get; set; }
 
     /// <summary>Gets or sets the password hash.</summary>
-    public virtual string PasswordHash { get; set; }
+    public string PasswordHash { get; set; }
 
     /// <summary>Gets or sets the E-mail.</summary>
-    public virtual string Mail { get; set; }
+    public string Mail { get; set; }
 
     /// <summary>Gets or sets the security code.</summary>
-    public virtual string SecurityCode { get; set; }
+    public string SecurityCode { get; set; }
 
     /// <summary>Gets or sets the characters.</summary>
-    public virtual IList<Character> Characters { get; set; }
+    public IList<Character> Characters { get; set; }
 
     /// <summary>Gets or sets the vault.</summary>
-    public virtual ItemStorage Vault { get; set; }
+    public ItemStorage Vault { get; set; }
 
     /// <summary>Gets or sets the registration date.</summary>
-    public virtual DateTime RegistrationDate { get; set; } = DateTime.UtcNow;
+    public DateTime RegistrationDate { get; set; } = DateTime.UtcNow;
 
     /// <summary>Gets or sets the last login time.</summary>
-    public virtual DateTime? LastLoginTime { get; set; }
+    public DateTime? LastLoginTime { get; set; }
 
     /// <summary>Gets or sets the last failed login time.</summary>
-    public virtual DateTime? LastFailedLoginTime { get; set; }
+    public DateTime? LastFailedLoginTime { get; set; }
 
     /// <summary>Gets or sets the number of consecutively failed login attempts.</summary>
-    public virtual int ConsecutiveFailedLoginAttempts { get; set; }
+    public int ConsecutiveFailedLoginAttempts { get; set; }
   }
 }

@@ -16,7 +16,7 @@ namespace Muwesome.Persistence.NHibernate {
     /// <inheritdoc />
     public async Task<(Account, bool)> GetAccountByCredentialsAsync(string username, string password) {
       Account account = null;
-      using (this.Connect()) {
+      using (this.WithConnection()) {
         account = await this.Session.Query<Account>().FirstOrDefaultAsync(a => a.Username == username);
       }
 

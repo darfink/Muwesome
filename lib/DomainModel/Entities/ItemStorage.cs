@@ -15,15 +15,15 @@ namespace Muwesome.DomainModel.Entities {
     }
 
     /// <summary>Gets or sets the width.</summary>
-    public virtual byte Width { get; set; }
+    public byte Width { get; set; }
 
     /// <summary>Gets or sets the height.</summary>
-    public virtual byte Height { get; set; }
+    public byte Height { get; set; }
 
     /// <summary>Gets or sets the amount of money.</summary>
-    public virtual int Money { get; set; }
+    public int Money { get; set; }
 
     /// <summary>Gets or sets the items.</summary>
-    public virtual IDictionary<byte, Item> Items { get; set; }
+    public IDictionary<byte, Item> Items { get; set; }
   }
 }

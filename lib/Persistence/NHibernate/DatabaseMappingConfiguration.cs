@@ -10,12 +10,13 @@ using Muwesome.DomainModel.Entities;
 using Muwesome.Persistence.NHibernate.Utility;
 
 namespace Muwesome.Persistence.NHibernate {
+  // TODO: Make internal and explicitly add mappers?
   public class DatabaseMappingConfiguration : DefaultAutomappingConfiguration {
     /// <inheritdoc />
     public override bool ShouldMap(Type type) => type.IsSubclassOf(typeof(Identifiable));
 
     /// <inheritdoc />
-    public override bool IsComponent(Type type) => type.Namespace.EndsWith("Components");
+    public override bool IsComponent(Type type) => type.Namespace.StartsWith(typeof(ItemCode).Namespace);
 
     public class AccountMappingOverride : IAutoMappingOverride<Account> {
       public void Override(AutoMapping<Account> mapping) {

@@ -36,7 +36,7 @@ namespace Muwesome.Persistence.NHibernate {
     /// <inheritdoc />
     public TEntity GetById<TEntity>(Guid id)
         where TEntity : class {
-      using (this.Connect()) {
+      using (this.WithConnection()) {
         return this.Session.Get<TEntity>(id);
       }
     }
@@ -44,7 +44,7 @@ namespace Muwesome.Persistence.NHibernate {
     /// <inheritdoc />
     public async Task<TEntity> GetByIdAsync<TEntity>(Guid id)
         where TEntity : class {
-      using (this.Connect()) {
+      using (this.WithConnection()) {
         return await this.Session.GetAsync<TEntity>(id);
       }
     }
@@ -52,29 +52,27 @@ namespace Muwesome.Persistence.NHibernate {
     /// <inheritdoc />
     public IEnumerable<TEntity> GetAll<TEntity>()
         where TEntity : class {
-      using (this.Connect()) {
-        return this.Session.Query<TEntity>().ToListAsync().Result;
+      using (this.WithConnection()) {
+        return this.Session.QueryOver<TEntity>().List();
       }
     }
 
     /// <inheritdoc />
-    public bool Delete<TEntity>(TEntity entity)
+    public void Delete<TEntity>(TEntity entity)
         where TEntity : class {
-      // TODO: Determine result of operation
       this.Session.Delete(entity);
-      return true;
     }
 
     /// <inheritdoc />
     public void SaveChanges() {
-      using (this.Connect()) {
+      using (this.WithConnection()) {
         this.Session.Flush();
       }
     }
 
     /// <inheritdoc />
     public async Task SaveChangesAsync() {
-      using (this.Connect()) {
+      using (this.WithConnection()) {
         await this.Session.FlushAsync();
       }
     }
@@ -83,9 +81,26 @@ namespace Muwesome.Persistence.NHibernate {
     public void Dispose() => this.Session.Dispose();
 
     /// <summary>Establishes a connection with a guard.</summary>
-    protected IDisposable Connect() {
+    protected IDisposable WithConnection() {
       this.Session.Reconnect();
-      return new ScopeGuard<ISession>(this.Session, session => session.Disconnect());
+      ITransaction transaction = null;
+      try {
+        transaction = this.Session.BeginTransaction();
+      } catch (Exception) {
+        this.Session.Disconnect();
+        throw;
+      }
+
+      return new ScopeGuard<(ISession Session, ITransaction Transaction)>(
+        (this.Session, transaction),
+        (context) => {
+          try {
+            context.Transaction.Commit();
+          } finally {
+            context.Transaction.Dispose();
+            context.Session.Disconnect();
+          }
+        });
     }
   }
 }

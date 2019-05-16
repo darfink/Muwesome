@@ -28,7 +28,7 @@ namespace Muwesome.Persistence {
       where TEntity : class;
 
     /// <summary>Deletes an entity.</summary>
-    bool Delete<TEntity>(TEntity entity)
+    void Delete<TEntity>(TEntity entity)
       where TEntity : class;
 
     /// <summary>Saves any pending changes.</summary>

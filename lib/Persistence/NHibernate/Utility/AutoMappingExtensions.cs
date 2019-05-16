@@ -5,7 +5,7 @@ using FluentNHibernate.Automapping;
 using FluentNHibernate.Mapping;
 
 namespace Muwesome.Persistence.NHibernate.Utility {
-  public static class AutoMappingExtensions {
+  internal static class AutoMappingExtensions {
     /// <summary>Creates a one-to-many relationship with non-nullable foreign keys.</summary>
     public static OneToManyPart<TChild> HasManyNonNullable<T, TChild>(
         this AutoMapping<T> mapping,

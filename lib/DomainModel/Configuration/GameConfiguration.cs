@@ -11,12 +11,12 @@ namespace Muwesome.DomainModel.Configuration {
     }
 
     /// <summary>Gets or sets the character classes.</summary>
-    public IList<CharacterClass> CharacterClasses { get; set; }
+    public virtual IList<CharacterClass> CharacterClasses { get; set; }
 
     /// <summary>Gets or sets the item definitions.</summary>
-    public IList<ItemDefinition> ItemDefinitions { get; set; }
+    public virtual IList<ItemDefinition> ItemDefinitions { get; set; }
 
     /// <summary>Gets or sets the map definitions.</summary>
-    public IList<MapDefinition> MapDefinitions { get; set; }
+    public virtual IList<MapDefinition> MapDefinitions { get; set; }
   }
 }

@@ -13,9 +13,9 @@ namespace Muwesome.DomainModel.Entities {
     }
 
     /// <summary>Gets or sets the definition.</summary>
-    public virtual ItemDefinition Definition { get; set; }
+    public ItemDefinition Definition { get; set; }
 
     /// <summary>Gets or sets the durability.</summary>
-    public virtual byte Durability { get; set; }
+    public byte Durability { get; set; }
   }
 }

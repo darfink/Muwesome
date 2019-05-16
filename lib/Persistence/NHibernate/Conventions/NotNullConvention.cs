@@ -1,34 +1,26 @@
 using System;
 using FluentNHibernate.Conventions;
+using FluentNHibernate.Conventions.AcceptanceCriteria;
+using FluentNHibernate.Conventions.Inspections;
 using FluentNHibernate.Conventions.Instances;
 
 namespace Muwesome.Persistence.NHibernate.Conventions {
-  public class NotNullConvention :
+  internal class NotNullConvention :
+      IPropertyConventionAcceptance,
       IPropertyConvention,
-      IReferenceConvention,
-      IHasManyConvention,
-      IClassConvention {
+      IReferenceConvention {
     /// <inheritdoc />
-    public void Apply(IPropertyInstance instance) {
-      bool isNullable = Nullable.GetUnderlyingType(instance.Property.PropertyType) != null;
-
-      if (!isNullable || instance.Property.PropertyType == typeof(string)) {
-        instance.Not.Nullable();
-      }
+    public void Accept(IAcceptanceCriteria<IPropertyInspector> critera) {
+      critera.Expect(property => {
+        bool isNullable = Nullable.GetUnderlyingType(property.Property.PropertyType) != null;
+        return !isNullable || property.Property.PropertyType == typeof(string);
+      });
     }
 
     /// <inheritdoc />
-    public void Apply(IManyToOneInstance instance) =>
-      instance.Not.Nullable();
+    public void Apply(IPropertyInstance instance) => instance.Not.Nullable();
 
     /// <inheritdoc />
-    public void Apply(IOneToManyCollectionInstance instance) {
-      instance.Not.LazyLoad();
-    }
-
-    /// <inheritdoc />
-    public void Apply(IClassInstance instance) {
-      instance.Not.LazyLoad();
-    }
+    public void Apply(IManyToOneInstance instance) => instance.Not.Nullable();
   }
 }
