@@ -24,6 +24,7 @@ namespace Muwesome.GameLogic.Actions {
     }
 
     /// <summary>Gets the defined actions for this factory.</summary>
+    // TODO: This is mutable
     public ISet<Type> DefinedActions { get; } = new HashSet<Type>();
 
     /// <summary>Creates a new action bag.</summary>

@@ -4,7 +4,7 @@ using Muwesome.Packet;
 using Muwesome.Packet.Utility;
 using Muwesome.Protocol;
 
-namespace Muwesome.GameServer.Protocol {
+namespace Muwesome.GameServer.Protocol.Dispatchers {
   /// <summary>A packet dispatcher for clients.</summary>
   internal abstract class PacketDispatcher<TPacket, TAction> : IActionProvider<Client>
       where TPacket : IPacket

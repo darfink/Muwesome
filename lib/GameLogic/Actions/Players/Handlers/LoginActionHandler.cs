@@ -25,9 +25,9 @@ namespace Muwesome.GameLogic.Actions.Players.Handlers {
       var result = await this.loginService.TryLoginAsync(username, password);
 
       if (result == LoginResult.Success) {
-      } else {
-        player.Action<ShowLoginResultAction>()?.Invoke(result);
       }
+
+      player.Action<ShowLoginResultAction>()?.Invoke(result);
     }
 
     /// <summary>Logs a player out of the game.</summary>

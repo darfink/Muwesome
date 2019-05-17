@@ -19,7 +19,7 @@ namespace Muwesome.GameLogic.Actions {
     public ActionBag Create(Player player, PlayerActionBuilder actionBuilder) =>
       this.actionBagFactory.Create(player, new ActionBagBuilder<Player>(this.RegisterActions + actionBuilder));
 
-    /// <summary>Registers all assembly local defined actions.</summary>
+    /// <summary>Registers all assembly local actions.</summary>
     private void RegisterActions(Player player, Action<Delegate> registerAction) {
       // TODO: Discover and add action handlers via reflection
       registerAction((this.loginActionHandler as IActionProvider<Player, LoginAction>).CreateAction(player));

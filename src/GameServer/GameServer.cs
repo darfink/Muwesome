@@ -48,7 +48,6 @@ namespace Muwesome.GameServer {
         client.Player = player;
         client.PacketDispatcher.RegisterActions(client, registerAction);
       });
-
       this.clientController.AddClient(client);
     }
   }

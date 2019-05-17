@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using log4net;
+using Muwesome.GameServer.Protocol.Handlers;
 using Muwesome.Network;
 using Muwesome.Packet;
 using Muwesome.Packet.Utility;
@@ -30,6 +31,7 @@ namespace Muwesome.GameServer.Protocol {
     }
 
     /// <summary>Registers a new handler for a packet.</summary>
+    // TODO: This should only be called during ctor
     public void RegisterHandler<TPacket>(PacketHandler<TPacket> packetHandler)
         where TPacket : IPacket {
       this.RegisterHandler(packetHandler.Identifier, packetHandler);

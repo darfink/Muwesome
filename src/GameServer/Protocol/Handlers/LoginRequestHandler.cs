@@ -20,14 +20,18 @@ namespace Muwesome.GameServer.Protocol.Handlers {
       if (login.Version != client.Version) {
         Logger.Info($"Client version mismatch for {client}; expected {client.Version}, was {login.Version}");
         client.Player.Action<ShowLoginResultAction>()?.Invoke(LoginResult.InvalidGameVersion);
-      } else if (this.ValidateClientSerial && !login.Serial.SequenceEqual(client.Serial)) {
-        // TODO: Print serial ASCII escaped?
-        Logger.Info($"Client serial mismatch for {client}; expected {client.Serial}, was {login.Serial.ToArray()}");
-        client.Connection.Disconnect();
-      } else {
-        client.Player.Action<LoginAction>()?.Invoke(login.Username, login.Password);
+        return true;
       }
 
+      bool isSerialInvalid = this.ValidateClientSerial && login.Serial.SequenceEqual(client.Serial);
+
+      if (isSerialInvalid) { // TODO: Print serial ASCII escaped?
+        Logger.Info($"Client serial mismatch for {client}; expected {client.Serial}, was {login.Serial.ToArray()}");
+        client.Connection.Disconnect();
+        return true;
+      }
+
+      client.Player.Action<LoginAction>()?.Invoke(login.Username, login.Password);
       return true;
     }
   }
