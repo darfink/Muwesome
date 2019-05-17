@@ -38,7 +38,7 @@ namespace Muwesome.LoginServer {
           return LoginError.InvalidAccount;
         } else if (this.IsAccountTimedOut(account)) {
           return LoginError.AccountIsLockedOut;
-        } else if (validPassword) {
+        } else if (!validPassword) {
           account.ConsecutiveFailedLoginAttempts++;
           account.LastFailedLoginTime = DateTime.UtcNow;
           await accountContext.SaveChangesAsync();
