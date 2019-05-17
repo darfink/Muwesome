@@ -13,17 +13,13 @@ namespace Muwesome.GameServer.Program {
       var repository = LogManager.GetRepository(Assembly.GetEntryAssembly());
       log4net.Config.BasicConfigurator.Configure(repository);
 
-      using (var server = CreateServer(new ProgramConfiguration())) {
-        server.Start();
-        Task.WaitAny(server.ShutdownTask, InterruptSignal());
-        server.Stop();
+      var config = new ProgramConfiguration();
+      using (var gameServerRegistrar = new GameServerRegistrarProxy(config.ConnectServer))
+      using (var gameServer = GameServerFactory.Create(config, gameServerRegistrar)) {
+        gameServer.Start();
+        Task.WaitAny(gameServer.ShutdownTask, InterruptSignal());
+        gameServer.Stop();
       }
-    }
-
-    private static GameServer CreateServer(ProgramConfiguration config) {
-      var gameServerRegistrar = new GameServerRegistrarProxy(config.ConnectServer);
-      var gameServer = GameServerFactory.Create(config, gameServerRegistrar);
-      return gameServer;
     }
 
     private static Task InterruptSignal() {

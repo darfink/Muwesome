@@ -38,14 +38,6 @@ namespace Muwesome.GameServer {
     private GameServerEndPoint GameServerEndPoint => this.SourceEndPoint as GameServerEndPoint;
 
     /// <inheritdoc />
-    public override void Dispose() {
-      base.Dispose();
-
-      // TODO: This class may not be a unique owner
-      (this.gameServerRegistrar as IDisposable)?.Dispose();
-    }
-
-    /// <inheritdoc />
     protected override void OnListenerStarted() {
       this.gameServerInfo = new GameServerInfo(
         this.config.ServerCode,
