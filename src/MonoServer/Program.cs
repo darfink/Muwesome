@@ -13,9 +13,7 @@ namespace Muwesome.MonoServer {
   internal static class Program {
     /// <summary>The server entry point.</summary>
     public static void Main() {
-      var repository = LogManager.GetRepository(Assembly.GetEntryAssembly());
-      log4net.Config.BasicConfigurator.Configure(repository);
-
+      ConfigureLogging();
       using (var persistenceContextProvider = new PersistenceContextProvider(PersistenceConfiguration.InMemory())) {
         var initializer = new PersistenceInitializer(persistenceContextProvider);
         initializer.CreateConfiguration();
@@ -59,6 +57,23 @@ namespace Muwesome.MonoServer {
         cancellation.SetResult(true);
       };
       return cancellation.Task;
+    }
+
+    private static void ConfigureLogging() {
+      var repository = LogManager.GetRepository(Assembly.GetEntryAssembly());
+      var consoleAppender = new log4net.Appender.ConsoleAppender() {
+        Layout = new log4net.Layout.SimpleLayout(),
+      };
+
+      var enablingFilter = new log4net.Filter.LoggerMatchFilter() {
+        LoggerToMatch = nameof(Muwesome),
+        AcceptOnMatch = true,
+      };
+
+      consoleAppender.AddFilter(enablingFilter);
+      consoleAppender.AddFilter(new log4net.Filter.DenyAllFilter());
+
+      log4net.Config.BasicConfigurator.Configure(repository, consoleAppender);
     }
   }
 }
