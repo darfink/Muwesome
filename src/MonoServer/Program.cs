@@ -3,6 +3,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using log4net;
 using Muwesome.Common;
+using Muwesome.MonoServer.Utility;
 using Muwesome.Persistence;
 using Muwesome.Persistence.Initialization;
 using Muwesome.Persistence.NHibernate;
@@ -22,14 +23,11 @@ namespace Muwesome.MonoServer {
 
         using (var connectServer = CreateConnectServer())
         using (var loginServer = CreateLoginServer(persistenceContextProvider))
-        using (var gameServer = CreateGameServer(connectServer)) {
-          connectServer.Start();
-          loginServer.Start();
-          gameServer.Start();
-          Task.WaitAny(gameServer.ShutdownTask, connectServer.ShutdownTask, InterruptSignal());
-          gameServer.Stop();
-          loginServer.Stop();
-          connectServer.Stop();
+        using (var gameServer = CreateGameServer(connectServer))
+        using (BeginServerStart(connectServer))
+        using (BeginServerStart(loginServer))
+        using (BeginServerStart(gameServer)) {
+            Task.WaitAny(gameServer.ShutdownTask, connectServer.ShutdownTask, InterruptSignal());
         }
       }
     }
@@ -47,6 +45,11 @@ namespace Muwesome.MonoServer {
     private static GameServer.GameServer CreateGameServer(IGameServerRegistrar gameServerRegistrar) {
       var config = new GameServer.Configuration();
       return GameServer.GameServerFactory.Create(config, gameServerRegistrar);
+    }
+
+    private static IDisposable BeginServerStart(ILifecycle server) {
+      server.Start();
+      return new ScopeGuard<ILifecycle>(server, s => s.Stop());
     }
 
     private static Task InterruptSignal() {
