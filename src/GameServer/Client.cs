@@ -28,14 +28,13 @@ namespace Muwesome.GameServer {
       this.Connection = connection;
       this.Connection.PacketReceived += this.OnPacketReceived;
       this.Connection.BeginReceive().ContinueWith(task => this.OnReceiveComplete(task.Exception));
-      this.Player = new Player();
     }
 
     /// <summary>Gets the client's connection.</summary>
     public IConnection Connection { get; }
 
-    /// <summary>Gets the client's player instance.</summary>
-    public Player Player { get; private set; }
+    /// <summary>Gets or sets the client's player instance.</summary>
+    public Player Player { get; set; }
 
     /// <summary>Gets or sets the client's version.</summary>
     public ClientVersion Version { get; set; }
@@ -68,7 +67,7 @@ namespace Muwesome.GameServer {
       this.idleTimeoutTimer?.Dispose();
       this.Connection.PacketReceived -= this.OnPacketReceived;
       this.Connection.Dispose();
-      this.Player.Dispose();
+      this.Player?.Dispose();
     }
 
     /// <inheritdoc />

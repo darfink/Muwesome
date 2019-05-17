@@ -1,20 +1,20 @@
 using System;
 using log4net;
-using Muwesome.GameLogic.Actions;
+using Muwesome.GameLogic.Actions.Players;
 using Muwesome.Packet.Utility;
 using Muwesome.Protocol;
 using Muwesome.Protocol.Game.Client;
 
 namespace Muwesome.GameServer.Protocol.Handlers {
   /// <summary>A packet handler for incoming login requests.</summary>
-  internal class LoginRequestHandler : IPacketHandler<Client> {
+  internal class LoginRequestHandler : PacketHandler<LoginRequest> {
     private static readonly ILog Logger = LogManager.GetLogger(typeof(LoginRequestHandler));
 
     /// <summary>Gets or sets a value indicating whether client serials are validated or not.</summary>
     public bool ValidateClientSerial { get; set; }
 
     /// <inheritdoc />
-    public bool HandlePacket(Client client, Span<byte> packet) {
+    public override bool HandlePacket(Client client, Span<byte> packet) {
       ref var login = ref PacketHelper.ParsePacket<LoginRequest>(packet);
 
       if (login.Version != client.Version) {

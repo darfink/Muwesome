@@ -1,17 +1,24 @@
 using System;
 using System.Collections.Generic;
 using Muwesome.GameLogic.Actions;
+using Muwesome.Packet;
 
 namespace Muwesome.GameServer.Protocol {
   /// <summary>A client packet dispatcher.</summary>
   internal class ClientPacketDispatcher {
-    private readonly List<IPlayerActionProvider> dispatchers = new List<IPlayerActionProvider>();
+    private readonly IList<IActionProvider<Client>> actionProviders = new List<IActionProvider<Client>>();
 
-    /// <summary>Gets the packet dispatcher actions.</summary>
-    public IReadOnlyCollection<IPlayerActionProvider> Actions => this.dispatchers;
+    public void RegisterActions(Client client, Action<Delegate> registerAction) {
+      foreach (var actionProvider in this.actionProviders) {
+        registerAction(actionProvider.CreateAction(client));
+      }
+    }
 
-    /// <summary>Registers a client packet dispatcher.</summary>
-    public void Register<TAction>(IPlayerActionProvider<TAction> packetDispatcher)
-        where TAction : Delegate => this.dispatchers.Add(packetDispatcher.AsGeneric());
+    /// <summary>Registers a new handler for a packet.</summary>
+    // TODO: Validate unique packet and action?
+    public void RegisterDispatcher<TPacket, TAction>(PacketDispatcher<TPacket, TAction> packetDispatcher)
+        where TPacket : IPacket
+        where TAction : Delegate =>
+      this.actionProviders.Add(packetDispatcher);
   }
 }

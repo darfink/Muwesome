@@ -16,10 +16,11 @@ namespace Muwesome.GameServer {
     // TODO: Allow multiple client listeners, and remove all TCP logic
     internal GameServer(
         Configuration config,
-        IClientController clientController) {
+        IClientController clientController,
+        IAccountLoginService accountLoginService) {
       this.Config = config;
       this.clientController = clientController;
-      this.gameContext = new GameContext();
+      this.gameContext = new GameContext(new LoginServiceAdapter(accountLoginService));
     }
 
     /// <summary>Gets the server's configuration.</summary>
@@ -43,10 +44,12 @@ namespace Muwesome.GameServer {
     /// <summary>Configures new clients.</summary>
     private void OnClientConnected(object sender, ClientConnectedEventArgs<Client> ev) {
       var client = ev.ConnectedClient;
+      this.gameContext.AddPlayer((player, registerAction) => {
+        client.Player = player;
+        client.PacketDispatcher.RegisterActions(client, registerAction);
+      });
 
       this.clientController.AddClient(client);
-      client.Player.RegisterActions(client.PacketDispatcher.Actions);
-      this.gameContext.AddPlayer(client.Player);
     }
   }
 }

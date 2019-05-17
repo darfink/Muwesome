@@ -23,7 +23,7 @@ namespace Muwesome.MonoServer {
 
         using (var connectServer = CreateConnectServer())
         using (var loginServer = CreateLoginServer(persistenceContextProvider))
-        using (var gameServer = CreateGameServer(connectServer))
+        using (var gameServer = CreateGameServer(connectServer, loginServer))
         using (BeginServerStart(connectServer))
         using (BeginServerStart(loginServer))
         using (BeginServerStart(gameServer)) {
@@ -42,9 +42,9 @@ namespace Muwesome.MonoServer {
       return ConnectServer.ConnectServerFactory.Create(config);
     }
 
-    private static GameServer.GameServer CreateGameServer(IGameServerRegistrar gameServerRegistrar) {
+    private static GameServer.GameServer CreateGameServer(IGameServerRegistrar gameServerRegistrar, IAccountLoginService accountLoginService) {
       var config = new GameServer.Configuration();
-      return GameServer.GameServerFactory.Create(config, gameServerRegistrar);
+      return GameServer.GameServerFactory.Create(config, gameServerRegistrar, accountLoginService);
     }
 
     private static IDisposable BeginServerStart(ILifecycle server) {

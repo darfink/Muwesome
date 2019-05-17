@@ -1,19 +1,13 @@
 using Muwesome.GameLogic;
-using Muwesome.GameLogic.Actions;
+using Muwesome.GameLogic.Actions.Players;
 using Muwesome.Network;
 using Muwesome.Protocol.Game.Server;
 
 namespace Muwesome.GameServer.Protocol.Dispatchers {
   /// <summary>A packet dispatcher for join results.</summary>
-  internal class JoinResultDispatcher : PacketDispatcher<ShowLoginWindowAction> {
-    /// <summary>Initializes a new instance of the <see cref="JoinResultDispatcher"/> class.</summary>
-    public JoinResultDispatcher(IClientController clientController)
-        : base(clientController) {
-    }
-
+  internal class JoinResultDispatcher : PacketDispatcher<JoinResult, ShowLoginWindowAction> {
     /// <inheritdoc />
-    protected override ShowLoginWindowAction CreateAction(Client client) =>
-      () => this.SendJoinResult(client, true);
+    protected override ShowLoginWindowAction CreateDispatcherForAction(Client client) => () => this.SendJoinResult(client, true);
 
     /// <summary>Sends the join result to a client.</summary>
     private void SendJoinResult(Client client, bool success) {

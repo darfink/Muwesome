@@ -13,14 +13,10 @@ namespace Muwesome.GameServer.Protocol {
     private readonly object syncLock = new object();
     private readonly Dictionary<ClientVersion, ClientPacketHandler> packetHandlers = new Dictionary<ClientVersion, ClientPacketHandler>();
     private readonly Dictionary<ClientVersion, ClientPacketDispatcher> packetDispatchers = new Dictionary<ClientVersion, ClientPacketDispatcher>();
-    private readonly IClientController clientController;
     private readonly Configuration config;
 
     /// <summary>Initializes a new instance of the <see cref="ClientProtocolResolver"/> class.</summary>
-    public ClientProtocolResolver(Configuration config, IClientController clientController) {
-      this.clientController = clientController;
-      this.config = config;
-    }
+    public ClientProtocolResolver(Configuration config) => this.config = config;
 
     /// <inheritdoc />
     public ClientProtocol Resolve(ClientVersion clientVersion) {
@@ -44,7 +40,7 @@ namespace Muwesome.GameServer.Protocol {
       };
 
       // TODO: Implement dynamic client version range and do this dynamically
-      clientPacketHandler.Register<LoginRequest>(new LoginRequestHandler() {
+      clientPacketHandler.RegisterHandler(new LoginRequestHandler() {
         ValidateClientSerial = this.config.ValidateClientSerial,
       });
 
@@ -56,8 +52,8 @@ namespace Muwesome.GameServer.Protocol {
       var clientPacketDispatcher = new ClientPacketDispatcher();
 
       // TODO: Implement dynamic client version range and do this dynamically
-      clientPacketDispatcher.Register(new LoginResultDispatcher(this.clientController));
-      clientPacketDispatcher.Register(new JoinResultDispatcher(this.clientController));
+      clientPacketDispatcher.RegisterDispatcher(new LoginResultDispatcher());
+      clientPacketDispatcher.RegisterDispatcher(new JoinResultDispatcher());
 
       return clientPacketDispatcher;
     }

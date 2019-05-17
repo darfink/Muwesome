@@ -1,19 +1,33 @@
+using System;
 using System.Collections.Generic;
 using Muwesome.GameLogic.Actions;
-using Muwesome.GameLogic.Actions.Handlers;
+using Muwesome.GameLogic.Actions.Players;
 
 namespace Muwesome.GameLogic {
+  /// <summary>Builds a players actions by registration.</summary>
+  public delegate void PlayerActionBuilder(Player player, Action<Delegate> registerAction);
+
   /// <summary>A game's context.</summary>
   public class GameContext {
+    private readonly PlayerActionFactory playerActionFactory;
+
+    /// <summary>Initializes a new instance of the <see cref="GameContext"/> class.</summary>
+    public GameContext(ILoginService loginService) {
+      this.playerActionFactory = new PlayerActionFactory(loginService);
+    }
+
     /// <summary>Gets the game's players.</summary>
     public IList<Player> Players { get; } = new List<Player>();
 
     /// <summary>Adds a player to the game.</summary>
-    public void AddPlayer(Player player) {
+    public Player AddPlayer(PlayerActionBuilder actionBuilder) {
+      var player = new Player();
+      player.Actions = this.playerActionFactory.Create(player, actionBuilder);
+
       this.Players.Add(player);
-      player.RegisterActions((new LoginActionHandler() as IPlayerActionProvider<LoginAction>).AsGeneric());
       player.Disposed += (_, ev) => this.Players.Remove(player);
       player.Action<ShowLoginWindowAction>()?.Invoke();
+      return player;
     }
   }
 }

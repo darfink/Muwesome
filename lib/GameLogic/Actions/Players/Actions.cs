@@ -1,4 +1,4 @@
-namespace Muwesome.GameLogic.Actions {
+namespace Muwesome.GameLogic.Actions.Players {
   /// <summary>Logs the player into the game.</summary>
   public delegate void LoginAction(string username, string password);
 

@@ -40,9 +40,9 @@ namespace Muwesome.ConnectServer {
     }
 
     private void RegisterPacketHandlers(IGameServerController gameServerController) {
-      this.Register<GameServerInfoRequest>(new GameServerInfoRequestHandler(gameServerController));
-      this.Register<GameServerListRequest>(new GameServerListRequestHandler(gameServerController));
-      this.Register<ClientUpdateRequest>(new ClientUpdateRequestHandler());
+      this.RegisterHandler<GameServerInfoRequest>(new GameServerInfoRequestHandler(gameServerController));
+      this.RegisterHandler<GameServerListRequest>(new GameServerListRequestHandler(gameServerController));
+      this.RegisterHandler<ClientUpdateRequest>(new ClientUpdateRequestHandler());
     }
 
     private void OnClientSessionStarted(object sender, ClientSessionEventArgs ev) {

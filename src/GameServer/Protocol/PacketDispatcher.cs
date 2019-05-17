@@ -1,23 +1,21 @@
 using System;
-using Muwesome.GameLogic;
 using Muwesome.GameLogic.Actions;
+using Muwesome.Packet;
+using Muwesome.Packet.Utility;
+using Muwesome.Protocol;
 
 namespace Muwesome.GameServer.Protocol {
-  /// <summary>A packet dispatcher for join results.</summary>
-  internal abstract class PacketDispatcher<TAction> : IPlayerActionProvider<TAction>
+  /// <summary>A packet dispatcher for clients.</summary>
+  internal abstract class PacketDispatcher<TPacket, TAction> : IActionProvider<Client>
+      where TPacket : IPacket
       where TAction : Delegate {
-    /// <summary>Initializes a new instance of the <see cref="PacketDispatcher{T}"/> class.</summary>
-    public PacketDispatcher(IClientController clientController) =>
-      this.ClientController = clientController;
-
-    /// <summary>Gets the client controller.</summary>
-    protected IClientController ClientController { get; private set; }
+    /// <summary>Gets the type of packet this instance dispatches.</summary>
+    public PacketIdentifier Identifier => PacketIdentifierFor<TPacket>.Identifier;
 
     /// <inheritdoc />
-    public TAction CreateAction(Player player) =>
-      this.CreateAction(this.ClientController.GetClientByPlayer(player));
+    public Delegate CreateAction(Client client) => this.CreateDispatcherForAction(client);
 
-    /// <summary>Creates an action associated with the client.</summary>
-    protected abstract TAction CreateAction(Client client);
+    /// <summary>Creates a <see cref="TAction" /> packet dispatcher bound to a client.</summary>
+    protected abstract TAction CreateDispatcherForAction(Client client);
   }
 }

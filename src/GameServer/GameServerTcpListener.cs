@@ -45,6 +45,7 @@ namespace Muwesome.GameServer {
         this.GameServerEndPoint.ExternalPort ?? (ushort)this.BoundEndPoint.Port,
         (uint)this.clientController.ClientsConnected,
         (uint)this.config.MaxConnections);
+
       this.gameServerRegistrar.RegisterGameServerAsync(this.gameServerInfo)
         .ContinueWith(t => this.OnServerRegisterException(t.Exception), TaskContinuationOptions.OnlyOnFaulted);
       base.OnListenerStarted();
@@ -62,6 +63,7 @@ namespace Muwesome.GameServer {
       var clientVersion = this.GameServerEndPoint.ClientVersion ?? this.config.DefaultClientVersion;
       var clientSerial = this.GameServerEndPoint.ClientSerial ?? this.config.DefaultClientSerial;
       var clientProtocol = this.clientProtocolResolver.Resolve(clientVersion);
+
       return new Client(connection, clientProtocol) {
         MaxIdleTime = this.config.MaxIdleTime,
         Version = clientVersion,

@@ -15,7 +15,8 @@ namespace Muwesome.GameServer.Program {
 
       var config = new ProgramConfiguration();
       using (var gameServerRegistrar = new GameServerRegistrarProxy(config.ConnectServer))
-      using (var gameServer = GameServerFactory.Create(config, gameServerRegistrar)) {
+      using (var accountLoginService = new AccountLoginServiceProxy(config.LoginServer))
+      using (var gameServer = GameServerFactory.Create(config, gameServerRegistrar, accountLoginService)) {
         gameServer.Start();
         Task.WaitAny(gameServer.ShutdownTask, InterruptSignal());
         gameServer.Stop();

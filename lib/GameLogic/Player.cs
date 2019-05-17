@@ -6,10 +6,8 @@ using Muwesome.GameLogic.Actions;
 namespace Muwesome.GameLogic {
   /// <summary>Represents a player in-game.</summary>
   public class Player : IIdentifiable, IDisposable {
-    private readonly Dictionary<Type, object> actions = new Dictionary<Type, object>();
-
     /// <summary>Initializes a new instance of the <see cref="Player"/> class.</summary>
-    public Player() {
+    internal Player() {
     }
 
     /// <summary>An event that is raised when the player is removed from the game.</summary>
@@ -18,24 +16,12 @@ namespace Muwesome.GameLogic {
     /// <inheritdoc />
     public ushort Id { get; set; }
 
+    /// <summary>Gets or sets the defined actions.</summary>
+    internal ActionBag Actions { get; set; }
+
     /// <summary>Gets an invokable action.</summary>
     public T Action<T>()
-        where T : Delegate {
-      this.actions.TryGetValue(typeof(T), out object result);
-      return result as T;
-    }
-
-    /// <summary>Registers actions associated with the player.</summary>
-    public void RegisterActions(params IPlayerActionProvider[] actions) =>
-      this.RegisterActions(actions.AsEnumerable());
-
-    /// <summary>Registers actions associated with the player.</summary>
-    public void RegisterActions(IEnumerable<IPlayerActionProvider> actions) {
-      foreach (var actionFactory in actions) {
-        var action = actionFactory.CreateAction(this);
-        this.actions[action.GetType()] = action;
-      }
-    }
+        where T : Delegate => this.Actions.Get<T>();
 
     /// <inheritdoc />
     public void Dispose() {

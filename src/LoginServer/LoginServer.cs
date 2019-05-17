@@ -31,6 +31,7 @@ namespace Muwesome.LoginServer {
     public async Task<LoginError?> TryLoginAsync(string username, string password) {
       using (var accountContext = this.persistenceContextProvider.CreateAccountContext()) {
         // TODO: Alternative way to return this information?
+        // TODO: This is too resource intensive without lazy loading
         var (account, validPassword) = await accountContext.GetAccountByCredentialsAsync(username, password);
 
         if (account == null) {

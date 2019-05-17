@@ -28,5 +28,11 @@ namespace Muwesome.GameServer.Protocol {
 
       return packetWasHandled;
     }
+
+    /// <summary>Registers a new handler for a packet.</summary>
+    public void RegisterHandler<TPacket>(PacketHandler<TPacket> packetHandler)
+        where TPacket : IPacket {
+      this.RegisterHandler(packetHandler.Identifier, packetHandler);
+    }
   }
 }
