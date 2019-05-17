@@ -18,7 +18,7 @@ namespace Muwesome.Persistence.NHibernate.Conventions {
 
     /// <inheritdoc />
     public void Accept(IAcceptanceCriteria<IClassInspector> critera) {
-      // Only mark entity class instances as lazy loadable, configuration
+      // Only mark entity class instances as not lazy loadable, configuration
       // objects must remain lazy loadable to enable the 2nd level cache.
       critera.Expect(x => this.IsEntity(x.EntityType));
     }

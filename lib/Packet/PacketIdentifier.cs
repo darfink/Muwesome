@@ -41,7 +41,7 @@ namespace Muwesome.Packet {
       return packet;
     }
 
-    /// <summary>Copies the packet's identifier into a destination.</summary>
+    /// <summary>Copies the packet's identifier to a destination.</summary>
     public void CopyTo(Span<byte> packet, int payloadSize) {
       this.Type.WriteHeader(packet, this.PayloadOffset + payloadSize, ((ReadOnlySpan<byte>)this.identifier).Slice(1));
     }

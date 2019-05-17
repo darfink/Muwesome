@@ -2,7 +2,7 @@ using System;
 using System.Runtime.InteropServices;
 
 namespace Muwesome.Protocol.Game {
-  public struct ClientVersion : IEquatable<ClientVersion>, IComparable<ClientVersion> {
+  public struct ClientVersion : IEquatable<ClientVersion>, IComparable<ClientVersion>, IComparable {
     public static readonly ClientVersion V10203 = new ClientVersion(1, 2, 3);
 
     /// <summary>Initializes a new instance of the <see cref="ClientVersion"/> struct.</summary>
@@ -26,6 +26,15 @@ namespace Muwesome.Protocol.Game {
 
     /// <summary>Inequality compares this version to another one.</summary>
     public static bool operator !=(ClientVersion left, ClientVersion right) => !Equals(left, right);
+
+    /// <inheritdoc />
+    public int CompareTo(object other) {
+      if (other is ClientVersion version) {
+        return this.CompareTo(version);
+      }
+
+      throw new ArgumentException($"{nameof(Object)} is not a {nameof(ClientVersion)}");
+    }
 
     /// <inheritdoc />
     public int CompareTo(ClientVersion other) {
