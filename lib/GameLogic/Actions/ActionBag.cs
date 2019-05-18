@@ -13,6 +13,7 @@ namespace Muwesome.GameLogic.Actions {
     public T Get<T>()
         where T : Delegate {
       this.actions.TryGetValue(typeof(T), out Delegate result);
+      System.Console.WriteLine($"{typeof(T).Name} ({result})");
       return result as T;
     }
   }

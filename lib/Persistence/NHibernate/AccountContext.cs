@@ -14,11 +14,15 @@ namespace Muwesome.Persistence.NHibernate {
     }
 
     /// <inheritdoc />
-    public async Task<(Account, bool)> GetAccountByCredentialsAsync(string username, string password) {
-      Account account = null;
+    public Task<Account> GetAccountByUsernameAsync(string username) {
       using (this.WithConnection()) {
-        account = await this.Session.Query<Account>().FirstOrDefaultAsync(a => a.Username == username);
+        return this.Session.Query<Account>().FirstOrDefaultAsync(a => a.Username == username);
       }
+    }
+
+    /// <inheritdoc />
+    public async Task<(Account, bool)> GetAccountByCredentialsAsync(string username, string password) {
+      Account account = await this.GetAccountByUsernameAsync(username);
 
       if (account != null) {
         return (account, Verify(password, account.PasswordHash));

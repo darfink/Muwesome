@@ -40,6 +40,7 @@ namespace Muwesome.GameServer.Protocol {
       };
 
       // TODO: Implement dynamic client version range and do this dynamically
+      clientPacketHandler.RegisterHandler(new CharacterListRequestHandler());
       clientPacketHandler.RegisterHandler(new LoginRequestHandler() {
         ValidateClientSerial = this.config.ValidateClientSerial,
       });
@@ -52,6 +53,7 @@ namespace Muwesome.GameServer.Protocol {
       var clientPacketDispatcher = new ClientPacketDispatcher();
 
       // TODO: Implement dynamic client version range and do this dynamically
+      clientPacketDispatcher.RegisterDispatcher(new CharacterListDispatcher());
       clientPacketDispatcher.RegisterDispatcher(new LoginResultDispatcher());
       clientPacketDispatcher.RegisterDispatcher(new JoinResultDispatcher());
 

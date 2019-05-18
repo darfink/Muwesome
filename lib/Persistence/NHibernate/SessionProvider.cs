@@ -63,7 +63,7 @@ namespace Muwesome.Persistence.NHibernate {
             .AssemblyOf<Muwesome.DomainModel.Identifiable>(new DatabaseMappingConfiguration())
             .Conventions.Setup(ConfigureConventions)
             .UseOverridesFromAssembly(Assembly.GetExecutingAssembly())))
-        /*.ExposeConfiguration(c => c.SetProperty("generate_statistics", "true"))*/
+        .ExposeConfiguration(c => c.SetProperty("generate_statistics", "true"))
         .BuildConfiguration();
 
       void ConfigureCache(CacheSettingsBuilder cacheBuilder) =>

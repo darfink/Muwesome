@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Muwesome.Common;
 using Muwesome.GameLogic;
 using Muwesome.Network;
+using Muwesome.Persistence;
 
 namespace Muwesome.GameServer {
   /// <summary>A game server.</summary>
@@ -16,11 +17,12 @@ namespace Muwesome.GameServer {
     // TODO: Allow multiple client listeners, and remove all TCP logic
     internal GameServer(
         Configuration config,
+        IPersistenceContextProvider persistenceContextProvider,
         IClientController clientController,
         IAccountLoginService accountLoginService) {
       this.Config = config;
       this.clientController = clientController;
-      this.gameContext = new GameContext(new LoginServiceAdapter(accountLoginService));
+      this.gameContext = new GameContext(persistenceContextProvider, new LoginServiceAdapter(accountLoginService));
     }
 
     /// <summary>Gets the server's configuration.</summary>

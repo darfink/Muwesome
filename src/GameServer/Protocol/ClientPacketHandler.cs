@@ -25,6 +25,8 @@ namespace Muwesome.GameServer.Protocol {
           Logger.Info($"Disconnecting client {client}; received an unknown packet");
           client.Connection.Disconnect();
         }
+      } else {
+        Logger.Debug($"Received handled packet: {packet.ToHexString()}");
       }
 
       return packetWasHandled;

@@ -25,6 +25,12 @@ namespace Muwesome.GameLogic.Actions.Players.Handlers {
       var result = await this.loginService.TryLoginAsync(username, password);
 
       if (result == LoginResult.Success) {
+        player.Account = await player.PersistenceContext.GetAccountByUsernameAsync(username);
+
+        if (player.Account == null) {
+          Logger.Error($"Account returned by login service ({username}) was null");
+          result = LoginResult.InternalError;
+        }
       }
 
       player.Action<ShowLoginResultAction>()?.Invoke(result);

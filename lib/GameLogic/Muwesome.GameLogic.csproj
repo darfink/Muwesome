@@ -8,5 +8,6 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DomainModel\Muwesome.DomainModel.csproj" />
+    <ProjectReference Include="..\Persistence\Muwesome.Persistence.csproj" />
   </ItemGroup>
 </Project>
