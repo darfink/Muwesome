@@ -11,11 +11,14 @@ using Muwesome.Persistence.NHibernate;
 namespace Muwesome.MonoServer {
   /// <summary>Login server program.</summary>
   internal static class Program {
+    private static readonly ILog Logger = LogManager.GetLogger(typeof(Program));
+
     /// <summary>The server entry point.</summary>
     public static void Main() {
       ConfigureLogging();
       using (var persistenceContextProvider = new PersistenceContextProvider(PersistenceConfiguration.InMemory())) {
         var initializer = new PersistenceInitializer(persistenceContextProvider);
+        Logger.Info("Creating configuration & test data");
         initializer.CreateConfiguration();
         initializer.CreateTestData();
 

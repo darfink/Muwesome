@@ -24,7 +24,7 @@ namespace Muwesome.Protocol.Game.Server {
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct Character {
+    public struct Character : IInitializable {
       public byte Slot;
       private unsafe fixed byte username[10];
       private readonly byte padding;
@@ -37,6 +37,8 @@ namespace Muwesome.Protocol.Game.Server {
         get { unsafe { fixed (byte* data = this.username) return PointerHelper.GetString(data, 10, Encoding.ASCII); } }
         set { unsafe { fixed (byte* data = this.username) PointerHelper.SetString(data, 10, value, Encoding.ASCII); } }
       }
+
+      public void Initialize() => this.Appearance.Initialize();
     }
   }
 }

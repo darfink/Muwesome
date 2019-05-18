@@ -21,7 +21,7 @@ namespace Muwesome.GameLogic.Actions.Players.Handlers {
     /// <summary>Logs a player into the game.</summary>
     // TODO: Handle asynchronous exceptions
     private async void Login(Player player, string username, string password) {
-      Logger.Info($"Login with {username} & {password}");
+      Logger.Info($"Login with {username}");
       var result = await this.loginService.TryLoginAsync(username, password);
 
       if (result == LoginResult.Success) {

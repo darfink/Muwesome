@@ -42,7 +42,13 @@ namespace Muwesome.Packet.Utility {
 
       var packet = PacketIdentifierFor<TPacket>.Identifier;
       packet.CopyTo(data, Marshal.SizeOf<TPacket>());
-      return ref MemoryMarshal.Cast<byte, TPacket>(data.Slice(packet.PayloadOffset))[0];
+      ref var output = ref MemoryMarshal.Cast<byte, TPacket>(data.Slice(packet.PayloadOffset))[0];
+
+      if (output is IInitializable initializable) {
+        initializable.Initialize();
+      }
+
+      return ref output;
     }
 
     public static ref TPacket CreatePacket<TPacket, TInner>(int count, out byte[] buffer, out Span<TInner> inner)
@@ -69,6 +75,13 @@ namespace Muwesome.Packet.Utility {
       inner = MemoryMarshal
         .Cast<byte, TInner>(data.Slice(GetPacketMinimumSize<TPacket>()))
         .Slice(0, count);
+
+      if (typeof(IInitializable).IsAssignableFrom(typeof(TInner))) {
+        foreach (var innerData in inner) {
+          ((IInitializable)innerData).Initialize();
+        }
+      }
+
       return ref payload;
     }
 

@@ -5,8 +5,6 @@ using Muwesome.Packet;
 using Muwesome.Packet.Utility;
 using Muwesome.Protocol.Utility;
 
-#pragma warning disable SA1214
-
 namespace Muwesome.Protocol.Connect.Server {
   [Packet(0xC2, 0xF4, 0x06)]
   [StructLayout(LayoutKind.Sequential, Pack = 1)]
@@ -19,10 +17,10 @@ namespace Muwesome.Protocol.Connect.Server {
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct GameServer {
+    public struct GameServer : IInitializable {
       public LittleEndian<ushort> Code;
       private byte load;
-      private readonly byte unused;
+      private byte unused;
 
       public float Load {
         get => (this.load & 0x7F) / 100.0f;
@@ -33,6 +31,8 @@ namespace Muwesome.Protocol.Connect.Server {
         get => (this.load & 0x80) > 0;
         set => this.load = (byte)(value ? (this.load | 0x80) : (this.load & ~0x80));
       }
+
+      public void Initialize() => this.unused = 0x77;
     }
   }
 }
