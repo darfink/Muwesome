@@ -46,8 +46,7 @@ namespace Muwesome.GameServer {
     /// <summary>Configures new clients.</summary>
     private void OnClientConnected(object sender, ClientConnectedEventArgs<Client> ev) {
       var client = ev.ConnectedClient;
-      this.gameContext.AddPlayer((player, registerAction) => {
-        client.Player = player;
+      client.Player = this.gameContext.AddPlayer((_, registerAction) => {
         client.PacketDispatcher.RegisterActions(client, registerAction);
       });
       this.clientController.AddClient(client);

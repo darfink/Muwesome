@@ -14,5 +14,6 @@
     <ProjectReference Include="..\..\lib\GameLogic\Muwesome.GameLogic.csproj" />
     <ProjectReference Include="..\..\lib\DomainModel\Muwesome.DomainModel.csproj" />
     <ProjectReference Include="..\..\lib\Persistence\Muwesome.Persistence.csproj" />
+    <ProjectReference Include="..\..\lib\MethodDelegate\Muwesome.MethodDelegate.csproj" />
   </ItemGroup>
 </Project>

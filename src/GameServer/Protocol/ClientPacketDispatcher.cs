@@ -19,9 +19,7 @@ namespace Muwesome.GameServer.Protocol {
     /// <summary>Registers a new handler for a packet.</summary>
     // TODO: Validate unique packet and action?
     // TODO: This should only be called during ctor
-    public void RegisterDispatcher<TPacket, TAction>(PacketDispatcher<TPacket, TAction> packetDispatcher)
-        where TPacket : IPacket
-        where TAction : Delegate =>
-      this.actionProviders.Add(packetDispatcher);
+    public void RegisterDispatcher<TPacket>(PacketDispatcher<TPacket> packetDispatcher)
+        where TPacket : IPacket => this.actionProviders.Add(packetDispatcher);
   }
 }

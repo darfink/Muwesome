@@ -35,8 +35,6 @@ namespace Muwesome.GameServer.Protocol {
     /// <summary>Registers a new handler for a packet.</summary>
     // TODO: This should only be called during ctor
     public void RegisterHandler<TPacket>(PacketHandler<TPacket> packetHandler)
-        where TPacket : IPacket {
-      this.RegisterHandler(packetHandler.Identifier, packetHandler);
-    }
+        where TPacket : IPacket => this.RegisterHandler(packetHandler.Identifier, packetHandler);
   }
 }

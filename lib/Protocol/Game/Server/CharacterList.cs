@@ -15,7 +15,7 @@ namespace Muwesome.Protocol.Game.Server {
   [StructLayout(LayoutKind.Sequential, Pack = 1)]
   public struct CharacterList : IDynamicPacket<CharacterList.Character> {
     public byte MaximumClassAvailable;
-    public bool PositionHasBeenReset;
+    private byte teleportReset; // TODO:
     private byte count;
 
     public int Count {

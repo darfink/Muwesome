@@ -9,5 +9,6 @@
   <ItemGroup>
     <ProjectReference Include="..\DomainModel\Muwesome.DomainModel.csproj" />
     <ProjectReference Include="..\Persistence\Muwesome.Persistence.csproj" />
+    <ProjectReference Include="..\MethodDelegate\Muwesome.MethodDelegate.csproj" />
   </ItemGroup>
 </Project>
