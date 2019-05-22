@@ -6,9 +6,9 @@ namespace Muwesome.Protocol.Utility {
     private T value;
 
     public static implicit operator LittleEndian<T>(T rhs) =>
-      new LittleEndian<T> { value = BitConverter.IsLittleEndian ? rhs : ByteReverser<T>.P.ReverseBytes(rhs) };
+      new LittleEndian<T> { value = BitConverter.IsLittleEndian ? rhs : ByteReverser<T>.Default.ReverseBytes(rhs) };
 
     public static implicit operator T(LittleEndian<T> rhs) =>
-      BitConverter.IsLittleEndian ? rhs.value : ByteReverser<T>.P.ReverseBytes(rhs.value);
+      BitConverter.IsLittleEndian ? rhs.value : ByteReverser<T>.Default.ReverseBytes(rhs.value);
   }
 }

@@ -4,14 +4,15 @@ using Muwesome.Packet;
 
 namespace Muwesome.Packet.Utility {
   public static class PacketHelper {
+    /// <summary>Parses a packet from a sequence of bytes.</summary>
     public static ref TPacket ParsePacket<TPacket>(Span<byte> data)
         where TPacket : struct, IPacket {
-      // TODO: Return ref vs span, most ergonomic?
       var packet = PacketIdentifierFor<TPacket>.Identifier;
       packet.EnsureMatchingHeader(data, Marshal.SizeOf<TPacket>());
       return ref MemoryMarshal.Cast<byte, TPacket>(data.Slice(packet.PayloadOffset))[0];
     }
 
+    /// <summary>Parses a dynamic packet from a sequence of bytes.</summary>
     public static ref TPacket ParsePacket<TPacket, TInner>(Span<byte> data, out Span<TInner> inner)
         where TPacket : struct, IDynamicPacket<TInner>
         where TInner : struct {
@@ -28,12 +29,14 @@ namespace Muwesome.Packet.Utility {
       return ref payload;
     }
 
+    /// <summary>Creates a packet as a new array of bytes.</summary>
     public static ref TPacket CreatePacket<TPacket>(out byte[] buffer)
         where TPacket : struct, IPacket {
       buffer = new byte[GetPacketMinimumSize<TPacket>()];
       return ref CreatePacket<TPacket>(buffer.AsSpan());
     }
 
+    /// <summary>Creates a packet in a sequence of bytes.</summary>
     public static ref TPacket CreatePacket<TPacket>(Span<byte> data)
         where TPacket : struct, IPacket {
       if (data.Length < GetPacketMinimumSize<TPacket>()) {
@@ -51,6 +54,7 @@ namespace Muwesome.Packet.Utility {
       return ref output;
     }
 
+    /// <summary>Creates a dynamic packet as a new array of bytes.</summary>
     public static ref TPacket CreatePacket<TPacket, TInner>(int count, out byte[] buffer, out Span<TInner> inner)
         where TPacket : struct, IDynamicPacket<TInner>
         where TInner : struct {
@@ -58,6 +62,7 @@ namespace Muwesome.Packet.Utility {
       return ref CreatePacket<TPacket, TInner>(count, buffer.AsSpan(), out inner);
     }
 
+    /// <summary>Creates a dynamic packet in a sequence of bytes.</summary>
     public static ref TPacket CreatePacket<TPacket, TInner>(int count, Span<byte> data, out Span<TInner> inner)
         where TPacket : struct, IDynamicPacket<TInner>
         where TInner : struct {
@@ -85,14 +90,17 @@ namespace Muwesome.Packet.Utility {
       return ref payload;
     }
 
+    /// <summary>Gets a packet's minimum size.</summary>
     public static int GetPacketMinimumSize<TPacket>()
         where TPacket : struct, IPacket =>
       PacketIdentifierFor<TPacket>.Identifier.PayloadOffset + Marshal.SizeOf<TPacket>();
 
+    /// <summary>Gets a fixed packet's size.</summary>
     public static int GetPacketSize<TPacket>()
         where TPacket : struct, IFixedPacket =>
       GetPacketMinimumSize<TPacket>();
 
+    /// <summary>Gets a dynamic packet's size.</summary>
     public static int GetPacketSize<TPacket, TInner>(int count)
         where TPacket : struct, IDynamicPacket<TInner>
         where TInner : struct =>
