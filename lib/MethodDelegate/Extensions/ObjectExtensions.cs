@@ -7,15 +7,15 @@ using System.Reflection;
 namespace Muwesome.MethodDelegate.Extensions {
   public static class ObjectExtensions {
     /// <summary>Gets an instance's method delegate by type parameter.</summary>
-    public static Delegate GetMethodDelegate<T>(this object instance, ResolveParameter resolveParameter = null) =>
-      MethodDelegateHelper.GetMethodDelegate<T>(instance, resolveParameter);
+    public static Delegate GetMethodDelegate<T>(this object instance, ParameterResolver parameterResolver = null, bool includeNonPublicMethods = false) =>
+      MethodDelegateHelper.GetMethodDelegate<T>(instance, parameterResolver, includeNonPublicMethods);
 
     /// <summary>Gets an instance's method delegate by type.</summary>
-    public static Delegate GetMethodDelegate(this object instance, Type delegateType, ResolveParameter resolveParameter = null) =>
-      MethodDelegateHelper.GetMethodDelegate(instance, delegateType, resolveParameter);
+    public static Delegate GetMethodDelegate(this object instance, Type delegateType, ParameterResolver parameterResolver = null, bool includeNonPublicMethods = false) =>
+      MethodDelegateHelper.GetMethodDelegate(instance, delegateType, parameterResolver, includeNonPublicMethods);
 
     /// <summary>Gets an instance's method delegates.</summary>
-    public static IEnumerable<Delegate> GetMethodDelegates(this object instance, ResolveParameter resolveParameter = null) =>
-      MethodDelegateHelper.GetMethodDelegates(instance, resolveParameter);
+    public static IEnumerable<Delegate> GetMethodDelegates(this object instance, ParameterResolver parameterResolver = null, bool includeNonPublicMethods = false) =>
+      MethodDelegateHelper.GetMethodDelegates(instance, parameterResolver, includeNonPublicMethods);
   }
 }
