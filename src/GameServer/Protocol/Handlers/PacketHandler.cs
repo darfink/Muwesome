@@ -8,7 +8,7 @@ namespace Muwesome.GameServer.Protocol.Handlers {
   internal abstract class PacketHandler<TPacket> : IPacketHandler<Client>
       where TPacket : IPacket {
     /// <summary>Gets the type of packet this instance handles.</summary>
-    public PacketIdentifier Identifier => PacketIdentifierFor<TPacket>.Identifier;
+    public PacketIdentifier Identifier => PacketIdentifier.Get<TPacket>();
 
     /// <inheritdoc />
     public abstract bool HandlePacket(Client client, Span<byte> packet);

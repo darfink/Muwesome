@@ -25,7 +25,7 @@ namespace Muwesome.Protocol {
     /// <summary>Registers a new handler for a packet type.</summary>
     protected void RegisterHandler<TPacket>(IPacketHandler<T> handler)
         where TPacket : IPacket {
-      this.InsertHandlerForPacket(PacketIdentifierFor<TPacket>.Identifier, handler);
+      this.InsertHandlerForPacket(PacketIdentifier.Get<TPacket>(), handler);
     }
 
     /// <summary>Registers a new handler for a packet.</summary>

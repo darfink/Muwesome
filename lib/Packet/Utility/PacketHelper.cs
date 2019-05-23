@@ -7,7 +7,7 @@ namespace Muwesome.Packet.Utility {
     /// <summary>Parses a packet from a sequence of bytes.</summary>
     public static ref TPacket ParsePacket<TPacket>(Span<byte> data)
         where TPacket : struct, IPacket {
-      var packet = PacketIdentifierFor<TPacket>.Identifier;
+      var packet = PacketIdentifier.Get<TPacket>();
       packet.EnsureMatchingHeader(data, Marshal.SizeOf<TPacket>());
       return ref MemoryMarshal.Cast<byte, TPacket>(data.Slice(packet.PayloadOffset))[0];
     }
@@ -43,7 +43,7 @@ namespace Muwesome.Packet.Utility {
         throw new ArgumentOutOfRangeException(nameof(data));
       }
 
-      var packet = PacketIdentifierFor<TPacket>.Identifier;
+      var packet = PacketIdentifier.Get<TPacket>();
       packet.CopyTo(data, Marshal.SizeOf<TPacket>());
       ref var output = ref MemoryMarshal.Cast<byte, TPacket>(data.Slice(packet.PayloadOffset))[0];
 
@@ -75,7 +75,7 @@ namespace Muwesome.Packet.Utility {
       payload.Count = count;
 
       // Replace the current size (which is the minimum size) with the actual size
-      PacketIdentifierFor<TPacket>.Identifier.Type.WriteSize(data, expectedSize);
+      PacketIdentifier.Get<TPacket>().Type.WriteSize(data, expectedSize);
 
       inner = MemoryMarshal
         .Cast<byte, TInner>(data.Slice(GetPacketMinimumSize<TPacket>()))
@@ -93,7 +93,7 @@ namespace Muwesome.Packet.Utility {
     /// <summary>Gets a packet's minimum size.</summary>
     public static int GetPacketMinimumSize<TPacket>()
         where TPacket : struct, IPacket =>
-      PacketIdentifierFor<TPacket>.Identifier.PayloadOffset + Marshal.SizeOf<TPacket>();
+      PacketIdentifier.Get<TPacket>().PayloadOffset + Marshal.SizeOf<TPacket>();
 
     /// <summary>Gets a fixed packet's size.</summary>
     public static int GetPacketSize<TPacket>()

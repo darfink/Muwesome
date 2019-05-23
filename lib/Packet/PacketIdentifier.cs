@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using Muwesome.Packet.Utility;
 
 namespace Muwesome.Packet {
   public sealed class PacketIdentifier {
@@ -34,6 +35,10 @@ namespace Muwesome.Packet {
     /// <summary>Gets the packet's payload offset.</summary>
     public int PayloadOffset => this.Type.HeaderLength + this.Subcode.Count + 1;
 
+    /// <summary>Gets a type's packet identifier</summary>
+    public static PacketIdentifier Get<T>()
+        where T : IPacket => PacketIdentifierFor<T>.Identifier;
+
     /// <summary>Creates a buffer with the identifier preset.</summary>
     public Span<byte> CreateBuffer(int size) {
       var packet = new byte[size];
@@ -64,6 +69,19 @@ namespace Muwesome.Packet {
         // TODO: Specialized exception
         throw new ArgumentException(nameof(data));
       }
+    }
+
+    /// <summary>Cache for a type's packet identifier.</summary>
+    internal static class PacketIdentifierFor<T>
+        where T : IPacket {
+      private static readonly PacketAttribute Attribute;
+
+      /// <summary>Initializes static members of the <see cref="PacketIdentifierFor{T}" /> class.</summary>
+      static PacketIdentifierFor() =>
+        Attribute = (PacketAttribute)System.Attribute.GetCustomAttribute(typeof(T), typeof(PacketAttribute), false);
+
+      /// <summary>Gets the packet's identifier.</summary>
+      public static PacketIdentifier Identifier => Attribute.Identifier;
     }
   }
 }

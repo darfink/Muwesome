@@ -5,8 +5,10 @@ using System.Linq.Expressions;
 using System.Reflection;
 
 namespace Muwesome.MethodDelegate {
+  /// <summary>Filter for method delegates.</summary>
   internal delegate bool MethodDelegateFilter(MethodInfo method, MethodInfo @delegate);
 
+  /// <summary>A builder for method delegates.</summary>
   internal class MethodDelegateBuilder {
     private const BindingFlags DefaultBindingFlags = BindingFlags.Static | BindingFlags.Public;
 
@@ -16,31 +18,37 @@ namespace Muwesome.MethodDelegate {
     private ParameterResolver parameterResolver;
     private object methodClassInstance;
 
+    /// <summary>Initializes a new instance of the <see cref="MethodDelegateBuilder"/> class.</summary>
     public MethodDelegateBuilder(Type methodClass) {
       this.methodClass = methodClass;
       this.methodBindingFlags = DefaultBindingFlags;
     }
 
+    /// <summary>Allows an additional method binding type.</summary>
     public MethodDelegateBuilder AllowMethodBinding(BindingFlags methodBindingFlags) {
       this.methodBindingFlags |= methodBindingFlags;
       return this;
     }
 
+    /// <summary>Sets the method class instance to use.</summary>
     public MethodDelegateBuilder MethodClassInstance(object methodClassInstance) {
       this.methodClassInstance = methodClassInstance;
       return this;
     }
 
+    /// <summary>Sets the parameter resolver to use.</summary>
     public MethodDelegateBuilder ParameterResolver(ParameterResolver parameterResolver) {
       this.parameterResolver = parameterResolver;
       return this;
     }
 
+    /// <summary>Sets the method delegate filter to use.</summary>
     public MethodDelegateBuilder Filter(MethodDelegateFilter methodDelegateFilter) {
       this.methodDelegateFilter = methodDelegateFilter;
       return this;
     }
 
+    /// <summary>Builds any method delegates using the active configuration.</summary>
     public IEnumerable<Delegate> Build() {
       foreach (var method in this.methodClass.GetMethods(this.methodBindingFlags)) {
         if (method.GetCustomAttributes(typeof(MethodDelegateAttribute), true).FirstOrDefault() is MethodDelegateAttribute methodDelegate) {
