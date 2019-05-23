@@ -9,7 +9,8 @@ namespace Muwesome.GameServer.Protocol.Dispatchers {
   using LoginResultPacket = Muwesome.Protocol.Game.Server.LoginResult;
 
   /// <summary>A packet dispatcher for login results.</summary>
-  internal class LoginResultDispatcher : PacketDispatcher<LoginResultPacket> {
+  [ProtocolPacket(typeof(LoginResultPacket))]
+  internal class LoginResultDispatcher : PacketDispatcher {
     /// <summary>Sends the login result to a client.</summary>
     [MethodDelegate(typeof(ShowLoginResultAction))]
     public void SendLoginResult([Inject] Client client, LoginResult result) {

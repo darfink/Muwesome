@@ -5,10 +5,9 @@ using Muwesome.Protocol;
 
 namespace Muwesome.GameServer.Protocol.Handlers {
   /// <summary>A packet handler for clients.</summary>
-  internal abstract class PacketHandler<TPacket> : IPacketHandler<Client>
-      where TPacket : IPacket {
-    /// <summary>Gets the type of packet this instance handles.</summary>
-    public PacketIdentifier Identifier => PacketIdentifier.Get<TPacket>();
+  internal abstract class PacketHandler : IPacketHandler<Client> {
+    /// <summary>Gets a packet handler's identifier.</summary>
+    public PacketIdentifier Identifier => ProtocolPacketAttribute.Get(this.GetType()).Packet;
 
     /// <inheritdoc />
     public abstract bool HandlePacket(Client client, Span<byte> packet);

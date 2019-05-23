@@ -36,6 +36,9 @@ namespace Muwesome.Packet {
     public int PayloadOffset => this.Type.HeaderLength + this.Subcode.Count + 1;
 
     /// <summary>Gets a type's packet identifier</summary>
+    public static PacketIdentifier Get(Type type) => PacketAttribute.Get(type).Identifier;
+
+    /// <summary>Gets a type argument's packet identifier</summary>
     public static PacketIdentifier Get<T>()
         where T : IPacket => PacketIdentifierFor<T>.Identifier;
 
@@ -77,8 +80,7 @@ namespace Muwesome.Packet {
       private static readonly PacketAttribute Attribute;
 
       /// <summary>Initializes static members of the <see cref="PacketIdentifierFor{T}" /> class.</summary>
-      static PacketIdentifierFor() =>
-        Attribute = (PacketAttribute)System.Attribute.GetCustomAttribute(typeof(T), typeof(PacketAttribute), false);
+      static PacketIdentifierFor() => Attribute = PacketAttribute.Get(typeof(T));
 
       /// <summary>Gets the packet's identifier.</summary>
       public static PacketIdentifier Identifier => Attribute.Identifier;

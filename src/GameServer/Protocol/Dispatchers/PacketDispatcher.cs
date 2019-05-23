@@ -8,12 +8,6 @@ using Muwesome.Protocol;
 
 namespace Muwesome.GameServer.Protocol.Dispatchers {
   /// <summary>A packet dispatcher for clients.</summary>
-  internal abstract class PacketDispatcher<TPacket> : IActionProvider<Client>
-      where TPacket : IPacket {
-    /// <summary>Gets the type of packet this instance dispatches.</summary>
-    public PacketIdentifier Identifier => PacketIdentifier.Get<TPacket>();
-
-    /// <summary>Creates an action associated with a context.</summary>
-    public Delegate CreateAction(Client client) => this.GetMethodDelegates(_ => client).First();
+  internal abstract class PacketDispatcher {
   }
 }

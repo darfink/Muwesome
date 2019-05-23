@@ -7,7 +7,8 @@ using Muwesome.Protocol.Game.Client;
 
 namespace Muwesome.GameServer.Protocol.Handlers {
   /// <summary>A packet handler for incoming login requests.</summary>
-  internal class CharacterListRequestHandler : PacketHandler<CharacterListRequest> {
+  [ProtocolPacket(typeof(CharacterListRequest))]
+  internal class CharacterListRequestHandler : PacketHandler {
     /// <inheritdoc />
     public override bool HandlePacket(Client client, Span<byte> packet) {
       client.Player.Action<RequestCharactersAction>()?.Invoke();

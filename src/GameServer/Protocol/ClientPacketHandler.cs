@@ -1,5 +1,5 @@
 using System;
-using System.Threading.Tasks;
+using System.Collections.Generic;
 using log4net;
 using Muwesome.GameServer.Protocol.Handlers;
 using Muwesome.Network;
@@ -11,6 +11,13 @@ namespace Muwesome.GameServer.Protocol {
   /// <summary>A client packet handler.</summary>
   internal class ClientPacketHandler : ConfigurablePacketHandler<Client> {
     private static readonly ILog Logger = LogManager.GetLogger(typeof(ClientPacketHandler));
+
+    /// <summary>Initializes a new instance of the <see cref="ClientPacketHandler"/> class.</summary>
+    public ClientPacketHandler(IEnumerable<PacketHandler> handlers) {
+      foreach (var handler in handlers) {
+        this.RegisterHandler(handler.Identifier, handler);
+      }
+    }
 
     /// <summary>Gets or sets a value indicating whether client's are disconnected when sending unknown packets.</summary>
     public bool DisconnectOnUnknownPacket { get; set; }
@@ -26,15 +33,11 @@ namespace Muwesome.GameServer.Protocol {
           client.Connection.Disconnect();
         }
       } else {
+        // TODO: Use 'OnPacketIdentified' before 'HandlePacket' is executed
         Logger.DebugFormat("Received handled packet: {0}", packet.ToHexString());
       }
 
       return packetWasHandled;
     }
-
-    /// <summary>Registers a new handler for a packet.</summary>
-    // TODO: This should only be called during ctor
-    public void RegisterHandler<TPacket>(PacketHandler<TPacket> packetHandler)
-        where TPacket : IPacket => this.RegisterHandler(packetHandler.Identifier, packetHandler);
   }
 }

@@ -8,7 +8,8 @@ using Muwesome.Protocol.Game.Server;
 
 namespace Muwesome.GameServer.Protocol.Dispatchers {
   /// <summary>A packet dispatcher for login results.</summary>
-  internal class CharacterListDispatcher : PacketDispatcher<CharacterList> {
+  [ProtocolPacket(typeof(CharacterList))]
+  internal class CharacterListDispatcher : PacketDispatcher {
     /// <summary>Sends the login result to a client.</summary>
     [MethodDelegate(typeof(ShowCharactersAction))]
     public void SendCharacterList([Inject] Client client) {

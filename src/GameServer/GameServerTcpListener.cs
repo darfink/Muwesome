@@ -66,7 +66,6 @@ namespace Muwesome.GameServer {
 
       return new Client(connection, clientProtocol) {
         MaxIdleTime = this.config.MaxIdleTime,
-        Version = clientVersion,
         Serial = clientSerial,
       };
     }

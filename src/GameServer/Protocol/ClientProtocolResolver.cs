@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
-using System.Threading;
+using System.Linq;
+using System.Reflection;
 using log4net;
 using Muwesome.GameServer.Protocol.Dispatchers;
 using Muwesome.GameServer.Protocol.Handlers;
@@ -9,10 +11,10 @@ using Muwesome.Protocol.Game.Client;
 
 namespace Muwesome.GameServer.Protocol {
   /// <summary>A client protocol resolver.</summary>
+  // TODO: Implement dynamic client version range and do this dynamically
   internal class ClientProtocolResolver : IClientProtocolResolver {
     private readonly object syncLock = new object();
-    private readonly Dictionary<ClientVersion, ClientPacketHandler> packetHandlers = new Dictionary<ClientVersion, ClientPacketHandler>();
-    private readonly Dictionary<ClientVersion, ClientPacketDispatcher> packetDispatchers = new Dictionary<ClientVersion, ClientPacketDispatcher>();
+    private readonly Dictionary<ClientVersion, ClientProtocol> protocols = new Dictionary<ClientVersion, ClientProtocol>();
     private readonly Configuration config;
 
     /// <summary>Initializes a new instance of the <see cref="ClientProtocolResolver"/> class.</summary>
@@ -21,43 +23,46 @@ namespace Muwesome.GameServer.Protocol {
     /// <inheritdoc />
     public ClientProtocol Resolve(ClientVersion clientVersion) {
       lock (this.syncLock) {
-        if (!this.packetHandlers.TryGetValue(clientVersion, out ClientPacketHandler packetHandler)) {
-          this.packetHandlers[clientVersion] = packetHandler = this.CreatePacketHandler(clientVersion);
+        if (!this.protocols.TryGetValue(clientVersion, out ClientProtocol protocol)) {
+          this.protocols[clientVersion] = protocol = new ClientProtocol(
+            clientVersion,
+            this.CreatePacketHandler(clientVersion),
+            this.CreatePacketDispatcher(clientVersion));
         }
 
-        if (!this.packetDispatchers.TryGetValue(clientVersion, out ClientPacketDispatcher packetDispatcher)) {
-          this.packetDispatchers[clientVersion] = packetDispatcher = this.CreatePacketDispatcher(clientVersion);
-        }
-
-        return new ClientProtocol(packetHandler, packetDispatcher);
+        return protocol;
       }
     }
 
     /// <summary>Creates a packet handler for a specific client version.</summary>
     private ClientPacketHandler CreatePacketHandler(ClientVersion version) {
-      var clientPacketHandler = new ClientPacketHandler() {
+      var handlers = Assembly
+        .GetAssembly(typeof(ClientProtocolResolver))
+        .GetTypes()
+        .Where(type => !type.IsAbstract && typeof(PacketHandler).IsAssignableFrom(type))
+        .Select(Activator.CreateInstance)
+        .Cast<PacketHandler>()
+        .ToList();
+
+      foreach (var serialValidator in handlers.OfType<IClientSerialValidator>()) {
+        serialValidator.ValidateClientSerial = this.config.ValidateClientSerial;
+      }
+
+      return new ClientPacketHandler(handlers) {
         DisconnectOnUnknownPacket = this.config.DisconnectOnUnknownPacket,
       };
-
-      // TODO: Implement dynamic client version range and do this dynamically
-      clientPacketHandler.RegisterHandler(new CharacterListRequestHandler());
-      clientPacketHandler.RegisterHandler(new LoginRequestHandler() {
-        ValidateClientSerial = this.config.ValidateClientSerial,
-      });
-
-      return clientPacketHandler;
     }
 
-    /// <summary>Creates a packet handler for a specific client version.</summary>
+    /// <summary>Creates a packet dispatcher for a specific client version.</summary>
     private ClientPacketDispatcher CreatePacketDispatcher(ClientVersion version) {
-      var clientPacketDispatcher = new ClientPacketDispatcher();
+      var dispatchers = Assembly
+        .GetAssembly(typeof(ClientProtocolResolver))
+        .GetTypes()
+        .Where(type => !type.IsAbstract && typeof(PacketDispatcher).IsAssignableFrom(type))
+        .Select(Activator.CreateInstance)
+        .Cast<PacketDispatcher>();
 
-      // TODO: Implement dynamic client version range and do this dynamically
-      clientPacketDispatcher.RegisterDispatcher(new CharacterListDispatcher());
-      clientPacketDispatcher.RegisterDispatcher(new LoginResultDispatcher());
-      clientPacketDispatcher.RegisterDispatcher(new JoinResultDispatcher());
-
-      return clientPacketDispatcher;
+      return new ClientPacketDispatcher(dispatchers);
     }
   }
 }

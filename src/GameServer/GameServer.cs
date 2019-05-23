@@ -46,10 +46,14 @@ namespace Muwesome.GameServer {
     /// <summary>Configures new clients.</summary>
     private void OnClientConnected(object sender, ClientConnectedEventArgs<Client> ev) {
       var client = ev.ConnectedClient;
-      client.Player = this.gameContext.AddPlayer((_, registerAction) => {
-        client.PacketDispatcher.RegisterActions(client, registerAction);
-      });
+      client.Player = this.gameContext.AddPlayer(RegisterDispatcherActions);
       this.clientController.AddClient(client);
+
+      void RegisterDispatcherActions(Player player, Action<Delegate> registerAction) {
+        foreach (var action in client.Protocol.PacketDispatcher.CreateDispatches(client)) {
+          registerAction(action);
+        }
+      }
     }
   }
 }

@@ -6,7 +6,8 @@ using Muwesome.Protocol.Game.Server;
 
 namespace Muwesome.GameServer.Protocol.Dispatchers {
   /// <summary>A packet dispatcher for join results.</summary>
-  internal class JoinResultDispatcher : PacketDispatcher<JoinResult> {
+  [ProtocolPacket(typeof(JoinResult))]
+  internal class JoinResultDispatcher : PacketDispatcher {
     /// <summary>Sends the join result to a client.</summary>
     [MethodDelegate(typeof(ShowLoginWindowAction))]
     public void SendJoinResult([Inject] Client client) {
@@ -14,7 +15,7 @@ namespace Muwesome.GameServer.Protocol.Dispatchers {
         writer.Packet = new JoinResult {
           Success = true,
           PlayerId = 0x1337, // TODO: Magic constant
-          Version = client.Version,
+          Version = client.Protocol.Version,
         };
       }
     }

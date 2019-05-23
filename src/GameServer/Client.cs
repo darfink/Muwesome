@@ -14,17 +14,13 @@ namespace Muwesome.GameServer {
   /// <summary>Represents a connected client.</summary>
   public class Client : IDisposable {
     private static readonly ILog Logger = LogManager.GetLogger(typeof(Client));
-    private readonly IPacketHandler<Client> packetHandler;
     private TimeSpan maxIdleTime = Timeout.InfiniteTimeSpan;
     private Timer idleTimeoutTimer;
     private int isDisposed = 0;
 
     /// <summary>Initializes a new instance of the <see cref="Client"/> class.</summary>
-    internal Client(
-        IConnection connection,
-        ClientProtocol protocol) {
-      this.packetHandler = protocol.PacketHandler;
-      this.PacketDispatcher = protocol.PacketDispatcher;
+    internal Client(IConnection connection, ClientProtocol protocol) {
+      this.Protocol = protocol;
       this.Connection = connection;
       this.Connection.PacketReceived += this.OnPacketReceived;
       this.Connection.BeginReceive().ContinueWith(task => this.OnReceiveComplete(task.Exception));
@@ -36,14 +32,11 @@ namespace Muwesome.GameServer {
     /// <summary>Gets or sets the client's player instance.</summary>
     public Player Player { get; set; }
 
-    /// <summary>Gets or sets the client's version.</summary>
-    public ClientVersion Version { get; set; }
-
     /// <summary>Gets or sets the client's serial.</summary>
     public byte[] Serial { get; set; }
 
-    /// <summary>Gets the client's packet dispatcher.</summary>
-    internal ClientPacketDispatcher PacketDispatcher { get; private set; }
+    /// <summary>Gets the client's protocol.</summary>
+    internal ClientProtocol Protocol { get; }
 
     /// <summary>Gets or sets the maximum idle time.</summary>
     internal TimeSpan MaxIdleTime {
@@ -80,7 +73,7 @@ namespace Muwesome.GameServer {
 
     private void OnPacketReceived(object sender, Span<byte> packet) {
       this.idleTimeoutTimer?.Change(this.maxIdleTime, Timeout.InfiniteTimeSpan);
-      this.packetHandler.HandlePacket(this, packet);
+      this.Protocol.PacketHandler.HandlePacket(this, packet);
     }
 
     private void OnReceiveComplete(Exception ex) {

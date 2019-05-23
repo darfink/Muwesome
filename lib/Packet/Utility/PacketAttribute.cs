@@ -12,5 +12,9 @@ namespace Muwesome.Packet.Utility {
 
     /// <summary>Gets the attribute's identifier.</summary>
     public PacketIdentifier Identifier { get; }
+
+    /// <summary>Gets a type's packet attribute.</summary>
+    public static PacketAttribute Get(Type type) =>
+      (PacketAttribute)System.Attribute.GetCustomAttribute(type, typeof(PacketAttribute), false);
   }
 }
