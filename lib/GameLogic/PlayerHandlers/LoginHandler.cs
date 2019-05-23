@@ -1,15 +1,16 @@
 using System;
 using log4net;
+using Muwesome.GameLogic.PlayerActions;
 using Muwesome.MethodDelegate;
 
-namespace Muwesome.GameLogic.Actions.Players.Handlers {
-  /// <summary>A login action handler.</summary>
-  internal class LoginActionHandler {
-    private static readonly ILog Logger = LogManager.GetLogger(typeof(LoginActionHandler));
+namespace Muwesome.GameLogic.PlayerHandlers {
+  /// <summary>A player login handler.</summary>
+  internal class LoginHandler {
+    private static readonly ILog Logger = LogManager.GetLogger(typeof(LoginHandler));
     private readonly ILoginService loginService;
 
-    /// <summary>Initializes a new instance of the <see cref="LoginActionHandler"/> class.</summary>
-    public LoginActionHandler(ILoginService loginService) => this.loginService = loginService;
+    /// <summary>Initializes a new instance of the <see cref="LoginHandler"/> class.</summary>
+    public LoginHandler(ILoginService loginService) => this.loginService = loginService;
 
     /// <summary>Logs a player into the game.</summary>
     [MethodDelegate(typeof(LoginAction))]

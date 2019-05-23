@@ -1,6 +1,6 @@
 using System;
 using log4net;
-using Muwesome.GameLogic.Actions.Players;
+using Muwesome.GameLogic.PlayerActions;
 using Muwesome.Packet.Utility;
 using Muwesome.Protocol;
 using Muwesome.Protocol.Game.Client;

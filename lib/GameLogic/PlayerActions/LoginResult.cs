@@ -1,4 +1,4 @@
-namespace Muwesome.GameLogic.Actions.Players {
+namespace Muwesome.GameLogic.PlayerActions {
   /// <summary>Represents all possible login results.</summary>
   // TODO: These values must currently match the network packet's.
   public enum LoginResult : byte {

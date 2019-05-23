@@ -9,6 +9,7 @@ namespace Muwesome.GameLogic.Actions {
 
   internal sealed class ActionBagFactory {
     private static readonly ILog Logger = LogManager.GetLogger(typeof(ActionBagFactory));
+    private readonly ISet<Type> definedActions = new HashSet<Type>();
 
     /// <summary>Initializes a new instance of the <see cref="ActionBagFactory"/> class.</summary>
     public ActionBagFactory(params Type[] definedActions) {
@@ -17,22 +18,18 @@ namespace Muwesome.GameLogic.Actions {
           throw new ArgumentException($"Any defined action must be a {nameof(Delegate)}", nameof(definedActions));
         }
 
-        if (!this.DefinedActions.Add(actionType)) {
+        if (!this.definedActions.Add(actionType)) {
           throw new ArgumentException($"{actionType.Name} was defined more than once", nameof(definedActions));
         }
       }
     }
-
-    /// <summary>Gets the defined actions for this factory.</summary>
-    // TODO: This is mutable
-    public ISet<Type> DefinedActions { get; } = new HashSet<Type>();
 
     /// <summary>Creates a new action bag.</summary>
     public ActionBag Create<TContext>(TContext context, ActionBagBuilder<TContext> builder) {
       var registeredActions = new Dictionary<Type, Delegate>();
       builder(context, action => this.RegisterAction(registeredActions, action));
 
-      foreach (var omittedAction in this.DefinedActions.Where(action => !registeredActions.ContainsKey(action))) {
+      foreach (var omittedAction in this.definedActions.Where(action => !registeredActions.ContainsKey(action))) {
         Logger.DebugFormat("Missing action handler for {0}", omittedAction.Name);
       }
 
@@ -43,7 +40,7 @@ namespace Muwesome.GameLogic.Actions {
     private void RegisterAction(Dictionary<Type, Delegate> registry, Delegate action) {
       var actionType = action.GetType();
 
-      if (!this.DefinedActions.Contains(actionType)) {
+      if (!this.definedActions.Contains(actionType)) {
         throw new ArgumentException($"Undefined action type {actionType.Name}");
       }
 

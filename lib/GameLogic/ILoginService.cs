@@ -1,5 +1,5 @@
 using System.Threading.Tasks;
-using Muwesome.GameLogic.Actions.Players;
+using Muwesome.GameLogic.PlayerActions;
 
 namespace Muwesome.GameLogic {
   /// <summary>Represents a login service.</summary>

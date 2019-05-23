@@ -1,5 +1,5 @@
 using Muwesome.GameLogic;
-using Muwesome.GameLogic.Actions.Players;
+using Muwesome.GameLogic.PlayerActions;
 using Muwesome.MethodDelegate;
 using Muwesome.Network;
 using Muwesome.Protocol.Game.Server;

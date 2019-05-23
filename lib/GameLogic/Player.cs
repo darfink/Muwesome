@@ -25,8 +25,8 @@ namespace Muwesome.GameLogic {
     /// <summary>Gets or sets the persistence context.</summary>
     public IAccountContext PersistenceContext { get; set; }
 
-    /// <summary>Gets or sets the defined actions.</summary>
-    internal ActionBag Actions { get; set; }
+    /// <summary>Sets the defined actions.</summary>
+    internal ActionBag Actions { private get; set; }
 
     /// <summary>Gets an invokable action.</summary>
     public T Action<T>()

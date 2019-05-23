@@ -1,7 +1,7 @@
 using System.Linq;
 using System.Linq.Expressions;
 using Muwesome.GameLogic;
-using Muwesome.GameLogic.Actions.Players;
+using Muwesome.GameLogic.PlayerActions;
 using Muwesome.MethodDelegate;
 using Muwesome.Network;
 

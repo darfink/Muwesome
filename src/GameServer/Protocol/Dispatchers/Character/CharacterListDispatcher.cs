@@ -1,12 +1,12 @@
 using System;
 using Muwesome.GameLogic;
-using Muwesome.GameLogic.Actions.Players;
+using Muwesome.GameLogic.PlayerActions;
 using Muwesome.MethodDelegate;
 using Muwesome.Network;
 using Muwesome.Packet.Utility;
 using Muwesome.Protocol.Game.Server;
 
-namespace Muwesome.GameServer.Protocol.Dispatchers {
+namespace Muwesome.GameServer.Protocol.Dispatchers.Character {
   /// <summary>A packet dispatcher for login results.</summary>
   [ProtocolPacket(typeof(CharacterList))]
   internal class CharacterListDispatcher : PacketDispatcher {

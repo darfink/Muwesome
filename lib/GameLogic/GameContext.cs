@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Muwesome.DomainModel.Configuration;
 using Muwesome.GameLogic.Actions;
-using Muwesome.GameLogic.Actions.Players;
+using Muwesome.GameLogic.PlayerActions;
 using Muwesome.Persistence;
 
 namespace Muwesome.GameLogic {

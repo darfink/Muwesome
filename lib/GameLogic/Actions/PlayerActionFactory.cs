@@ -1,9 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using Muwesome.GameLogic;
-using Muwesome.GameLogic.Actions.Players;
-using Muwesome.GameLogic.Actions.Players.Handlers;
+using Muwesome.GameLogic.PlayerActions;
+using Muwesome.GameLogic.PlayerHandlers;
 using Muwesome.MethodDelegate.Extensions;
 
 namespace Muwesome.GameLogic.Actions {
@@ -16,8 +17,8 @@ namespace Muwesome.GameLogic.Actions {
       this.actionBagFactory = new ActionBagFactory(this.GetDefinedPlayerActions());
 
       // TODO: Discover and add action handlers via reflection
-      this.actionHandlers.Add(new LoginActionHandler(loginService));
-      this.actionHandlers.Add(new CharacterActionHandler());
+      this.actionHandlers.Add(new LoginHandler(loginService));
+      this.actionHandlers.Add(new CharacterHandler());
     }
 
     /// <summary>Creates a new player action collection.</summary>
@@ -26,14 +27,22 @@ namespace Muwesome.GameLogic.Actions {
 
     /// <summary>Registers all assembly local actions.</summary>
     private void RegisterActions(Player player, Action<Delegate> registerAction) {
-      foreach (var action in this.actionHandlers.SelectMany(a => a.GetMethodDelegates(_ => player))) {
+      foreach (var action in this.actionHandlers.SelectMany(handler => handler.GetMethodDelegates(ParameterResolver))) {
         registerAction(action);
+      }
+
+      object ParameterResolver(ParameterInfo parameter) {
+        if (parameter.ParameterType != typeof(Player)) {
+          throw new Exception($"Unresolved dispatch parameter {parameter}");
+        }
+
+        return player;
       }
     }
 
     /// <summary>Gets all defined player action types.</summary>
     private Type[] GetDefinedPlayerActions() {
-      var actionRoot = typeof(Actions.Players.LoginAction);
+      var actionRoot = typeof(PlayerActions.LoginAction);
       return actionRoot.Assembly
         .GetTypes()
         .Where(t => t.Namespace == actionRoot.Namespace && typeof(Delegate).IsAssignableFrom(t))
