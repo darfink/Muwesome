@@ -20,13 +20,13 @@ namespace Muwesome.GameServer.Protocol {
       bool packetWasHandled = base.HandlePacket(client, packet);
 
       if (!packetWasHandled) {
-        Logger.Debug($"Received an unhandled packet: {packet.ToHexString()}");
+        Logger.DebugFormat("Received an unhandled packet: {0}", packet.ToHexString());
         if (this.DisconnectOnUnknownPacket) {
-          Logger.Info($"Disconnecting client {client}; received an unknown packet");
+          Logger.InfoFormat("Disconnecting client {0}; received an unknown packet", client);
           client.Connection.Disconnect();
         }
       } else {
-        Logger.Debug($"Received handled packet: {packet.ToHexString()}");
+        Logger.DebugFormat("Received handled packet: {0}", packet.ToHexString());
       }
 
       return packetWasHandled;

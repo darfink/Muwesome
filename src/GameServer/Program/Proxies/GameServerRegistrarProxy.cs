@@ -47,7 +47,7 @@ namespace Muwesome.GameServer.Program.Proxies {
 
     /// <inheritdoc />
     public async Task RegisterGameServerAsync(GameServerInfo server) {
-      Logger.Info($"Registering game server ({server.Code}) at {this.endPoint}...");
+      Logger.InfoFormat("Registering game server ({0}) at {1}...", server.Code, this.endPoint);
       var channel = await this.LazyChannel;
 
       var client = new GameServerRegistrar.GameServerRegistrarClient(channel);
@@ -74,7 +74,7 @@ namespace Muwesome.GameServer.Program.Proxies {
         throw new ArgumentException($"Game server ({server.Code}) is already registered", nameof(server));
       }
 
-      Logger.Info($"Game server ({server.Code}) registered");
+      Logger.InfoFormat("Game server ({0}) registered", server.Code);
     }
 
     /// <inheritdoc />
@@ -128,13 +128,13 @@ namespace Muwesome.GameServer.Program.Proxies {
           task.Exception.FindExceptionByType<RpcException>().StatusCode == StatusCode.Cancelled;
 
         if (gameServerDeregisteredPrematurely) {
-          Logger.Info($"Game server deregistered prematurely; attempting to reregister");
+          Logger.Info("Game server deregistered prematurely; attempting to reregister");
           await Task.Delay(TimeSpan.FromSeconds(1));
           await this.RegisterGameServerAsync(server);
         } else if (task.Exception != null) {
           Logger.Error($"Game server ({server.Code}) deregistered due to an error", task.Exception);
         } else {
-          Logger.Info($"Game server ({server.Code}) deregistered");
+          Logger.InfoFormat("Game server ({0}) deregistered", server.Code);
         }
       }
     }

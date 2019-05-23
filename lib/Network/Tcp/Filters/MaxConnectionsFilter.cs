@@ -26,7 +26,7 @@ namespace Muwesome.Network.Tcp.Filters {
 
       if (this.clientsConnected >= this.maxConnections) {
         var ipAddress = ev.ClientSocket.RemoteEndPoint;
-        Logger.Warn($"Connection refused from {ipAddress}; maximum server connections ({this.maxConnections}) reached");
+        Logger.WarnFormat("Connection refused from {0}; maximum server connections ({1}) reached", ipAddress, this.maxConnections);
         ev.RejectClient = true;
       }
     }

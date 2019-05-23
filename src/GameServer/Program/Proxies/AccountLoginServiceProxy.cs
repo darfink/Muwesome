@@ -99,12 +99,12 @@ namespace Muwesome.GameServer.Program.Proxies {
     }
 
     private async Task BeginAuthSession(Channel channel, CancellationToken cancellationToken) {
-      Logger.Info($"Connecting to login server at {channel.Target}...");
+      Logger.InfoFormat("Connecting to login server at {0}...", channel.Target);
       using (cancellationToken.Register(() => channel.ShutdownAsync())) {
         await channel.ConnectAsync();
       }
 
-      Logger.Info($"Connected to login server");
+      Logger.Info("Connected to login server");
       var client = new AccountAuthentication.AccountAuthenticationClient(channel);
       var stream = client.RegisterAuthSession(cancellationToken: cancellationToken);
 

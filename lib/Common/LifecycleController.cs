@@ -32,14 +32,14 @@ namespace Muwesome.Common {
 
     /// <inheritdoc />
     public virtual void Start() {
-      this.Logger.Info($"Starting {this.Identifier}...");
+      this.Logger.InfoFormat("Starting {0}...", this.Identifier);
       foreach (var instance in this.lifecycleInstances) {
         instance.Start();
       }
 
       this.isRunning = 1;
       this.LifecycleStarted?.Invoke(this, new LifecycleEventArgs());
-      this.Logger.Info($"{this.Identifier} successfully started");
+      this.Logger.InfoFormat("{0} successfully started", this.Identifier);
     }
 
     /// <inheritdoc />
@@ -48,14 +48,14 @@ namespace Muwesome.Common {
         return;
       }
 
-      this.Logger.Info($"Stopping {this.Identifier}...");
+      this.Logger.InfoFormat("Stopping {0}...", this.Identifier);
       foreach (var instance in this.lifecycleInstances) {
         instance.Stop();
       }
 
       this.ShutdownTask.Wait();
       this.LifecycleEnded?.Invoke(this, new LifecycleEventArgs());
-      this.Logger.Info($"{this.Identifier} stopped");
+      this.Logger.InfoFormat("{0} stopped", this.Identifier);
     }
 
     /// <summary>Adds a dependency to the controller.</summary>

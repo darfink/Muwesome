@@ -32,7 +32,7 @@ namespace Muwesome.GameServer {
       client.Player.Disposed += (_, ev) => client.Connection.Disconnect();
 
       this.ClientSessionStarted?.Invoke(this, new ClientSessionEventArgs(client));
-      Logger.Info($"Client connected {client}; current client count {this.clients.Count}");
+      Logger.InfoFormat("Client connected {0}; current client count {1}", client, this.clients.Count);
     }
 
     /// <inheritdoc />
@@ -46,7 +46,7 @@ namespace Muwesome.GameServer {
     }
 
     private void OnClientDisconnected(Client client) {
-      Logger.Info($"Client disconnected {client}");
+      Logger.InfoFormat("Client disconnected {0}", client);
       Debug.Assert(this.clients.TryRemove(client.Player, out _), "Client could not be removed");
       using (client) {
         this.ClientSessionEnded?.Invoke(this, new ClientSessionEventArgs(client));

@@ -91,7 +91,7 @@ namespace Muwesome.Network.Tcp {
     /// <summary>Called when the listener has started.</summary>
     protected virtual void OnListenerStarted() {
       this.LifecycleStarted?.Invoke(this, new LifecycleEventArgs());
-      this.Logger.Info($"Client listener started; listening on {this.BoundEndPoint}");
+      this.Logger.InfoFormat("Client listener started; listening on {0}", this.BoundEndPoint);
     }
 
     /// <summary>Called when the listener has stopped.</summary>
@@ -124,7 +124,7 @@ namespace Muwesome.Network.Tcp {
       this.ClientAccept?.Invoke(this, clientAccept);
 
       if (clientAccept.RejectClient) {
-        this.Logger.Debug($"Rejecting client connection {socket.RemoteEndPoint}...");
+        this.Logger.DebugFormat("Rejecting client connection {0}...", socket.RemoteEndPoint);
         socket.Dispose();
       } else {
         var connection = this.CreateConnectionForSocket(socket);

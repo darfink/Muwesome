@@ -15,14 +15,14 @@ namespace Muwesome.GameLogic.Actions.Players.Handlers {
     [MethodDelegate(typeof(LoginAction))]
     public async void Login([Inject] Player player, string username, string password) {
       // TODO: Handle asynchronous exceptions
-      Logger.Info($"Login with {username}");
+      Logger.InfoFormat("Login with {0}", username);
       var result = await this.loginService.TryLoginAsync(username, password);
 
       if (result == LoginResult.Success) {
         player.Account = await player.PersistenceContext.GetAccountByUsernameAsync(username);
 
         if (player.Account == null) {
-          Logger.Error($"Account returned by login service ({username}) was null");
+          Logger.ErrorFormat("Account returned by login service ({0}) was null", username);
           result = LoginResult.InternalError;
         }
       }

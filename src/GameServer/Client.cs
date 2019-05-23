@@ -74,7 +74,7 @@ namespace Muwesome.GameServer {
     public override string ToString() => this.Connection.ToString();
 
     private void OnClientTimeout(object sender) {
-      Logger.Info($"Disconnecting client {this}; max idle time ({this.maxIdleTime}) exceeded");
+      Logger.InfoFormat("Disconnecting client {0}; max idle time ({1}) exceeded", this, this.maxIdleTime);
       this.Connection.Disconnect();
     }
 

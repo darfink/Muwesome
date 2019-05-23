@@ -61,7 +61,7 @@ namespace Muwesome.Rpc {
       var endPoints = this.grpcServer.Ports
         .Select(server => $"{server.Host}:{server.BoundPort}");
       this.LifecycleStarted?.Invoke(this, new LifecycleEventArgs());
-      this.Logger.Info($"RPC service started; listening on {string.Join(", ", endPoints)}");
+      this.Logger.InfoFormat("RPC service started; listening on {0}", string.Join(", ", endPoints));
     }
 
     /// <inheritdoc />

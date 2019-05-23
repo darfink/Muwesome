@@ -29,7 +29,7 @@ namespace Muwesome.Network.Tcp.Filters {
       this.ipAddressConnections.TryGetValue(ipAddress, out uint connectionsWithIp);
 
       if (connectionsWithIp >= this.maxConnectionsPerIp) {
-        Logger.Warn($"Connection refused from {ipAddress}; maximum connections for IP ({this.maxConnectionsPerIp}) reached");
+        Logger.WarnFormat("Connection refused from {0}; maximum connections for IP ({1}) reached", ipAddress, this.maxConnectionsPerIp);
         ev.RejectClient = true;
       }
     }

@@ -1,7 +1,7 @@
 namespace Muwesome.Persistence.NHibernate {
   /// <summary>Represents all available schema operations.</summary>
   public enum SchemaOperation {
-    /// <summary>No operations is performed.</summary>
+    /// <summary>No operations are performed.</summary>
     None,
 
     /// <summary>Outdated schemas are updated.</summary>

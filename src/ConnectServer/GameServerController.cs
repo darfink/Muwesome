@@ -35,7 +35,7 @@ namespace Muwesome.ConnectServer {
 
       server.PropertyChanged += this.OnGameServerChange;
       this.GameServerRegistered?.Invoke(this, new GameServerEventArgs(server));
-      Logger.Info($"Game server registered; {server} (server count: {this.gameServers.Count})");
+      Logger.InfoFormat("Game server registered; {0} (server count: {1})", server, this.gameServers.Count);
     }
 
     /// <inheritdoc />
@@ -46,7 +46,7 @@ namespace Muwesome.ConnectServer {
 
       server.PropertyChanged -= this.OnGameServerChange;
       this.GameServerDeregistered?.Invoke(this, new GameServerEventArgs(server));
-      Logger.Info($"Game server deregistered {server}");
+      Logger.InfoFormat("Game server deregistered {0}", server);
     }
 
     /// <inheritdoc />
@@ -60,7 +60,7 @@ namespace Muwesome.ConnectServer {
 
     private void OnGameServerChange(object sender, PropertyChangedEventArgs ev) {
       var server = (GameServerInfo)sender;
-      Logger.Debug($"Game server update {server}; clients {server.ClientCount}/{server.ClientCapacity}");
+      Logger.DebugFormat("Game server update {0}; clients {1}/{2}", server, server.ClientCount, server.ClientCapacity);
       this.GameServerUpdated?.Invoke(this, new GameServerEventArgs(server));
     }
   }

@@ -33,7 +33,7 @@ namespace Muwesome.GameLogic.Actions {
       builder(context, action => this.RegisterAction(registeredActions, action));
 
       foreach (var omittedAction in this.DefinedActions.Where(action => !registeredActions.ContainsKey(action))) {
-        Logger.Debug($"Missing action handler for {omittedAction.Name}");
+        Logger.DebugFormat("Missing action handler for {0}", omittedAction.Name);
       }
 
       return new ActionBag(registeredActions);

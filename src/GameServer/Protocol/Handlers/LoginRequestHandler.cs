@@ -18,7 +18,7 @@ namespace Muwesome.GameServer.Protocol.Handlers {
       ref var login = ref PacketHelper.ParsePacket<LoginRequest>(packet);
 
       if (login.Version != client.Version) {
-        Logger.Info($"Client version mismatch for {client}; expected {client.Version}, was {login.Version}");
+        Logger.InfoFormat("Client version mismatch for {0}; expected {1}, was {2}", client, client.Version, login.Version);
         client.Player.Action<ShowLoginResultAction>()?.Invoke(LoginResult.InvalidGameVersion);
         return true;
       }
@@ -26,7 +26,7 @@ namespace Muwesome.GameServer.Protocol.Handlers {
       bool isSerialInvalid = this.ValidateClientSerial && login.Serial.SequenceEqual(client.Serial);
 
       if (isSerialInvalid) { // TODO: Print serial ASCII escaped?
-        Logger.Info($"Client serial mismatch for {client}; expected {client.Serial}, was {login.Serial.ToArray()}");
+        Logger.InfoFormat("Client serial mismatch for {0}; expected {1}, was {2}", client, client.Serial, login.Serial.ToArray());
         client.Connection.Disconnect();
         return true;
       }

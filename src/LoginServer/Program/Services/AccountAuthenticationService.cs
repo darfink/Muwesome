@@ -47,14 +47,14 @@ namespace Muwesome.LoginServer.Program.Services {
     }
 
     private async Task<AuthResponse> Login(AuthRequest.Types.Login login, ISet<string> activeAccounts) {
-      Logger.Debug($"Login attempt for {login.Username}...");
+      Logger.DebugFormat("Login attempt for {0}...", login.Username);
       var error = await this.accountLoginService.TryLoginAsync(login.Username, login.Password);
 
       if (error == null) {
-        Logger.Debug($"Login successful for {login.Username}...");
+        Logger.DebugFormat("Login successful for {0}...", login.Username);
         activeAccounts.Add(login.Username);
       } else {
-        Logger.Info($"Login failed for {login.Username}; {error}");
+        Logger.InfoFormat("Login failed for {0}; {1}", login.Username, error);
       }
 
       return new AuthResponse { Result = this.ConvertToRpcLoginError(error) };
