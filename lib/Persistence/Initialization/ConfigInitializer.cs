@@ -28,13 +28,13 @@ namespace Muwesome.Persistence.Initialization {
 
     private IEnumerable<MapDefinition> CreateMapDefinitions() {
       var terrain = MapTerrain.FromStream(ResourceManager.GetResourceStream("Terrain1.att"));
-      var lorencia = this.context.Create<MapDefinition>("Lorencia", (byte)0, terrain);
+      var lorencia = this.context.Create<MapDefinition>("Lorencia", (short)0, terrain);
       yield return lorencia;
     }
 
     private IEnumerable<CharacterClass> CreateCharacterClasses() {
       var homeMap = this.gameConfiguration.MapDefinitions.First(m => m.Number == 0);
-      var characterClass = this.context.Create<CharacterClass>("Dark Wizard", homeMap);
+      var characterClass = this.context.Create<CharacterClass>("Dark Wizard", (byte)1, homeMap);
       characterClass.PointsPerLevel = 5;
       yield return characterClass;
     }
