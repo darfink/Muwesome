@@ -18,7 +18,7 @@ namespace Muwesome.GameServer.Protocol {
 
     /// <summary>Registers all dispatchers bound to a client.</summary>
     public IEnumerable<Delegate> CreateDispatches(Client client) {
-        // TODO: Log each dispatch
+      // TODO: Log each dispatch
       return this.dispatchers.SelectMany(dispatcher => dispatcher.GetMethodDelegates(ParameterResolver));
 
       object ParameterResolver(ParameterInfo parameter) {
