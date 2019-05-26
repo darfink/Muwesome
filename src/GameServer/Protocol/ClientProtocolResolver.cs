@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using log4net;
+using Muwesome.GameLogic;
 using Muwesome.GameServer.Protocol.Dispatchers;
 using Muwesome.GameServer.Protocol.Handlers;
 using Muwesome.Protocol;
@@ -11,14 +12,18 @@ using Muwesome.Protocol.Game.Client;
 
 namespace Muwesome.GameServer.Protocol {
   /// <summary>A client protocol resolver.</summary>
-  // TODO: Implement dynamic client version range and do this dynamically
+  // TODO: Implement dynamic client version range
   internal class ClientProtocolResolver : IClientProtocolResolver {
     private readonly object syncLock = new object();
     private readonly Dictionary<ClientVersion, ClientProtocol> protocols = new Dictionary<ClientVersion, ClientProtocol>();
+    private readonly GameContext gameContext;
     private readonly Configuration config;
 
     /// <summary>Initializes a new instance of the <see cref="ClientProtocolResolver"/> class.</summary>
-    public ClientProtocolResolver(Configuration config) => this.config = config;
+    public ClientProtocolResolver(Configuration config, GameContext gameContext) {
+      this.gameContext = gameContext;
+      this.config = config;
+    }
 
     /// <inheritdoc />
     public ClientProtocol Resolve(ClientVersion clientVersion) {
@@ -44,8 +49,11 @@ namespace Muwesome.GameServer.Protocol {
         .Cast<PacketHandler>()
         .ToList();
 
-      foreach (var serialValidator in handlers.OfType<IClientSerialValidator>()) {
-        serialValidator.ValidateClientSerial = this.config.ValidateClientSerial;
+      foreach (var handler in handlers) {
+        handler.GameContext = this.gameContext;
+        if (handler is IClientSerialValidator serialValidator) {
+          serialValidator.ValidateClientSerial = this.config.ValidateClientSerial;
+        }
       }
 
       return new ClientPacketHandler(handlers) {

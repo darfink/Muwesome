@@ -1,8 +1,8 @@
 using System.ComponentModel;
 using System.Threading.Tasks;
 using Muwesome.Common;
-using Muwesome.GameLogic;
-using Muwesome.GameLogic.PlayerActions;
+using Muwesome.GameLogic.Interface;
+using Muwesome.GameLogic.Interface.Actions;
 
 namespace Muwesome.GameServer {
   internal class LoginServiceAdapter : ILoginService {

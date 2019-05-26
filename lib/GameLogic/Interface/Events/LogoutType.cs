@@ -1,4 +1,4 @@
-namespace Muwesome.GameLogic.PlayerActions {
+namespace Muwesome.GameLogic.Interface.Events {
   /// <summary>Represents all possible logout types.</summary>
   public enum LogoutType : byte {
     /// <summary>Exits the player from the game.</summary>

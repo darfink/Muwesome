@@ -1,7 +1,5 @@
 using System;
-using System.Linq;
-using Muwesome.GameLogic;
-using Muwesome.GameLogic.PlayerActions;
+using Muwesome.GameLogic.Interface.Actions;
 using Muwesome.GameServer.Utility;
 using Muwesome.MethodDelegate;
 using Muwesome.Network;
@@ -13,7 +11,7 @@ namespace Muwesome.GameServer.Protocol.Dispatchers.Character {
   [ProtocolPacket(typeof(CharacterList))]
   internal class CharacterListDispatcher : PacketDispatcher {
     /// <summary>Sends the character list to a client.</summary>
-    [MethodDelegate(typeof(ShowCharactersAction))]
+    [MethodDelegate(typeof(ShowCharacters))]
     public void SendCharacterList([Inject] Client client) {
       var characterCount = client.Player.Account.Characters.Count;
       var packetSize = PacketHelper.GetPacketSize<CharacterList, CharacterList.Character>(characterCount);

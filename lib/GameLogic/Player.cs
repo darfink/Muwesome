@@ -2,15 +2,18 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Muwesome.DomainModel.Entities;
-using Muwesome.GameLogic.Actions;
+using Muwesome.GameLogic.Utility;
 using Muwesome.Persistence;
 
 namespace Muwesome.GameLogic {
   /// <summary>Represents a player in-game.</summary>
   public class Player : IIdentifiable, IDisposable {
+    private readonly ActionSet actions;
+
     /// <summary>Initializes a new instance of the <see cref="Player"/> class.</summary>
-    internal Player(IAccountContext persistenceContext) {
+    internal Player(IAccountContext persistenceContext, ActionSet actions) {
       this.PersistenceContext = persistenceContext;
+      this.actions = actions;
     }
 
     /// <summary>An event that is raised when the player is removed from the game.</summary>
@@ -25,12 +28,9 @@ namespace Muwesome.GameLogic {
     /// <summary>Gets or sets the persistence context.</summary>
     public IAccountContext PersistenceContext { get; set; }
 
-    /// <summary>Sets the defined actions.</summary>
-    internal ActionBag Actions { private get; set; }
-
     /// <summary>Gets an invokable action.</summary>
     public T Action<T>()
-        where T : Delegate => this.Actions.Get<T>();
+        where T : Delegate => this.actions.Get<T>();
 
     /// <inheritdoc />
     public void Dispose() {

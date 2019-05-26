@@ -1,6 +1,7 @@
 using System;
 using log4net;
-using Muwesome.GameLogic.PlayerActions;
+using Muwesome.GameLogic.Interface.Actions;
+using Muwesome.GameLogic.Interface.Events;
 using Muwesome.Packet.Utility;
 using Muwesome.Protocol;
 using Muwesome.Protocol.Game.Client;
@@ -20,7 +21,7 @@ namespace Muwesome.GameServer.Protocol.Handlers {
 
       if (login.Version != client.Protocol.Version) {
         Logger.InfoFormat("Client version mismatch for {0}; expected {1}, was {2}", client, client.Protocol.Version, login.Version);
-        client.Player.Action<ShowLoginResultAction>()?.Invoke(LoginResult.InvalidGameVersion);
+        client.Player.Action<ShowLoginResult>()?.Invoke(LoginResult.InvalidGameVersion);
         return true;
       }
 
@@ -32,7 +33,7 @@ namespace Muwesome.GameServer.Protocol.Handlers {
         return true;
       }
 
-      client.Player.Action<LoginAction>()?.Invoke(login.Username, login.Password);
+      this.PlayerEventDispatcher<OnLogin>().Invoke(client.Player, login.Username, login.Password);
       return true;
     }
   }

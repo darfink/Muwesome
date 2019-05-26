@@ -1,6 +1,6 @@
 using System;
 using log4net;
-using Muwesome.GameLogic.PlayerActions;
+using Muwesome.GameLogic.Interface.Events;
 using Muwesome.Packet.Utility;
 using Muwesome.Protocol;
 using Muwesome.Protocol.Game.Client;
@@ -11,7 +11,7 @@ namespace Muwesome.GameServer.Protocol.Handlers.Character {
   internal class CharacterListRequestHandler : PacketHandler {
     /// <inheritdoc />
     public override bool HandlePacket(Client client, Span<byte> packet) {
-      client.Player.Action<RequestCharactersAction>()?.Invoke();
+      this.PlayerEventDispatcher<OnRequestCharacters>().Invoke(client.Player);
       return true;
     }
   }

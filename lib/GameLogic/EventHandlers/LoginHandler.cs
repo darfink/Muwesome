@@ -1,9 +1,11 @@
 using System;
 using log4net;
-using Muwesome.GameLogic.PlayerActions;
+using Muwesome.GameLogic.Interface;
+using Muwesome.GameLogic.Interface.Actions;
+using Muwesome.GameLogic.Interface.Events;
 using Muwesome.MethodDelegate;
 
-namespace Muwesome.GameLogic.PlayerHandlers {
+namespace Muwesome.GameLogic.EventHandlers {
   /// <summary>A player login handler.</summary>
   internal class LoginHandler {
     private static readonly ILog Logger = LogManager.GetLogger(typeof(LoginHandler));
@@ -13,8 +15,8 @@ namespace Muwesome.GameLogic.PlayerHandlers {
     public LoginHandler(ILoginService loginService) => this.loginService = loginService;
 
     /// <summary>Logs a player into the game.</summary>
-    [MethodDelegate(typeof(LoginAction))]
-    public async void Login([Inject] Player player, string username, string password) {
+    [MethodDelegate(typeof(OnLogin))]
+    public async void Login(Player player, string username, string password) {
       // TODO: Handle asynchronous exceptions
       Logger.InfoFormat("Login with {0}", username);
       var result = await this.loginService.TryLoginAsync(username, password);
@@ -28,12 +30,12 @@ namespace Muwesome.GameLogic.PlayerHandlers {
         }
       }
 
-      player.Action<ShowLoginResultAction>()?.Invoke(result);
+      player.Action<ShowLoginResult>()?.Invoke(result);
     }
 
     /// <summary>Logs a player out of the game.</summary>
-    [MethodDelegate(typeof(LogoutAction))]
-    public void Logout([Inject] Player player, LogoutType logoutType) {
+    [MethodDelegate(typeof(OnLogout))]
+    public void Logout(Player player, LogoutType logoutType) {
     }
   }
 }

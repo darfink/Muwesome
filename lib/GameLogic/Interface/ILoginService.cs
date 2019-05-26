@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
-using Muwesome.GameLogic.PlayerActions;
+using Muwesome.GameLogic.Interface.Actions;
 
-namespace Muwesome.GameLogic {
+namespace Muwesome.GameLogic.Interface {
   /// <summary>Represents a login service.</summary>
   public interface ILoginService {
     /// <summary>Attempts to login an account using the provided credentials.</summary>

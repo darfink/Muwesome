@@ -1,5 +1,4 @@
-using Muwesome.GameLogic;
-using Muwesome.GameLogic.PlayerActions;
+using Muwesome.GameLogic.Interface.Actions;
 using Muwesome.MethodDelegate;
 using Muwesome.Network;
 using Muwesome.Protocol.Game.Server;
@@ -9,7 +8,7 @@ namespace Muwesome.GameServer.Protocol.Dispatchers {
   [ProtocolPacket(typeof(JoinResult))]
   internal class JoinResultDispatcher : PacketDispatcher {
     /// <summary>Sends the join result to a client.</summary>
-    [MethodDelegate(typeof(ShowLoginWindowAction))]
+    [MethodDelegate(typeof(ShowLoginWindow))]
     public void SendJoinResult([Inject] Client client) {
       using (var writer = client.Connection.SendPacket<JoinResult>()) {
         writer.Packet = new JoinResult {

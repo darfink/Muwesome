@@ -2,10 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Muwesome.GameLogic.Actions;
 using Muwesome.GameServer.Protocol.Dispatchers;
 using Muwesome.MethodDelegate.Extensions;
-using Muwesome.Packet;
 
 namespace Muwesome.GameServer.Protocol {
   /// <summary>A client packet dispatcher.</summary>
@@ -17,7 +15,7 @@ namespace Muwesome.GameServer.Protocol {
       this.dispatchers = dispatchers.ToList();
 
     /// <summary>Registers all dispatchers bound to a client.</summary>
-    public IEnumerable<Delegate> CreateDispatches(Client client) {
+    public IEnumerable<Delegate> CreateDispatch(Client client) {
       // TODO: Log each dispatch
       return this.dispatchers.SelectMany(dispatcher => dispatcher.GetMethodDelegates(ParameterResolver));
 

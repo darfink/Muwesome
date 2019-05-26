@@ -14,15 +14,13 @@ namespace Muwesome.GameServer {
     private readonly GameContext gameContext;
 
     /// <summary>Initializes a new instance of the <see cref="GameServer"/> class.</summary>
-    // TODO: Allow multiple client listeners, and remove all TCP logic
     internal GameServer(
         Configuration config,
-        IPersistenceContextProvider persistenceContextProvider,
         IClientController clientController,
-        IAccountLoginService accountLoginService) {
+        GameContext gameContext) {
       this.Config = config;
       this.clientController = clientController;
-      this.gameContext = new GameContext(persistenceContextProvider, new LoginServiceAdapter(accountLoginService));
+      this.gameContext = gameContext;
     }
 
     /// <summary>Gets the server's configuration.</summary>
@@ -46,14 +44,9 @@ namespace Muwesome.GameServer {
     /// <summary>Configures new clients.</summary>
     private void OnClientConnected(object sender, ClientConnectedEventArgs<Client> ev) {
       var client = ev.ConnectedClient;
-      client.Player = this.gameContext.AddPlayer(RegisterDispatcherActions);
+      var clientDispatch = client.Protocol.PacketDispatcher.CreateDispatch(client);
+      client.Player = this.gameContext.AddPlayer(clientDispatch);
       this.clientController.AddClient(client);
-
-      void RegisterDispatcherActions(Player player, Action<Delegate> registerAction) {
-        foreach (var action in client.Protocol.PacketDispatcher.CreateDispatches(client)) {
-          registerAction(action);
-        }
-      }
     }
   }
 }

@@ -1,4 +1,5 @@
 using Muwesome.Common;
+using Muwesome.GameLogic;
 using Muwesome.GameServer.Protocol;
 using Muwesome.Network.Tcp.Filters;
 using Muwesome.Persistence;
@@ -12,14 +13,16 @@ namespace Muwesome.GameServer {
         IPersistenceContextProvider persistenceContextProvider,
         IGameServerRegistrar gameServerRegistrar,
         IAccountLoginService accountLoginService) {
+      var gameContext = new GameContext(persistenceContextProvider, new LoginServiceAdapter(accountLoginService));
+
       var clientController = new ClientController();
-      var clientProtocolResolver = new ClientProtocolResolver(config);
+      var clientProtocolResolver = new ClientProtocolResolver(config, gameContext);
 
       var clientListener = new GameServerTcpListener(config, clientController, clientProtocolResolver, gameServerRegistrar);
       clientListener.AddFilter(new MaxConnectionsFilter(config.MaxConnections));
       clientListener.AddFilter(new MaxConnectionsPerIpFilter(config.MaxConnectionsPerIp));
 
-      var gameServer = new GameServer(config, persistenceContextProvider, clientController, accountLoginService);
+      var gameServer = new GameServer(config, clientController, gameContext);
       gameServer.AddListener(clientListener);
       return gameServer;
     }
