@@ -2,16 +2,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Muwesome.DomainModel.Entities;
-using Muwesome.GameLogic.Utility;
+using Muwesome.GameLogic.Interface;
 using Muwesome.Persistence;
 
 namespace Muwesome.GameLogic {
   /// <summary>Represents a player in-game.</summary>
   public class Player : IIdentifiable, IDisposable {
-    private readonly ActionSet actions;
+    private readonly IActionSet actions;
 
     /// <summary>Initializes a new instance of the <see cref="Player"/> class.</summary>
-    internal Player(IAccountContext persistenceContext, ActionSet actions) {
+    internal Player(IAccountContext persistenceContext, IActionSet actions) {
       this.PersistenceContext = persistenceContext;
       this.actions = actions;
     }
