@@ -15,7 +15,7 @@ namespace Muwesome.GameServer {
     /// <summary>Gets or sets the server's port as shown to clients.</summary>
     public ushort? ExternalPort { get; set; } = null;
 
-    /// <summary>Gets or sets the end points associated client version.</summary>
+    /// <summary>Gets or sets the end point's associated client version.</summary>
     public ClientVersion? ClientVersion { get; set; } = null;
 
     /// <summary>Gets or sets the end points associated client serial.</summary>
