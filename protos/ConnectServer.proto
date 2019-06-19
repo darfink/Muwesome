@@ -8,19 +8,13 @@ service GameServerRegistrar {
 
 message GameServerRequest {
   message Register {
-    // Server code
     uint32 code = 1;
-
-    // Server address & port
     string host = 2;
     uint32 port = 3;
-
-    // Server status
     StatusUpdate status = 4;
   }
 
   message StatusUpdate {
-    // Client count & capacity
     uint32 client_count = 1;
     uint32 client_capacity = 2;
   }
