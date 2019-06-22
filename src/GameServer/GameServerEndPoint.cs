@@ -18,7 +18,7 @@ namespace Muwesome.GameServer {
     /// <summary>Gets or sets the end point's associated client version.</summary>
     public ClientVersion? ClientVersion { get; set; } = null;
 
-    /// <summary>Gets or sets the end points associated client serial.</summary>
+    /// <summary>Gets or sets the end point's associated client serial.</summary>
     public byte[] ClientSerial { get; set; } = null;
   }
 }
