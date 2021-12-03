@@ -19,7 +19,10 @@ configuration objects.
 The server consists of multiple services, each being dedicated to a single task.
 The services are containerized and can be orchestrated via Docker Compose.
 
-![Overview](https://i.imgur.com/uoKzIxT.png)
+
+<p align="center">
+  <img src="https://i.imgur.com/uoKzIxT.png" alt="Overview"/>
+</p>
 
 - **ConnectServer**
 
