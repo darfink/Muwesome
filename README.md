@@ -56,6 +56,9 @@ The services are containerized and can be orchestrated via Docker Compose.
   Integrating Sentry to allow real-time performance monitoring and error
   tracking.
 
+  Integrating OpenTracing to allow requests to be tracked across different
+  microservices.
+
 <!-- Links -->
 [license-shield]: https://img.shields.io/crates/l/region.svg?style=for-the-badge
 [license]: https://github.com/darfink/region-rs
